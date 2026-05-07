@@ -517,10 +517,10 @@ async function loadUser(){
   document.getElementById('role-badge').textContent=ROLES[userRole]?.label||userRole;
   buildNav();
   showApp();
-  onValue(ref(db,`accounts/${accountId}/products`),s=>{products=s.val()||{};renderTab();});
-  onValue(ref(db,`accounts/${accountId}/menu`),s=>{menuItems=s.val()||{};renderTab();});
-  onValue(ref(db,`accounts/${accountId}/orders`),s=>{orders=s.val()||{};renderTab();});
-  onValue(ref(db,`accounts/${accountId}/suppliers`),s=>{suppliers=s.val()||{};renderTab();});
+  onValue(ref(db,`accounts/${accountId}/products`),s=>{products=s.val()||{};refreshView();});
+  onValue(ref(db,`accounts/${accountId}/menu`),s=>{menuItems=s.val()||{};refreshView();});
+  onValue(ref(db,`accounts/${accountId}/orders`),s=>{orders=s.val()||{};refreshView();});
+  onValue(ref(db,`accounts/${accountId}/suppliers`),s=>{suppliers=s.val()||{};refreshView();});
 }
 
 const NAV_ICONS={inventario:'🥩',menu:'📋',pedidos:'🛒',proveedores:'🏪',resumen:'📊'};
@@ -607,6 +607,15 @@ function goHome(){
   document.getElementById('inner-screen').style.display='none';
   document.getElementById('fab').style.display='none';
   renderHome();
+}
+
+function refreshView(){
+  const homeVisible = document.getElementById('home-screen').style.display !== 'none';
+  if(homeVisible){
+    renderHome();
+  } else {
+    renderTab();
+  }
 }
 
 function goTab(t){
