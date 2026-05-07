@@ -64,21 +64,27 @@
       pointer-events:none;z-index:0;}
 
     /* SPLASH */
-    #splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:80px 40px 60px;z-index:999;transition:opacity 1s ease;}
-    #splash::before{content:'';position:absolute;inset:0;
-      background:radial-gradient(ellipse 80% 50% at 50% 40%,rgba(196,84,26,0.06) 0%,transparent 70%);
-      pointer-events:none;}
-    .splash-content{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;animation:splashFadeIn 1.2s ease both;position:relative;}
-    @keyframes splashFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    .splash-logo-img{width:200px;margin-bottom:16px;}
-    .splash-tagline{font-family:var(--font-h);font-size:15px;font-style:italic;color:var(--t3);letter-spacing:2px;text-align:center;}
-    .splash-divider{width:40px;height:1px;background:var(--acc);margin:16px auto;}
-    .splash-sub{font-size:12px;letter-spacing:5px;color:var(--t3);text-transform:uppercase;font-weight:500;text-align:center;}
-    .splash-bar-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;}
-    .splash-bar{width:100%;max-width:160px;height:1px;background:var(--b2);border-radius:2px;overflow:hidden;position:relative;}
-    .splash-bar::after{content:'';position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--grn),var(--acc));border-radius:2px;animation:splashLoad 2.5s ease forwards;}
-    @keyframes splashLoad{0%{width:0%}60%{width:70%}85%{width:90%}100%{width:100%}}
-    .splash-pct{font-family:var(--font-b);font-size:12px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:500;}
+    #splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:60px 40px 50px;z-index:999;transition:opacity 1.2s ease;overflow:hidden;}
+    .splash-nature{position:relative;flex:1;width:100%;display:flex;align-items:center;justify-content:center;}
+    .leaf{position:absolute;opacity:0;}
+    .leaf-tl{width:160px;height:160px;top:-20px;left:-20px;animation:leafIn 1.2s ease 0.1s forwards;}
+    .leaf-br{width:160px;height:160px;bottom:-20px;right:-20px;animation:leafIn 1.2s ease 0.3s forwards;}
+    .leaf-tr{width:100px;height:100px;top:10px;right:10px;animation:leafIn 1s ease 0.5s forwards;}
+    .leaf-bl{width:100px;height:100px;bottom:10px;left:10px;animation:leafIn 1s ease 0.6s forwards;}
+    @keyframes leafIn{from{opacity:0;transform:scale(0.5) rotate(-20deg)}to{opacity:1;transform:scale(1) rotate(0deg)}}
+    .splash-center{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:2;}
+    .splash-name{font-family:var(--font-h);font-size:72px;font-weight:700;font-style:italic;letter-spacing:-3px;color:var(--t1);line-height:1;opacity:0;animation:nameIn 1s ease 0.9s forwards;}
+    @keyframes nameIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    .splash-rest{font-family:var(--font-b);font-size:11px;letter-spacing:8px;text-transform:uppercase;color:var(--t2);font-weight:500;opacity:0;animation:restIn 0.8s ease 1.7s forwards;}
+    @keyframes restIn{from{opacity:0;letter-spacing:2px}to{opacity:1;letter-spacing:8px}}
+    .splash-line{width:0;height:1px;background:var(--acc);margin:10px auto;animation:lineGrow 0.7s ease 1.5s forwards;}
+    @keyframes lineGrow{from{width:0}to{width:48px}}
+    .splash-tagline-nat{font-family:var(--font-h);font-size:14px;font-style:italic;color:var(--t3);opacity:0;animation:nameIn 0.8s ease 2.1s forwards;}
+    .splash-bar-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;}
+    .splash-bar{width:120px;height:1px;background:var(--b2);border-radius:2px;overflow:hidden;position:relative;}
+    .splash-bar::after{content:'';position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--grn),var(--acc));animation:splashLoad 2.8s ease forwards;}
+    @keyframes splashLoad{0%{width:0%}60%{width:70%}85%{width:92%}100%{width:100%}}
+    .splash-pct{font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:500;opacity:0;animation:nameIn 0.5s ease 1s forwards;}
 
     /* AUTH */
     #auth{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;flex-direction:column;position:relative;z-index:1;background:var(--bg);}
@@ -353,6 +359,7 @@
             <option value="salon">🍽️ Salón</option>
           </select>
         </div>
+        <div class="fld"><label>Teléfono / WhatsApp</label><input type="tel" id="r-phone" placeholder="+55 41 99999-9999"/></div>
         <div class="fld"><label>Código de cuenta</label><input type="text" id="r-code" placeholder="ej: SPRING-001"/></div>
         <button class="btn-main" onclick="doRegister()">Crear cuenta</button>
         <div class="auth-info">Usá el código que te dio el administrador.</div>
@@ -497,7 +504,8 @@ async function doRegister(){
   try{
     const{auth,db,ref,set,createUserWithEmailAndPassword}=window._fb;
     const cred=await createUserWithEmailAndPassword(auth,email,pass);
-    await set(ref(db,`userAccounts/${cred.user.uid}`),{code,role,name,email});
+    const phone=document.getElementById('r-phone')?.value.trim()||'';
+    await set(ref(db,`userAccounts/${cred.user.uid}`),{code,role,name,email,phone});
   }catch(e){
     if(e.code==='auth/email-already-in-use')setErr('Ese correo ya está registrado');
     else setErr('Error: '+e.message);
@@ -675,17 +683,23 @@ function doInventario(el,fab){
       <div class="stat"><div class="stat-v g" style="font-size:14px">R$${Math.round(val).toLocaleString('pt-BR')}</div><div class="stat-l">Valor</div></div>
     </div>
     <div class="srow">
-      <input class="sinput" id="srch" placeholder="🔍 Buscar..." oninput="doInventario(document.getElementById('main-content'),document.getElementById('fab'))"/>
-      <select class="sfilt" id="sfilt" onchange="doInventario(document.getElementById('main-content'),document.getElementById('fab'))">
+      <input class="sinput" id="srch" placeholder="🔍 Buscar producto..." oninput="renderProductList()"/>
+      <select class="sfilt" id="sfilt" onchange="renderProductList()">
         <option value="">Todos</option>${CATS.map(c=>`<option>${c}</option>`).join('')}
       </select>
     </div>
     <div id="plist"></div>`;
 
+  renderProductList();
+}
+
+function renderProductList(){
   const srch=(document.getElementById('srch')?.value||'').toLowerCase();
   const cat=document.getElementById('sfilt')?.value||'';
+  const canEdit=['gerente','chef','cocinero','deposito'].includes(userRole);
   const filtered=Object.entries(products).filter(([k,p])=>p.name.toLowerCase().includes(srch)&&(!cat||p.category===cat));
   const plist=document.getElementById('plist');
+  if(!plist)return;
 
   if(!filtered.length){plist.innerHTML='<div class="empty"><div class="empty-ico">🥩</div><p>No hay productos</p></div>';return;}
   plist.innerHTML=filtered.map(([key,p])=>{
