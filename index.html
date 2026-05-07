@@ -1045,6 +1045,14 @@ function doResumen(el){
       <div class="sum-title">🍽️ Menú de Hoy</div>
       ${todayMenu.map(m=>`<div class="sum-row"><span class="sum-label">${m.name}</span><span class="sum-val" style="color:var(--ylw);font-size:12px">${m.category}</span></div>`).join('')}
     </div>`:''}
+  ${userRole==='gerente'?`
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--b1)">
+      <p style="font-size:12px;color:var(--t3);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600">Herramientas de Admin</p>
+      <button onclick="seedProducts()" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:var(--r2);padding:13px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 14px var(--grn-glow)">
+        🌱 Cargar productos del almacén
+      </button>
+      <p style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">Solo usar una vez — carga los 30 productos</p>
+    </div>`:''}
   `;
 }
 
@@ -1096,6 +1104,54 @@ function filterLowStock(){
       </div>
     </div>`;
   }).join('');
+}
+
+
+// ── SEED PRODUCTS (run once) ──
+async function seedProducts(){
+  const{db,ref,push}=window._fb;
+  const base=`accounts/${accountId}/products`;
+  const products=[
+    // RES
+    {name:'Alcatra Baby',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Contra-Filé',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Carne Moída',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Filé Argentino',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Fraldinha',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Maminha',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Mignon',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Miolo de Alcatra',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Músculo',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Noah',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Picanha',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Rabo',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Língua',category:'Res',unit:'kg',quantity:0,minStock:5,price:0},
+    // POLLO
+    {name:'Coxa com Osso',category:'Pollo',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Coxa sem Osso',category:'Pollo',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Frango Inteiro',category:'Pollo',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Peito de Frango',category:'Pollo',unit:'kg',quantity:0,minStock:5,price:0},
+    {name:'Pato',category:'Pollo',unit:'kg',quantity:0,minStock:5,price:0},
+    // PESCADOS
+    {name:'Bacalhau',category:'Pescado',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Camarão',category:'Pescado',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Peixe',category:'Pescado',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Peixe para Domingo',category:'Pescado',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Pescada Amarela',category:'Pescado',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Salmão',category:'Pescado',unit:'kg',quantity:0,minStock:3,price:0},
+    // CORDERO
+    {name:'Cordeiro',category:'Otro',unit:'kg',quantity:0,minStock:3,price:0},
+    // CERDO
+    {name:'Charque',category:'Cerdo',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Costelinha Defumada',category:'Cerdo',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Costelinha de Porco Fresca',category:'Cerdo',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Linguiça Fina',category:'Cerdo',unit:'kg',quantity:0,minStock:3,price:0},
+    {name:'Pé de Porco',category:'Cerdo',unit:'kg',quantity:0,minStock:3,price:0},
+  ];
+  for(const p of products){
+    await push(ref(db,base),{...p,createdAt:Date.now(),updatedAt:Date.now()});
+  }
+  showToast('✅ 30 productos cargados!');
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2500);}
