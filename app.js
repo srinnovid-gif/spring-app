@@ -72,7 +72,7 @@ async function doRegister(){
   const pass=document.getElementById('r-pass').value;
   const role=document.getElementById('r-role').value;
   const code=document.getElementById('r-code').value.trim();
-  if(!name||!email||!pass||!code){setErr('Preencha todos os campos');return;}
+  if(!name||!email||!pass||!code){setErr('Preencha todos os campos obrigatórios (*)');return;}
   if(pass.length<6){setErr('Mínimo 6 caracteres');return;}
   try{
     const{auth,db,ref,set,createUserWithEmailAndPassword}=window._fb;
@@ -318,14 +318,14 @@ function openProd(key){
   editKey=key;const p=key?products[key]:null;
   const sups=Object.entries(suppliers).map(([k,s])=>`<option value="${k}"${p?.supplierId===k?' selected':''}>${s.name}</option>`).join('');
   showSheet(`${p?'Editar':'Nuevo'} Producto`,`
-    <div class="sh-fld"><label>Nome</label><input id="pf-n" value="${p?.name||''}" placeholder="Ex: Picanha"/></div>
+    <div class="sh-fld"><label>Nome *</label><input id="pf-n" value="${p?.name||''}" placeholder="Ex: Picanha"/></div>
     <div class="sh-row">
       <div class="sh-fld"><label>Categoria</label><select id="pf-c">${CATS.map(c=>`<option${p?.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
       <div class="sh-fld"><label>Unidade</label><select id="pf-u">${UNITS.map(u=>`<option${p?.unit===u?' selected':''}>${u}</option>`).join('')}</select></div>
     </div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Quantidade</label><input type="number" id="pf-q" value="${p?.quantity||''}" placeholder="0"/></div>
-      <div class="sh-fld"><label>Estoque mínimo</label><input type="number" id="pf-m" value="${p?.minStock||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Quantidade *</label><input type="number" id="pf-q" value="${p?.quantity||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Estoque mínimo *</label><input type="number" id="pf-m" value="${p?.minStock||''}" placeholder="0"/></div>
     </div>
     <div class="sh-fld"><label>Preço (R$)</label><input type="number" id="pf-p" value="${p?.price||''}" placeholder="0"/></div>
     <div class="sh-fld"><label>Fornecedor</label><select id="pf-s"><option value="">Sem fornecedor</option>${sups}</select></div>
@@ -441,7 +441,7 @@ function openDish(key){
   showSheet(`${m?'Editar':'Nuevo'} Plato`,`
     <div class="sh-fld"><label>Nome del plato</label><input id="df-n" value="${m?.name||''}" placeholder="Ex: Churrasco"/></div>
     <div class="sh-fld"><label>Categoria</label><select id="df-c">${DISH_CATS.map(c=>`<option${m?.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
-    <div class="sh-fld"><label>Data</label><input type="date" id="df-d" value="${m?.date||td}"/></div>
+    <div class="sh-fld"><label>Data *</label><input type="date" id="df-d" value="${m?.date||td}"/></div>
     <div class="sh-fld"><label>Descrição (opcional)</label><textarea id="df-desc" placeholder="Ingredientes, observações...">${m?.description||''}</textarea></div>
     <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveDish()">Salvar</button></div>
   `);
@@ -500,7 +500,7 @@ function quickOrder(prodKey){
   showSheet('Adicionar ao Pedido',`
     <div class="sh-fld"><label>Producto</label><input id="of-n" value="${p.name}" readonly style="opacity:.7"/></div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Quantidade</label><input type="number" id="of-q" value="${p.minStock}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Quantidade *</label><input type="number" id="of-q" value="${p.minStock}" placeholder="0"/></div>
       <div class="sh-fld"><label>Unidade</label><input id="of-u" value="${p.unit}" readonly style="opacity:.7"/></div>
     </div>
     <div class="sh-fld"><label>Fornecedor</label><select id="of-s"><option value="">Sem fornecedor</option>${sups}</select></div>
@@ -515,7 +515,7 @@ function openOrder(key){
   showSheet(`${o?'Editar':'Nuevo'} Pedido`,`
     <div class="sh-fld"><label>Producto</label><input id="of-n" value="${o?.productName||''}" placeholder="Nome del producto"/></div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Quantidade</label><input type="number" id="of-q" value="${o?.quantity||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Quantidade *</label><input type="number" id="of-q" value="${o?.quantity||''}" placeholder="0"/></div>
       <div class="sh-fld"><label>Unidade</label><select id="of-u">${UNITS.map(u=>`<option${o?.unit===u?' selected':''}>${u}</option>`).join('')}</select></div>
     </div>
     <div class="sh-fld"><label>Fornecedor</label><select id="of-s"><option value="">Sem fornecedor</option>${sups}</select></div>
@@ -548,53 +548,108 @@ function delOrder(){
 }
 
 // ── PROVEEDORES ──
+let supTagFilter='';
+
 function doFornecedores(el,fab){
-  el.innerHTML=`
-    <div class="sec-hdr"><div class="sec-ttl">Fornecedores</div>
-    <button onclick="openSup(null)" style="background:var(--acc);color:#fff;border:none;border-radius:var(--r2);padding:10px 18px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 14px var(--acc-glow)">+ Adicionar</button>
-    </div>
-    <div id="slist"></div>`;
-  fab.style.display='none';
-  const slist=document.getElementById('slist');
+  fab.style.display='flex';
+  fab.onclick=()=>openSup(null);
   const arr=Object.entries(suppliers);
-  if(!arr.length){slist.innerHTML='<div class="empty"><div class="empty-ico">🏪</div><p>Nenhum fornecedor</p><p style="font-size:14px;margin-top:8px">Toque em Adicionar para começar</p></div>';return;}
-  slist.innerHTML=arr.map(([key,s])=>{
-    const prods=Object.values(products).filter(p=>p.supplierId===key);
-    return`<div class="sup-card">
-      <div class="card-top">
-        <div><div class="sup-name">${s.name}</div><div class="sup-info">${s.phone?`📞 ${s.phone} `:''}${s.email?`✉️ ${s.email}`:''}</div></div>
-        <div class="card-acts">
-          <button class="ic-btn" onclick="openSup('${key}')">✏️</button>
-          <button class="ic-btn red" onclick="askDel('${key}','${s.name.replace(/'/g,"\\'")}',delSup)">🗑️</button>
+  
+  // Tag filter buttons
+  const allTags=[...new Set(arr.flatMap(([k,s])=>s.tags||[]))];
+  const filterHtml=allTags.length?`
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+      <button onclick="filterByTag('')" style="background:${supTagFilter===''?'var(--t1)':'var(--s2)'};color:${supTagFilter===''?'var(--bg)':'var(--t2)'};border:1px solid var(--b2);border-radius:20px;padding:6px 12px;font-size:12px;font-family:var(--font-b);cursor:pointer;font-weight:600">Todos</button>
+      ${allTags.map(t=>`<button onclick="filterByTag('${t}')" style="background:${supTagFilter===t?'var(--acc)':'var(--s2)'};color:${supTagFilter===t?'#fff':'var(--t2)'};border:1px solid ${supTagFilter===t?'var(--acc)':'var(--b2)'};border-radius:20px;padding:6px 12px;font-size:12px;font-family:var(--font-b);cursor:pointer;font-weight:500">${t}</button>`).join('')}
+    </div>`:'';
+
+  const filtered=supTagFilter?arr.filter(([k,s])=>(s.tags||[]).includes(supTagFilter)):arr;
+
+  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div style="font-size:18px;font-weight:700;font-family:var(--font-h);font-style:italic">Fornecedores</div>
+    <button onclick="openSup(null)" style="background:var(--acc);color:#fff;border:none;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">+ Novo</button>
+  </div>${filterHtml}`;
+
+  if(!arr.length){
+    html+='<div class="empty"><div class="empty-ico">🏪</div><p>Nenhum fornecedor cadastrado</p></div>';
+  }else if(!filtered.length){
+    html+='<div class="empty"><div class="empty-ico">🔍</div><p>Nenhum fornecedor nesta categoria</p></div>';
+  }else{
+    filtered.forEach(([key,s])=>{
+      const prods=Object.values(products).filter(p=>p.supplierId===key);
+      const tagsHtml=(s.tags||[]).map(t=>`<span style="background:rgba(196,84,26,0.10);color:var(--acc);border:1px solid rgba(196,84,26,0.20);border-radius:20px;font-size:11px;padding:3px 10px;font-weight:600">${t}</span>`).join('');
+      html+=`<div class="sup-card">
+        <div class="card-top">
+          <div>
+            <div class="sup-name">${s.name}</div>
+            ${s.contact?'<div style="font-size:13px;color:var(--t2);margin-top:2px">👤 '+s.contact+'</div>':''}
+            <div class="sup-info" style="margin-top:6px">${s.phone?'📞 '+s.phone+' ':''}${s.email?'✉️ '+s.email:''}</div>
+          </div>
+          <div class="card-acts">
+            <button class="ic-btn" onclick="openSup('${key}')">✏️</button>
+            <button class="ic-btn red" onclick="askDel('${key}','${s.name.replace(/'/g,"\'")}',delSup)">🗑️</button>
+          </div>
         </div>
-      </div>
-      ${s.notes?`<p style="font-size:13px;color:var(--t2);margin-bottom:10px">${s.notes}</p>`:''}
-      <div class="sup-prods">${prods.length?prods.map(p=>`<span class="sup-tag">🥩 ${p.name}</span>`).join(''):'<span style="font-size:12px;color:var(--t3)">Sem produtos associados</span>'}</div>
-    </div>`;
-  }).join('');
+        ${tagsHtml?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin:10px 0">'+tagsHtml+'</div>':''}
+        ${s.deliveryDays?'<div style="font-size:12px;color:var(--t3);margin-bottom:6px">🚚 '+s.deliveryDays+'</div>':''}
+        ${s.notes?'<div style="font-size:12px;color:var(--t3);font-style:italic;margin-bottom:8px">'+s.notes+'</div>':''}
+        <div class="sup-prods">${prods.length?prods.map(p=>'<span class="sup-tag">🥩 '+p.name+'</span>').join(''):'<span style="font-size:12px;color:var(--t3)">Sem produtos associados</span>'}</div>
+      </div>`;
+    });
+  }
+  el.innerHTML=html;
 }
+
+function filterByTag(tag){
+  supTagFilter=tag;
+  doFornecedores(document.getElementById('main-content'),document.getElementById('fab'));
+}
+
+const SUP_TAGS=['🥩 Carnes','🐔 Aves','🐟 Pescados','🐷 Suínos','🐑 Cordeiro','🥦 Legumes','🫛 Verduras','🧀 Laticínios','🍚 Grãos','🧂 Temperos','🍷 Bebidas','🧃 Sucos','🧊 Congelados','🫙 Enlatados','🧹 Limpeza','📦 Embalagens'];
 
 function openSup(key){
   editKey=key;const s=key?suppliers[key]:null;
-  showSheet(`${s?'Editar':'Nuevo'} Fornecedor`,`
-    <div class="sh-fld"><label>Nome</label><input id="sf-n" value="${s?.name||''}" placeholder="Ex: Frigorífico Central"/></div>
-    <div class="sh-fld"><label>Telefone</label><input id="sf-p" value="${s?.phone||''}" placeholder="+55 41 ..."/></div>
-    <div class="sh-fld"><label>Email</label><input type="email" id="sf-e" value="${s?.email||''}" placeholder="proveedor@email.com"/></div>
-    <div class="sh-fld"><label>Observações</label><textarea id="sf-no" placeholder="Horários, condições...">${s?.notes||''}</textarea></div>
+  const existingTags=s?.tags||[];
+  const tagsHtml=SUP_TAGS.map(t=>`<button type="button" onclick="toggleTag(this)" data-tag="${t}" style="background:${existingTags.includes(t)?'var(--acc)':'var(--s2)'};color:${existingTags.includes(t)?'#fff':'var(--t2)'};border:1px solid ${existingTags.includes(t)?'var(--acc)':'var(--b2)'};border-radius:20px;padding:6px 12px;font-size:12px;font-family:var(--font-b);cursor:pointer;margin:3px;transition:all .2s">${t}</button>`).join('');
+  showSheet(`${s?'Editar':'Novo'} Fornecedor`,`
+    <div class="sh-fld"><label>Nome da empresa *</label><input id="sf-n" value="${s?.name||''}" placeholder="Ex: Frigorífico Central"/></div>
+    <div class="sh-fld"><label>Responsável</label><input id="sf-contact" value="${s?.contact||''}" placeholder="Nome do contato"/></div>
+    <div class="sh-row">
+      <div class="sh-fld"><label>Telefone *</label><input id="sf-p" value="${s?.phone||''}" placeholder="+55 41 ..."/></div>
+      <div class="sh-fld"><label>WhatsApp</label><input id="sf-wa" value="${s?.whatsapp||''}" placeholder="+55 41 ..."/></div>
+    </div>
+    <div class="sh-fld"><label>E-mail</label><input type="email" id="sf-e" value="${s?.email||''}" placeholder="fornecedor@email.com"/></div>
+    <div class="sh-fld"><label>Dias de entrega</label><input id="sf-days" value="${s?.deliveryDays||''}" placeholder="Ex: Segunda e Quinta"/></div>
+    <div class="sh-fld">
+      <label>Categorias fornecidas</label>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:8px">Toque para selecionar</p>
+      <div style="display:flex;flex-wrap:wrap;gap:2px">${tagsHtml}</div>
+    </div>
+    <div class="sh-fld"><label>Observações</label><textarea id="sf-no" placeholder="Condições, prazos, valores...">${s?.notes||''}</textarea></div>
     <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveSup()">Salvar</button></div>
   `);
+}
+
+function toggleTag(btn){
+  const isOn=btn.style.background.includes('acc')||btn.style.background===getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
+  if(isOn){
+    btn.style.background='var(--s2)';btn.style.color='var(--t2)';btn.style.borderColor='var(--b2)';
+  }else{
+    btn.style.background='var(--acc)';btn.style.color='#fff';btn.style.borderColor='var(--acc)';
+  }
 }
 
 async function saveSup(){
   const name=document.getElementById('sf-n').value.trim();
   if(!name){showToast('O nome é obrigatório');return;}
+  const selectedTags=[...document.querySelectorAll('[data-tag]')].filter(b=>b.style.background.includes('196')||b.style.background.includes('acc')).map(b=>b.dataset.tag);
   const data={name,
     contact:document.getElementById('sf-contact').value.trim(),
     phone:document.getElementById('sf-p').value.trim(),
     whatsapp:document.getElementById('sf-wa').value.trim(),
     email:document.getElementById('sf-e').value.trim(),
-    mainProducts:document.getElementById('sf-prods').value.trim(),
     deliveryDays:document.getElementById('sf-days').value.trim(),
+    tags:selectedTags,
     notes:document.getElementById('sf-no').value.trim(),
     updatedAt:Date.now()};
   const{db,ref,set,push}=window._fb;
