@@ -165,7 +165,7 @@ function renderHome(){
 
   const alertWrap=document.getElementById('alert-strip-wrap');
   alertWrap.innerHTML=low.length?`
-    <div class="alert-strip" onclick="filterLowStock()">
+    <div class="alert-strip" onclick="goTab('inventario');setTimeout(()=>filterLowStock(),250)">
       <div class="alert-strip-ico">⚠️</div>
       <div class="alert-strip-text">
         <div class="alert-strip-title">${low.length} producto${low.length>1?'s':''} con stock baixo</div>
@@ -567,7 +567,9 @@ function doFornecedores(el,fab){
       <div class="sup-prods">${prods.length?prods.map(p=>`<span class="sup-tag">🥩 ${p.name}</span>`).join(''):'<span style="font-size:12px;color:var(--t3)">Sem produtos associados</span>'}</div>
     </div>`;
   }).join('');
-  fab.style.display='flex';fab.onclick=()=>openSup(null);
+  fab.style.display='flex';
+  fab.onclick=()=>openSup(null);
+  document.getElementById('fab').style.display='flex';
 }
 
 function openSup(key){
@@ -640,14 +642,6 @@ function doResumo(el){
       <div class="sum-title">🍽️ Cardápio de Hoje</div>
       ${todayMenu.map(m=>`<div class="sum-row"><span class="sum-label">${m.name}</span><span class="sum-val" style="color:var(--ylw);font-size:12px">${m.category}</span></div>`).join('')}
     </div>`:''}
-  ${userFunçãoe==='gerente'?`
-    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--b1)">
-      <p style="font-size:12px;color:var(--t3);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600">Ferramentas de Admin</p>
-      <button onclick="seedProducts()" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:var(--r2);padding:13px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 14px var(--grn-glow)">
-        🌱 Carregar produtos do estoque
-      </button>
-      <p style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">Usar apenas uma vez — carrega os 30 produtos</p>
-    </div>`:''}
   `;
 }
 
@@ -663,7 +657,10 @@ function closeConf(){document.getElementById('conf-ov').classList.remove('on');d
 function runConf(){if(confFn)confFn();}
 
 function filterLowStock(){
-  if(currentTab!=='inventario'){goTab('inventario');setTimeout(()=>filterLowStock(),100);return;}
+  if(document.getElementById('home-screen').style.display!=='none'){
+    goTab('inventario');setTimeout(()=>filterLowStock(),200);return;
+  }
+  if(currentTab!=='inventario'){goTab('inventario');setTimeout(()=>filterLowStock(),200);return;}
   const low=Object.entries(products).filter(([k,p])=>p.quantity<=p.minStock);
   if(!low.length){showToast('No hay produtos com estoque baixo ✅');return;}
   const plist=document.getElementById('plist');
