@@ -50,6 +50,51 @@ function hideSplash(){
 function showAuth(){document.getElementById('auth').style.display='flex';}
 function showApp(){document.getElementById('auth').style.display='none';document.getElementById('app').style.display='flex';}
 
+function showWelcomeModal(){
+  const modal=document.createElement('div');
+  modal.style.cssText='position:fixed;inset:0;background:rgba(44,26,14,0.65);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px)';
+  modal.innerHTML=`
+    <div style="background:var(--s1);border:1px solid var(--b2);border-radius:28px;padding:32px 24px;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 40px rgba(44,26,14,0.18)">
+      <div style="font-size:44px;margin-bottom:14px">🌿</div>
+      <div style="font-family:var(--font-h);font-size:24px;font-weight:700;font-style:italic;margin-bottom:8px;color:var(--t1)">Bem-vindo, ${userName.split(' ')[0]}!</div>
+      <p style="font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:20px">Seu código de acesso atual é:<br><strong style="font-size:18px;color:var(--acc);letter-spacing:2px">${accountId}</strong></p>
+      <p style="font-size:13px;color:var(--t3);margin-bottom:20px">Deseja alterar seu código de acesso?</p>
+      <div style="display:flex;gap:10px">
+        <button onclick="this.closest('div[style]').remove()" style="flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:12px;font-size:14px;font-family:var(--font-b);cursor:pointer;font-weight:600;color:var(--t2)">Manter</button>
+        <button onclick="showChangeCode(this.closest('div[style]'))" style="flex:1;background:var(--acc);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;font-family:var(--font-b);cursor:pointer;color:#fff;box-shadow:0 4px 14px var(--acc-glow)">Alterar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function showChangeCode(modal){
+  modal.querySelector('div').innerHTML=`
+    <div style="font-size:44px;margin-bottom:14px">🔑</div>
+    <div style="font-family:var(--font-h);font-size:22px;font-weight:700;font-style:italic;margin-bottom:16px;color:var(--t1)">Alterar código</div>
+    <div style="margin-bottom:14px;text-align:left">
+      <label style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;display:block;margin-bottom:6px">Novo código</label>
+      <input id="new-code" type="text" placeholder="Ex: MINHA-SENHA" style="width:100%;box-sizing:border-box;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:12px 14px;color:var(--t1);font-size:15px;font-family:var(--font-b);outline:none;letter-spacing:2px;text-transform:uppercase"/>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="this.closest('div[style]').remove()" style="flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:12px;font-size:14px;font-family:var(--font-b);cursor:pointer;color:var(--t2)">Cancelar</button>
+      <button onclick="saveNewCode(this.closest('div[style]'))" style="flex:1;background:var(--acc);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;font-family:var(--font-b);cursor:pointer;color:#fff">Salvar</button>
+    </div>`;
+}
+
+async function saveNewCode(modal){
+  const newCode=document.getElementById('new-code').value.trim().toUpperCase();
+  if(!newCode||newCode.length<4){showToast('Código deve ter ao menos 4 caracteres');return;}
+  try{
+    const{db,ref,update}=window._fb;
+    await update(ref(db,`userAccounts/${user.uid}`),{code:newCode});
+    accountId=newCode;
+    modal.remove();
+    showToast('Código alterado com sucesso ✓');
+  }catch(e){
+    showToast('Erro ao alterar código');
+  }
+}
+
 function authTab(t){
   document.getElementById('login-f').style.display=t==='login'?'block':'none';
   document.getElementById('reg-f').style.display=t==='register'?'block':'none';
@@ -60,35 +105,58 @@ function setErr(m){document.getElementById('auth-err').textContent=m;}
 
 async function doLogin(){
   const email=document.getElementById('l-email').value.trim();
-  const pass=document.getElementById('l-pass').value;
-  if(!email||!pass){setErr('Preencha todos os campos');return;}
-  try{const{auth,signInWithEmailAndPassword}=window._fb;await signInWithEmailAndPassword(auth,email,pass);}
-  catch(e){setErr('E-mail o contraseña incorrectos');}
+  const code=document.getElementById('l-code').value.trim().toUpperCase();
+  if(!email||!code){setErr('Preencha todos os campos (*)');return;}
+  try{
+    const{auth,db,ref,get,signInWithEmailAndPassword}=window._fb;
+    const snap=await get(ref(db,'userAccounts'));
+    if(!snap.exists()){setErr('Usuário não encontrado');return;}
+    let foundData=null;let foundPass='';
+    snap.forEach(child=>{
+      if(child.val().email===email){foundData=child.val();foundPass=child.val().password||'';}
+    });
+    if(!foundData){setErr('E-mail não encontrado');return;}
+    if(!foundData.code||foundData.code.toUpperCase()!==code){setErr('Código de acesso incorreto');return;}
+    if(foundData.status==='pendente'){setErr('Acesso ainda não aprovado. Aguarde o e-mail com seu código.');return;}
+    await signInWithEmailAndPassword(auth,email,foundPass);
+  }catch(e){
+    if(e.code==='auth/invalid-credential')setErr('Credenciais inválidas');
+    else setErr('Erro: '+e.message);
+  }
 }
 
 async function doRegister(){
   const name=document.getElementById('r-name').value.trim();
+  const lastname=document.getElementById('r-lastname')?.value.trim()||'';
   const email=document.getElementById('r-email').value.trim();
   const pass=document.getElementById('r-pass').value;
   const role=document.getElementById('r-role').value;
   const phone=document.getElementById('r-phone')?.value.trim()||'';
-  if(!name||!email||!pass){setErr('Preencha todos os campos obrigatórios (*)');return;}
+  const birthday=document.getElementById('r-birthday')?.value||'';
+  if(!name||!lastname||!email||!pass||!phone){setErr('Preencha todos os campos obrigatórios (*)');return;}
   if(pass.length<6){setErr('Mínimo 6 caracteres');return;}
   try{
     const{auth,db,ref,set,createUserWithEmailAndPassword,signOut}=window._fb;
     const cred=await createUserWithEmailAndPassword(auth,email,pass);
     // Save user as pending - no code yet
     await set(ref(db,`userAccounts/${cred.user.uid}`),{
-      code:'',role,name,email,phone,
+      code:'',role,
+      name:`${name} ${lastname}`.trim(),
+      firstName:name,lastName:lastname,
+      email,phone,birthday,
       status:'pendente',
+      password:pass,
       createdAt:Date.now()
     });
     // Send email to admin
     try{
+      const roleLabel=ROLES[role]?.label||role;
       await emailjs.send('service_ch1zqsy','template_uw9djui',{
-        name,email,
-        role:ROLES[role]?.label||role,
+        name:`${name} ${lastname}`,
+        email,
+        role:roleLabel,
         phone:phone||'Não informado',
+        birthday:birthday||'Não informado',
         code:'Aguardando aprovação'
       },'OVEsOgP7lLroHL8Bo');
     }catch(emailErr){console.warn('EmailJS:',emailErr);}
@@ -148,6 +216,8 @@ async function loadUser(){
   document.getElementById('role-badge').textContent=ROLES[userRole]?.label||userRole;
   buildNav();
   showApp();
+  // Show welcome modal on first load
+  setTimeout(()=>showWelcomeModal(),800);
   onValue(ref(db,`accounts/${accountId}/products`),s=>{products=s.val()||{};refreshView();});
   onValue(ref(db,`accounts/${accountId}/menu`),s=>{
     const newItems=s.val()||{};
