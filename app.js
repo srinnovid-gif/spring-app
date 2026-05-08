@@ -57,7 +57,7 @@ function showWelcomeModal(){
     <div style="background:var(--s1);border:1px solid var(--b2);border-radius:28px;padding:32px 24px;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 40px rgba(44,26,14,0.18)">
       <div style="font-size:44px;margin-bottom:14px">🌿</div>
       <div style="font-family:var(--font-h);font-size:24px;font-weight:700;font-style:italic;margin-bottom:8px;color:var(--t1)">Bem-vindo, ${userName.split(' ')[0]}!</div>
-      <p style="font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:20px">Seu código de acesso atual é:<br><strong style="font-size:18px;color:var(--acc);letter-spacing:2px">${accountId}</strong></p>
+      <p style="font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:20px">Seu código de acesso atual é:<br><strong style="font-size:28px;color:var(--acc);letter-spacing:6px;font-family:'Playfair Display',serif">${accountId}</strong></p>
       <p style="font-size:13px;color:var(--t3);margin-bottom:20px">Deseja alterar seu código de acesso?</p>
       <div style="display:flex;gap:10px">
         <button onclick="this.closest('div[style]').remove()" style="flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:12px;font-size:14px;font-family:var(--font-b);cursor:pointer;font-weight:600;color:var(--t2)">Manter</button>
@@ -73,7 +73,7 @@ function showChangeCode(modal){
     <div style="font-family:var(--font-h);font-size:22px;font-weight:700;font-style:italic;margin-bottom:16px;color:var(--t1)">Alterar código</div>
     <div style="margin-bottom:14px;text-align:left">
       <label style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;display:block;margin-bottom:6px">Novo código</label>
-      <input id="new-code" type="text" placeholder="Ex: MINHA-SENHA" style="width:100%;box-sizing:border-box;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:12px 14px;color:var(--t1);font-size:15px;font-family:var(--font-b);outline:none;letter-spacing:2px;text-transform:uppercase"/>
+      <input id="new-code" type="number" placeholder="0000" maxlength="4" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" style="width:100%;box-sizing:border-box;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:12px 14px;color:var(--t1);font-size:24px;font-family:var(--font-b);outline:none;letter-spacing:8px;text-align:center"/>
     </div>
     <div style="display:flex;gap:10px">
       <button onclick="this.closest('div[style]').remove()" style="flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:12px;font-size:14px;font-family:var(--font-b);cursor:pointer;color:var(--t2)">Cancelar</button>
@@ -83,7 +83,7 @@ function showChangeCode(modal){
 
 async function saveNewCode(modal){
   const newCode=document.getElementById('new-code').value.trim().toUpperCase();
-  if(!newCode||newCode.length<4){showToast('Código deve ter ao menos 4 caracteres');return;}
+  if(!newCode||newCode.length!==4||isNaN(newCode)){showToast('O código deve ter exatamente 4 dígitos numéricos');return;}
   try{
     const{db,ref,update}=window._fb;
     await update(ref(db,`userAccounts/${user.uid}`),{code:newCode});
@@ -116,7 +116,7 @@ async function doLogin(){
       if(child.val().email===email){foundData=child.val();foundPass=child.val().password||'';}
     });
     if(!foundData){setErr('E-mail não encontrado');return;}
-    if(!foundData.code||foundData.code.toUpperCase()!==code){setErr('Código de acesso incorreto');return;}
+    if(!foundData.code||String(foundData.code)!==String(code)){setErr('Código de acesso incorreto');return;}
     if(foundData.status==='pendente'){setErr('Acesso ainda não aprovado. Aguarde o e-mail com seu código.');return;}
     await signInWithEmailAndPassword(auth,email,foundPass);
   }catch(e){
@@ -800,6 +800,34 @@ function doResumo(el){
   const todayMenu=Object.values(menuItems).filter(m=>m.date===td);
   const bySup={};
   pend.forEach(o=>{const n=suppliers[o.supplierId]?.name||'Sem fornecedor';if(!bySup[n])bySup[n]=[];bySup[n].push(o);});
+  // Load pending users
+  const{db,ref,get}=window._fb;
+  get(ref(db,'userAccounts')).then(snap=>{
+    const pending=[];
+    if(snap.exists()){
+      snap.forEach(child=>{
+        const d=child.val();
+        if(d.status==='pendente')pending.push({uid:child.key,...d});
+      });
+    }
+    const usersEl=document.getElementById('pending-users');
+    if(!usersEl)return;
+    if(!pending.length){
+      usersEl.innerHTML='<p style="font-size:13px;color:var(--t3);font-style:italic">Nenhum usuário pendente</p>';
+      return;
+    }
+    usersEl.innerHTML=pending.map(u=>`
+      <div style="background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:14px;margin-bottom:10px">
+        <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">${u.name||u.email}</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:2px">✉️ ${u.email}</div>
+        <div style="font-size:12px;color:var(--t2);margin-bottom:2px">${ROLES[u.role]?.label||u.role}</div>
+        ${u.phone?`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">📞 ${u.phone}</div>`:''}
+        <button onclick="approveUser('${u.uid}','${u.email}','${u.name||''}')" 
+          style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 12px var(--grn-glow)">
+          ✓ Aprovar e enviar código
+        </button>
+      </div>`).join('');
+  });
 
   el.innerHTML=`
     <div class="sum-section">
@@ -829,6 +857,56 @@ function doResumo(el){
 }
 
 // ── UTILS ──
+async function generateUniqueCode(){
+  const{db,ref,get}=window._fb;
+  const snap=await get(ref(db,'userAccounts'));
+  const usedCodes=new Set();
+  if(snap.exists()){
+    snap.forEach(child=>{
+      if(child.val().code)usedCodes.add(String(child.val().code));
+    });
+  }
+  let code;
+  let attempts=0;
+  do{
+    code=String(Math.floor(1000+Math.random()*9000));
+    attempts++;
+    if(attempts>100)break; // safety
+  }while(usedCodes.has(code));
+  return code;
+}
+
+async function approveUser(uid,email,name){
+  const code=await generateUniqueCode();
+  try{
+    const{db,ref,update}=window._fb;
+    await update(ref(db,`userAccounts/${uid}`),{
+      code,
+      status:'ativo',
+      approvedAt:Date.now()
+    });
+    // Send email with code
+    try{
+      await emailjs.send('service_ch1zqsy','template_uw9djui',{
+        name:name||email,
+        email,
+        role:'Acesso aprovado!',
+        phone:'—',
+        birthday:'—',
+        code:`Seu código de acesso: ${code}`
+      },'OVEsOgP7lLroHL8Bo');
+      showToast(`✓ Código ${code} enviado para ${email}`);
+    }catch(emailErr){
+      showToast(`✓ Aprovado! Código: ${code} (email falhou)`);
+      console.warn(emailErr);
+    }
+    // Refresh resumen
+    doResumo(document.getElementById('main-content'));
+  }catch(e){
+    showToast('Erro ao aprovar: '+e.message);
+  }
+}
+
 function showSheet(title,body){
   document.getElementById('sheet-inner').innerHTML=`<div class="sh-handle"></div><div class="sh-title">${title}</div>${body}`;
   document.getElementById('sheet-ov').classList.add('on');
