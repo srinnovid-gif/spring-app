@@ -238,7 +238,7 @@ function renderTab(){
   if(currentTab==='inventario')doInventário(c,fab);
   else if(currentTab==='menu')doMenu(c,fab);
   else if(currentTab==='pedidos')doPedidos(c,fab);
-  else if(currentTab==='proveedores')doFornecedores(c,fab);
+  else if(currentTab==='proveedores'){doFornecedores(c,fab);fab.style.display='flex';}
   else if(currentTab==='resumen')doResumo(c);
 }
 
