@@ -71,27 +71,52 @@ async function doRegister(){
   const email=document.getElementById('r-email').value.trim();
   const pass=document.getElementById('r-pass').value;
   const role=document.getElementById('r-role').value;
-  const code=document.getElementById('r-code').value.trim();
   const phone=document.getElementById('r-phone')?.value.trim()||'';
-  if(!name||!email||!pass||!code){setErr('Preencha todos os campos obrigatórios (*)');return;}
+  if(!name||!email||!pass){setErr('Preencha todos os campos obrigatórios (*)');return;}
   if(pass.length<6){setErr('Mínimo 6 caracteres');return;}
   try{
-    const{auth,db,ref,set,createUserWithEmailAndPassword}=window._fb;
+    const{auth,db,ref,set,createUserWithEmailAndPassword,signOut}=window._fb;
     const cred=await createUserWithEmailAndPassword(auth,email,pass);
-    await set(ref(db,`userAccounts/${cred.user.uid}`),{code,role,name,email,phone,status:'pendente',createdAt:Date.now()});
+    // Save user as pending - no code yet
+    await set(ref(db,`userAccounts/${cred.user.uid}`),{
+      code:'',role,name,email,phone,
+      status:'pendente',
+      createdAt:Date.now()
+    });
+    // Send email to admin
     try{
       await emailjs.send('ch1zqsy','template_uw9djui',{
         name,email,
         role:ROLES[role]?.label||role,
         phone:phone||'Não informado',
-        code
+        code:'Aguardando aprovação'
       },'OVEsOgP7lLroHL8Bo');
     }catch(emailErr){console.warn('EmailJS:',emailErr);}
-    showToast('Cadastro realizado! Aguarde o código de acesso ✓');
+    // Sign out and show pending screen
+    await signOut(auth);
+    showPendingScreen();
   }catch(e){
     if(e.code==='auth/email-already-in-use')setErr('Este e-mail já está cadastrado');
     else setErr('Erro: '+e.message);
   }
+}
+
+function showPendingScreen(){
+  document.getElementById('auth').innerHTML=`
+    <div class="auth-wrap">
+      <div style="font-family:var(--font-h);font-size:48px;font-weight:700;font-style:italic;text-align:center;margin-bottom:4px;color:var(--t1)">Spring<span style="color:var(--acc)">.</span></div>
+      <div style="text-align:center;font-size:11px;color:var(--t3);letter-spacing:4px;text-transform:uppercase;margin-bottom:32px">Gestão de Cozinha</div>
+      <div style="background:var(--s1);border:1px solid var(--b2);border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 4px 32px rgba(80,45,20,0.10)">
+        <div style="font-size:48px;margin-bottom:16px">🌿</div>
+        <div style="font-family:var(--font-h);font-size:24px;font-weight:700;margin-bottom:12px;color:var(--t1)">Solicitação enviada!</div>
+        <p style="font-size:15px;color:var(--t2);line-height:1.6;margin-bottom:20px">Seu cadastro foi recebido. Em breve você receberá um <strong>código de acesso</strong> no seu e-mail.</p>
+        <div style="background:var(--s2);border-radius:14px;padding:16px;margin-bottom:20px">
+          <p style="font-size:12px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;font-weight:600">Próximo passo</p>
+          <p style="font-size:14px;color:var(--t1)">Aguarde o e-mail com o código e volte para fazer login</p>
+        </div>
+        <button onclick="location.reload()" style="background:var(--acc);color:#fff;border:none;border-radius:12px;padding:13px 24px;font-size:15px;font-family:var(--font-b);font-weight:600;cursor:pointer;width:100%;box-shadow:0 4px 14px var(--acc-glow)">Ir para o Login</button>
+      </div>
+    </div>`;
 }
 
 async function doLogout(){
@@ -109,6 +134,14 @@ async function loadUser(){
   const snap=await get(ref(db,`userAccounts/${user.uid}`));
   if(!snap.exists()){doLogout();return;}
   const data=snap.val();
+  // Check if user is pending approval
+  if(data.status==='pendente'||!data.code){
+    const{auth,signOut}=window._fb;
+    await signOut(auth);
+    hideSplash();
+    showPendingScreen();
+    return;
+  }
   userRole=data.role||'salon';
   userName=data.name||user.email;
   accountId=data.code||'SPRING-001';
