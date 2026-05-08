@@ -85,7 +85,7 @@ async function doRegister(){
     });
     // Send email to admin
     try{
-      await emailjs.send('ch1zqsy','template_uw9djui',{
+      await emailjs.send('service_ch1zqsy','template_uw9djui',{
         name,email,
         role:ROLES[role]?.label||role,
         phone:phone||'Não informado',
