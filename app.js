@@ -238,7 +238,7 @@ function renderTab(){
   if(currentTab==='inventario')doInventário(c,fab);
   else if(currentTab==='menu')doMenu(c,fab);
   else if(currentTab==='pedidos')doPedidos(c,fab);
-  else if(currentTab==='proveedores'){doFornecedores(c,fab);fab.style.display='flex';}
+  else if(currentTab==='proveedores')doFornecedores(c,fab);
   else if(currentTab==='resumen')doResumo(c);
 }
 
@@ -549,13 +549,15 @@ function delOrder(){
 
 // ── PROVEEDORES ──
 function doFornecedores(el,fab){
-  el.innerHTML=`<div class="sec-hdr"><div class="sec-ttl">Fornecedores</div></div><div id="slist"></div>`;
-  // Show FAB always for gerente
-  fab.style.display='flex';
-  fab.onclick=()=>openSup(null);
+  el.innerHTML=`
+    <div class="sec-hdr"><div class="sec-ttl">Fornecedores</div>
+    <button onclick="openSup(null)" style="background:var(--acc);color:#fff;border:none;border-radius:var(--r2);padding:10px 18px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 14px var(--acc-glow)">+ Adicionar</button>
+    </div>
+    <div id="slist"></div>`;
+  fab.style.display='none';
   const slist=document.getElementById('slist');
   const arr=Object.entries(suppliers);
-  if(!arr.length){slist.innerHTML='<div class="empty"><div class="empty-ico">🏪</div><p>Nenhum fornecedor</p><p style="font-size:14px;margin-top:8px">Toque em + para adicionar</p></div>';return;}
+  if(!arr.length){slist.innerHTML='<div class="empty"><div class="empty-ico">🏪</div><p>Nenhum fornecedor</p><p style="font-size:14px;margin-top:8px">Toque em Adicionar para começar</p></div>';return;}
   slist.innerHTML=arr.map(([key,s])=>{
     const prods=Object.values(products).filter(p=>p.supplierId===key);
     return`<div class="sup-card">
