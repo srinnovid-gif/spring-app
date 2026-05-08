@@ -52,44 +52,66 @@ function showApp(){document.getElementById('auth').style.display='none';document
 
 function showWelcomeModal(){
   const modal=document.createElement('div');
-  modal.style.cssText='position:fixed;inset:0;background:rgba(44,26,14,0.65);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px)';
+  modal.id='welcome-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(20,10,5,0.7);z-index:300;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(10px);animation:fadeIn .3s ease';
   modal.innerHTML=`
-    <div style="background:var(--s1);border:1px solid var(--b2);border-radius:28px;padding:32px 24px;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 40px rgba(44,26,14,0.18)">
-      <div style="font-size:44px;margin-bottom:14px">🌿</div>
-      <div style="font-family:var(--font-h);font-size:24px;font-weight:700;font-style:italic;margin-bottom:8px;color:var(--t1)">Bem-vindo, ${userName.split(' ')[0]}!</div>
-      <p style="font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:20px">Seu código de acesso atual é:<br><strong style="font-size:28px;color:var(--acc);letter-spacing:6px;font-family:'Playfair Display',serif">${accountId}</strong></p>
-      <p style="font-size:13px;color:var(--t3);margin-bottom:20px">Deseja alterar seu código de acesso?</p>
+    <div style="background:var(--bg);border-radius:28px 28px 0 0;padding:32px 24px 48px;width:100%;max-width:480px;box-shadow:0 -8px 48px rgba(44,26,14,0.18);animation:slideUp .35s cubic-bezier(.32,.72,0,1)">
+      <div style="width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 28px"></div>
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+        <div style="width:52px;height:52px;border-radius:16px;background:rgba(196,84,26,0.10);border:1px solid rgba(196,84,26,0.20);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🌿</div>
+        <div>
+          <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:3px">Bem-vindo de volta</div>
+          <div style="font-family:var(--font-h);font-size:22px;font-weight:700;font-style:italic;color:var(--t1)">${userName.split(' ')[0]}</div>
+        </div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:20px;margin-bottom:20px;text-align:center">
+        <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:10px">Seu código de acesso</div>
+        <div style="font-family:var(--font-h);font-size:48px;font-weight:700;color:var(--acc);letter-spacing:10px">${accountId}</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:8px">Guarde este código com segurança</div>
+      </div>
+      <p style="font-size:14px;color:var(--t2);margin-bottom:20px;text-align:center">Deseja personalizar seu código de acesso?</p>
       <div style="display:flex;gap:10px">
-        <button onclick="this.closest('div[style]').remove()" style="flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:12px;font-size:14px;font-family:var(--font-b);cursor:pointer;font-weight:600;color:var(--t2)">Manter</button>
-        <button onclick="showChangeCode(this.closest('div[style]'))" style="flex:1;background:var(--acc);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;font-family:var(--font-b);cursor:pointer;color:#fff;box-shadow:0 4px 14px var(--acc-glow)">Alterar</button>
+        <button id="btn-manter" style="flex:1;background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:14px;font-size:14px;font-family:var(--font-b);cursor:pointer;font-weight:600;color:var(--t1);transition:all .2s">Manter</button>
+        <button id="btn-alterar" style="flex:1;background:var(--acc);border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:700;font-family:var(--font-b);cursor:pointer;color:#fff;box-shadow:0 4px 16px var(--acc-glow);transition:all .2s">Personalizar</button>
       </div>
     </div>`;
   document.body.appendChild(modal);
+  document.getElementById('btn-manter').onclick=()=>modal.remove();
+  document.getElementById('btn-alterar').onclick=()=>showChangeCode(modal);
 }
 
 function showChangeCode(modal){
   modal.querySelector('div').innerHTML=`
-    <div style="font-size:44px;margin-bottom:14px">🔑</div>
-    <div style="font-family:var(--font-h);font-size:22px;font-weight:700;font-style:italic;margin-bottom:16px;color:var(--t1)">Alterar código</div>
-    <div style="margin-bottom:14px;text-align:left">
-      <label style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;display:block;margin-bottom:6px">Novo código</label>
-      <input id="new-code" type="number" placeholder="0000" maxlength="4" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" style="width:100%;box-sizing:border-box;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:12px 14px;color:var(--t1);font-size:24px;font-family:var(--font-b);outline:none;letter-spacing:8px;text-align:center"/>
+    <div style="width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 28px"></div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+      <div style="width:52px;height:52px;border-radius:16px;background:rgba(196,84,26,0.10);border:1px solid rgba(196,84,26,0.20);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔑</div>
+      <div>
+        <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:3px">Personalizar</div>
+        <div style="font-family:var(--font-h);font-size:22px;font-weight:700;font-style:italic;color:var(--t1)">Novo código</div>
+      </div>
+    </div>
+    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:20px;margin-bottom:20px">
+      <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:10px;text-align:center">Digite 4 dígitos</div>
+      <input id="new-code" type="number" placeholder="0000" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" 
+        style="width:100%;box-sizing:border-box;background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:14px;color:var(--t1);font-size:32px;font-family:var(--font-h);font-weight:700;outline:none;letter-spacing:10px;text-align:center"/>
     </div>
     <div style="display:flex;gap:10px">
-      <button onclick="this.closest('div[style]').remove()" style="flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:12px;font-size:14px;font-family:var(--font-b);cursor:pointer;color:var(--t2)">Cancelar</button>
-      <button onclick="saveNewCode(this.closest('div[style]'))" style="flex:1;background:var(--acc);border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;font-family:var(--font-b);cursor:pointer;color:#fff">Salvar</button>
+      <button id="btn-cancelar" style="flex:1;background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:14px;font-size:14px;font-family:var(--font-b);cursor:pointer;color:var(--t1);font-weight:600">Cancelar</button>
+      <button id="btn-salvar" style="flex:1;background:var(--acc);border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:700;font-family:var(--font-b);cursor:pointer;color:#fff;box-shadow:0 4px 16px var(--acc-glow)">Salvar</button>
     </div>`;
+  document.getElementById('btn-cancelar').onclick=()=>modal.remove();
+  document.getElementById('btn-salvar').onclick=()=>saveNewCode(modal);
 }
 
 async function saveNewCode(modal){
-  const newCode=document.getElementById('new-code').value.trim().toUpperCase();
-  if(!newCode||newCode.length!==4||isNaN(newCode)){showToast('O código deve ter exatamente 4 dígitos numéricos');return;}
+  const newCode=document.getElementById('new-code').value.trim();
+  if(!newCode||newCode.length!==4||isNaN(newCode)){showToast('O código deve ter exatamente 4 dígitos');return;}
   try{
     const{db,ref,update}=window._fb;
     await update(ref(db,`userAccounts/${user.uid}`),{code:newCode});
     accountId=newCode;
     modal.remove();
-    showToast('Código alterado com sucesso ✓');
+    showToast('Código personalizado com sucesso ✓');
   }catch(e){
     showToast('Erro ao alterar código');
   }
@@ -105,23 +127,36 @@ function setErr(m){document.getElementById('auth-err').textContent=m;}
 
 async function doLogin(){
   const email=document.getElementById('l-email').value.trim();
-  const code=document.getElementById('l-code').value.trim().toUpperCase();
+  const code=document.getElementById('l-code').value.trim();
   if(!email||!code){setErr('Preencha todos os campos (*)');return;}
   try{
     const{auth,db,ref,get,signInWithEmailAndPassword}=window._fb;
     const snap=await get(ref(db,'userAccounts'));
     if(!snap.exists()){setErr('Usuário não encontrado');return;}
-    let foundData=null;let foundPass='';
+    let foundData=null;let foundUid=null;
     snap.forEach(child=>{
-      if(child.val().email===email){foundData=child.val();foundPass=child.val().password||'';}
+      if(child.val().email===email){foundData=child.val();foundUid=child.key;}
     });
     if(!foundData){setErr('E-mail não encontrado');return;}
     if(!foundData.code||String(foundData.code)!==String(code)){setErr('Código de acesso incorreto');return;}
     if(foundData.status==='pendente'){setErr('Acesso ainda não aprovado. Aguarde o e-mail com seu código.');return;}
-    await signInWithEmailAndPassword(auth,email,foundPass);
+    // Try stored password first, then fallback options
+    const passwords=[
+      foundData.password,
+      code,
+      foundData.firstName?foundData.firstName.toLowerCase().replace(/\s/g,'')+String(foundData.birthday||'').replace(/-/g,''):'',
+    ].filter(Boolean);
+    let loggedIn=false;
+    for(const p of passwords){
+      try{
+        await signInWithEmailAndPassword(auth,email,p);
+        loggedIn=true;
+        break;
+      }catch(e){continue;}
+    }
+    if(!loggedIn){setErr('Não foi possível autenticar. Contate o administrador.');}
   }catch(e){
-    if(e.code==='auth/invalid-credential')setErr('Credenciais inválidas');
-    else setErr('Erro: '+e.message);
+    setErr('Erro: '+e.message);
   }
 }
 
