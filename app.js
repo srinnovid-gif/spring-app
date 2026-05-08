@@ -106,12 +106,15 @@ function showChangeCode(modal){
 async function saveNewCode(modal){
   const newCode=document.getElementById('new-code').value.trim();
   if(!newCode||newCode.length!==4||isNaN(newCode)){showToast('O código deve ter exatamente 4 dígitos');return;}
+  // Ask confirmation
+  const confirmed=confirm(`Tem certeza que deseja alterar seu código para ${newCode}?\n\nGuarde este código com segurança — você precisará dele para entrar.`);
+  if(!confirmed)return;
   try{
     const{db,ref,update}=window._fb;
     await update(ref(db,`userAccounts/${user.uid}`),{code:newCode});
     accountId=newCode;
     modal.remove();
-    showToast('Código personalizado com sucesso ✓');
+    showToast('Código alterado com sucesso ✓');
   }catch(e){
     showToast('Erro ao alterar código');
   }
@@ -252,10 +255,24 @@ async function loadUser(){
   userName=data.name||user.email;
   accountId=data.code||'SPRING-001';
   document.getElementById('role-badge').textContent=ROLES[userRole]?.label||userRole;
+  // Add change code button to header
+  const btnOut=document.querySelector('.btn-out');
+  if(btnOut&&!document.getElementById('btn-change-code')){
+    const btnCode=document.createElement('button');
+    btnCode.id='btn-change-code';
+    btnCode.className='btn-out';
+    btnCode.innerHTML='🔑';
+    btnCode.title='Alterar código';
+    btnCode.onclick=()=>showWelcomeModal();
+    btnOut.parentNode.insertBefore(btnCode,btnOut);
+  }
   buildNav();
   showApp();
-  // Show welcome modal on first load
-  setTimeout(()=>showWelcomeModal(),800);
+  // Show welcome modal only once per session
+  if(!sessionStorage.getItem('welcomeShown')){
+    sessionStorage.setItem('welcomeShown','1');
+    setTimeout(()=>showWelcomeModal(),800);
+  }
   onValue(ref(db,`accounts/${accountId}/products`),s=>{products=s.val()||{};refreshView();});
   onValue(ref(db,`accounts/${accountId}/menu`),s=>{
     const newItems=s.val()||{};
@@ -289,7 +306,7 @@ function renderHome(){
   // Date
   const now=new Date();
   document.getElementById('home-date').textContent=now.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
-  document.getElementById('hdr-greeting').textContent=`Hola, ${userName} 👋`;
+  document.getElementById('hdr-greeting').textContent=`Olá, ${userName.split(' ')[0]} 👋`;
 
   // Quick stats
   const arr=Object.values(products);
@@ -399,19 +416,48 @@ function doInventário(el,fab){
   const val=arr.reduce((a,p)=>a+(p.quantity*p.price),0);
   const canEdit=['gerente','chef','cocinero','deposito'].includes(userRole);
 
+  // Show FAB immediately
+  if(canEdit){
+    fab.style.display='flex';
+    fab.onclick=()=>openProd(null);
+  }
+
   el.innerHTML=`
-    <div class="stats">
-      <div class="stat" onclick="doInventário(document.getElementById('main-content'),document.getElementById('fab'))" style="cursor:pointer"><div class="stat-v">${arr.length}</div><div class="stat-l">Todos ↓</div></div>
-      <div class="stat warn" onclick="filterLowStock()" style="cursor:pointer"><div class="stat-v r">${low.length}</div><div class="stat-l">Estoque Baixo ↓</div></div>
-      <div class="stat"><div class="stat-v g" style="font-size:14px">R$${Math.round(val).toLocaleString('pt-BR')}</div><div class="stat-l">Valor</div></div>
+    <div style="padding:0 20px 14px">
+      <div class="hero">
+        <div class="hero-stats">
+          <div class="hero-stat stat-btn" onclick="doInventário(document.getElementById('main-content'),document.getElementById('fab'))">
+            <div class="hero-val">${arr.length}</div>
+            <div class="hero-lbl">Produtos</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat stat-btn" onclick="goTabAndFilter()">
+            <div class="hero-val r">${low.length}</div>
+            <div class="hero-lbl">Estoque Baixo</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="hero-val g" style="font-size:${val>99999?'14px':'22px'}">R$${Math.round(val).toLocaleString('pt-BR')}</div>
+            <div class="hero-lbl">Valor</div>
+          </div>
+        </div>
+      </div>
+      ${low.length>0?`<div class="alert-banner" onclick="goTabAndFilter()">
+        <div class="alert-banner-ico">⚠️</div>
+        <div class="alert-banner-text">
+          <div class="alert-banner-title">${low.length} produto${low.length>1?'s':''} com estoque baixo</div>
+          <div class="alert-banner-sub">Toque para ver e adicionar ao pedido</div>
+        </div>
+        <div class="alert-banner-arr">›</div>
+      </div>`:''}
     </div>
-    <div class="srow">
+    <div class="srow" style="padding:0 20px">
       <input class="sinput" id="srch" placeholder="🔍 Buscar produto..." oninput="renderProductList()"/>
       <select class="sfilt" id="sfilt" onchange="renderProductList()">
         <option value="">Todos</option>${CATS.map(c=>`<option>${c}</option>`).join('')}
       </select>
     </div>
-    <div id="plist"></div>`;
+    <div id="plist" style="padding:0 20px"></div>`;
 
   renderProductList();
 }
@@ -865,6 +911,16 @@ function doResumo(el){
   });
 
   el.innerHTML=`
+    ${userRole==='gerente'?`
+    <div class="sum-card" style="margin-bottom:16px">
+      <div class="sum-title">👥 Usuários Pendentes</div>
+      <div id="pending-users"><p style="font-size:13px;color:var(--t3)">Carregando...</p></div>
+    </div>
+    <div class="sum-card" style="margin-bottom:16px">
+      <div class="sum-title">🛠️ Ferramentas</div>
+      <button onclick="seedProducts()" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:var(--r2);padding:13px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 14px var(--grn-glow)">🌱 Carregar produtos do estoque</button>
+      <p style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">Usar apenas uma vez</p>
+    </div>`:''}
     <div class="sum-section">
       <div class="sum-title">📊 Resumo General</div>
       <div class="sum-row"><span class="sum-label">Total de produtos</span><span class="sum-val">${arr.length}</span></div>
@@ -889,6 +945,9 @@ function doResumo(el){
       ${todayMenu.map(m=>`<div class="sum-row"><span class="sum-label">${m.name}</span><span class="sum-val" style="color:var(--ylw);font-size:12px">${m.category}</span></div>`).join('')}
     </div>`:''}
   `;
+  // Reload pending users
+  const{db:db2,ref:ref2,get:get2}=window._fb;
+  get2(ref2(db2,'userAccounts')).then(snap=>{const pending=[];if(snap.exists()){snap.forEach(child=>{const d=child.val();if(d.status==='pendente')pending.push({uid:child.key,...d});});}const usersEl=document.getElementById('pending-users');if(!usersEl)return;if(!pending.length){usersEl.innerHTML='<p style="font-size:13px;color:var(--t3);font-style:italic">Nenhum usuário pendente</p>';return;}usersEl.innerHTML=pending.map(u=>`<div style="background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:14px;margin-bottom:10px"><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">${u.name||u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">✉️ ${u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">${ROLES[u.role]?.label||u.role}</div>${u.phone?`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">📞 ${u.phone}</div>`:''}<button onclick="approveUser('${u.uid}','${u.email}','${u.name||''}')" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer">✓ Aprovar e enviar código</button></div>`).join('');});
 }
 
 // ── UTILS ──
