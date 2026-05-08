@@ -129,12 +129,15 @@ async function doRegister(){
   const name=document.getElementById('r-name').value.trim();
   const lastname=document.getElementById('r-lastname')?.value.trim()||'';
   const email=document.getElementById('r-email').value.trim();
-  const pass=document.getElementById('r-pass').value;
   const role=document.getElementById('r-role').value;
   const phone=document.getElementById('r-phone')?.value.trim()||'';
-  const birthday=document.getElementById('r-birthday')?.value||'';
-  if(!name||!lastname||!email||!pass||!phone){setErr('Preencha todos os campos obrigatórios (*)');return;}
-  if(pass.length<6){setErr('Mínimo 6 caracteres');return;}
+  const day=document.getElementById('r-day')?.value||'';
+  const month=document.getElementById('r-month')?.value||'';
+  const year=document.getElementById('r-year')?.value||'';
+  const birthday=day&&month&&year?`${year}-${month}-${day}`:'';
+  // Auto-generate password: name+birthday digits
+  const pass=name.toLowerCase().replace(/\s/g,'')+year+month+day;
+  if(!name||!lastname||!email||!phone||!birthday){setErr('Preencha todos os campos obrigatórios (*)');return;}
   try{
     const{auth,db,ref,set,createUserWithEmailAndPassword,signOut}=window._fb;
     const cred=await createUserWithEmailAndPassword(auth,email,pass);
