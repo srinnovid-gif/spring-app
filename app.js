@@ -1,4 +1,4 @@
-let user=null,userFunçãoe=null,userName=null,accountId=null;
+let user=null,userRole=null,userName=null,accountId=null;
 let products={},menuItems={},orders={},suppliers={},menuLastChanged=null,menuPrevCount=0;
 let currentTab='inventario';
 let editKey=null,delKey=null,confFn=null;
@@ -88,7 +88,7 @@ async function doRegister(){
 async function doLogout(){
   const{auth,signOut}=window._fb;
   await signOut(auth);
-  user=null;userFunçãoe=null;accountId=null;
+  user=null;userRole=null;accountId=null;
   products={};menuItems={};orders={};suppliers={};
   document.getElementById('app').style.display='none';
   document.getElementById('fab').style.display='none';
@@ -100,10 +100,10 @@ async function loadUser(){
   const snap=await get(ref(db,`userAccounts/${user.uid}`));
   if(!snap.exists()){doLogout();return;}
   const data=snap.val();
-  userFunçãoe=data.role||'salon';
+  userRole=data.role||'salon';
   userName=data.name||user.email;
   accountId=data.code||'SPRING-001';
-  document.getElementById('role-badge').textContent=ROLES[userFunçãoe]?.label||userFunçãoe;
+  document.getElementById('role-badge').textContent=ROLES[userRole]?.label||userRole;
   buildNav();
   showApp();
   onValue(ref(db,`accounts/${accountId}/products`),s=>{products=s.val()||{};refreshView();});
@@ -130,7 +130,7 @@ const NAV_SUBS={inventario:'Estoque e produtos',menu:'Cardápio do buffet',pedid
 const NAV_COLS={inventario:'inv',menu:'men',pedidos:'ped',proveedores:'pro',resumen:'res'};
 
 function buildNav(){
-  const tabs=ROLES[userFunçãoe]?.tabs||['menu'];
+  const tabs=ROLES[userRole]?.tabs||['menu'];
   if(!tabs.includes(currentTab))currentTab=tabs[0];
   renderHome();
 }
@@ -150,7 +150,7 @@ function renderHome(){
       <div class="qs-val">${arr.length}</div>
       <div class="qs-lbl">Produtos</div>
     </div>
-    <div class="qs${low.length?' alert':''} stat-btn" onclick="${low.length?'goTab(\'inventario\');setTimeout(filterLowStock,150)':'null'}">
+    <div class="qs${low.length?' alert':''} stat-btn" onclick="goTabAndFilter()">
       <div class="qs-val${low.length?' r':''}">${low.length}</div>
       <div class="qs-lbl">Acabando ${low.length?'↗':''}</div>
     </div>
@@ -165,7 +165,7 @@ function renderHome(){
 
   const alertWrap=document.getElementById('alert-strip-wrap');
   alertWrap.innerHTML=low.length?`
-    <div class="alert-strip" onclick="goTab('inventario');setTimeout(()=>filterLowStock(),250)">
+    <div class="alert-strip" onclick="goTabAndFilter()">
       <div class="alert-strip-ico">⚠️</div>
       <div class="alert-strip-text">
         <div class="alert-strip-title">${low.length} producto${low.length>1?'s':''} con stock baixo</div>
@@ -175,7 +175,7 @@ function renderHome(){
     </div>`:'';
 
   // Big nav buttons
-  const tabs=ROLES[userFunçãoe]?.tabs||['menu'];
+  const tabs=ROLES[userRole]?.tabs||['menu'];
   document.getElementById('big-nav').innerHTML=tabs.map(t=>`
     <button class="big-btn ${NAV_COLS[t]}" onclick="goTab('${t}')">
       <div class="btn-ico-wrap">${NAV_ICONS[t]}</div>
@@ -247,7 +247,7 @@ function doInventário(el,fab){
   const arr=Object.values(products);
   const low=arr.filter(p=>p.quantity<=p.minStock);
   const val=arr.reduce((a,p)=>a+(p.quantity*p.price),0);
-  const canEdit=['gerente','chef','cocinero','deposito'].includes(userFunçãoe);
+  const canEdit=['gerente','chef','cocinero','deposito'].includes(userRole);
 
   el.innerHTML=`
     <div class="stats">
@@ -269,7 +269,7 @@ function doInventário(el,fab){
 function renderProductList(){
   const srch=(document.getElementById('srch')?.value||'').toLowerCase();
   const cat=document.getElementById('sfilt')?.value||'';
-  const canEdit=['gerente','chef','cocinero','deposito'].includes(userFunçãoe);
+  const canEdit=['gerente','chef','cocinero','deposito'].includes(userRole);
   const filtered=Object.entries(products).filter(([k,p])=>p.name.toLowerCase().includes(srch)&&(!cat||p.category===cat));
   const plist=document.getElementById('plist');
   if(!plist)return;
@@ -353,7 +353,7 @@ function delProd(){
 
 // ── MENÚ ──
 function doMenu(el,fab){
-  const canEdit=['gerente','chef'].includes(userFunçãoe);
+  const canEdit=['gerente','chef'].includes(userRole);
   el.innerHTML=`
     <div class="cal-tabs">
       <button class="cal-tab${menuView==='dia'?' on':''}" onclick="setMV('dia')">Dia</button>
@@ -379,7 +379,7 @@ function renderMenuBody(){
   const title=document.getElementById('cal-title');
   if(!body)return;
   const today=new Date();
-  const canEdit=['gerente','chef'].includes(userFunçãoe);
+  const canEdit=['gerente','chef'].includes(userRole);
 
   if(menuView==='dia'){
     const d=new Date(today);d.setDate(d.getDate()+menuOffset);
@@ -466,7 +466,7 @@ function delDish(){
 
 // ── PEDIDOS ──
 function doPedidos(el,fab){
-  const canEdit=['gerente','chef','deposito'].includes(userFunçãoe);
+  const canEdit=['gerente','chef','deposito'].includes(userRole);
   const pend=Object.entries(orders).filter(([k,o])=>o.status==='pendente');
   const done=Object.entries(orders).filter(([k,o])=>o.status==='concluído');
   el.innerHTML=`
@@ -569,7 +569,6 @@ function doFornecedores(el,fab){
   }).join('');
   fab.style.display='flex';
   fab.onclick=()=>openSup(null);
-  document.getElementById('fab').style.display='flex';
 }
 
 function openSup(key){
@@ -656,6 +655,11 @@ function askDel(key,name,fn){delKey=key;confFn=fn;document.getElementById('conf-
 function closeConf(){document.getElementById('conf-ov').classList.remove('on');delKey=null;confFn=null;}
 function runConf(){if(confFn)confFn();}
 
+function goTabAndFilter(){
+  goTab('inventario');
+  setTimeout(()=>filterLowStock(),300);
+}
+
 function filterLowStock(){
   if(document.getElementById('home-screen').style.display!=='none'){
     goTab('inventario');setTimeout(()=>filterLowStock(),200);return;
@@ -665,7 +669,7 @@ function filterLowStock(){
   if(!low.length){showToast('No hay produtos com estoque baixo ✅');return;}
   const plist=document.getElementById('plist');
   if(!plist)return;
-  const canEdit=['gerente','chef','cocinero','deposito'].includes(userFunçãoe);
+  const canEdit=['gerente','chef','cocinero','deposito'].includes(userRole);
   // Reset filters
   const srch=document.getElementById('srch');
   const sfilt=document.getElementById('sfilt');
