@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-  <title>Spring · Gestión de Cocina</title>
+  <title>Spring · Gestão de Cozinha</title>
   <meta name="theme-color" content="#080810"/>
   <link rel="manifest" href="manifest.json"/>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
@@ -76,33 +76,33 @@
     /* LETTER BY LETTER - Spring written caligraphically */
     .splash-name-wrap{font-family:var(--font-h);font-size:82px;font-weight:700;font-style:italic;letter-spacing:-4px;color:var(--t1);line-height:1;display:flex;}
     .splash-name-wrap span{opacity:0;display:inline-block;transform:translateY(20px);}
-    .splash-s{animation:letterIn 0.4s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;}
-    .splash-p{animation:letterIn 0.4s cubic-bezier(0.16,1,0.3,1) 0.22s forwards;}
-    .splash-r{animation:letterIn 0.4s cubic-bezier(0.16,1,0.3,1) 0.34s forwards;}
-    .splash-i{animation:letterIn 0.4s cubic-bezier(0.16,1,0.3,1) 0.46s forwards;}
-    .splash-n{animation:letterIn 0.4s cubic-bezier(0.16,1,0.3,1) 0.58s forwards;}
-    .splash-g{animation:letterIn 0.4s cubic-bezier(0.16,1,0.3,1) 0.70s forwards;}
+    .splash-s{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.4s forwards;}
+    .splash-p{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.62s forwards;}
+    .splash-r{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.84s forwards;}
+    .splash-i{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 1.06s forwards;}
+    .splash-n{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 1.28s forwards;}
+    .splash-g{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 1.50s forwards;}
     @keyframes letterIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
     /* ORANGE LINE DRAWS ITSELF */
-    .splash-line{width:0;height:2px;background:var(--acc);border-radius:2px;animation:lineGrow 0.8s ease 1.0s forwards;box-shadow:0 0 8px var(--acc-glow);}
+    .splash-line{width:0;height:2px;background:var(--acc);border-radius:2px;animation:lineGrow 1s ease 2.2s forwards;box-shadow:0 0 8px var(--acc-glow);}
     @keyframes lineGrow{from{width:0}to{width:56px}}
 
     /* RESTAURANTE - appears letter by letter */
-    .splash-rest{font-family:var(--font-b);font-size:11px;letter-spacing:0px;text-transform:uppercase;color:var(--t2);font-weight:600;opacity:0;animation:restReveal 0.9s ease 1.1s forwards;}
+    .splash-rest{font-family:var(--font-b);font-size:11px;letter-spacing:0px;text-transform:uppercase;color:var(--t2);font-weight:600;opacity:0;animation:restReveal 1.1s ease 2.4s forwards;}
     @keyframes restReveal{from{opacity:0;letter-spacing:0px}to{opacity:1;letter-spacing:8px}}
 
     /* GESTIÓN DE COCINA - fades in last */
-    .splash-tagline-nat{font-family:var(--font-h);font-size:15px;font-style:italic;color:var(--t3);opacity:0;animation:fadeUp 0.8s ease 1.5s forwards;}
+    .splash-tagline-nat{font-family:var(--font-h);font-size:15px;font-style:italic;color:var(--t3);opacity:0;animation:fadeUp 1s ease 3.2s forwards;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
     /* BAR */
     .splash-bar-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:2;}
-    .splash-bar{width:0;max-width:160px;height:1px;background:var(--b2);border-radius:2px;overflow:hidden;position:relative;animation:barAppear 0.1s ease 0.5s forwards;}
+    .splash-bar{width:0;max-width:160px;height:1px;background:var(--b2);border-radius:2px;overflow:hidden;position:relative;animation:barAppear 0.1s ease 1s forwards;}
     @keyframes barAppear{to{width:160px}}
-    .splash-bar::after{content:'';position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--grn),var(--acc));animation:splashLoad 2.5s ease 0.5s forwards;}
+    .splash-bar::after{content:'';position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--grn),var(--acc));animation:splashLoad 3s ease 1s forwards;}
     @keyframes splashLoad{0%{width:0%}60%{width:70%}85%{width:92%}100%{width:100%}}
-    .splash-pct{font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:500;opacity:0;animation:fadeUp 0.5s ease 0.6s forwards;}
+    .splash-pct{font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:500;opacity:0;animation:fadeUp 0.5s ease 1.2s forwards;}
 
     /* AUTH */
     #auth{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;flex-direction:column;position:relative;z-index:1;background:var(--bg);}
@@ -352,7 +352,7 @@
     </div>
     <div class="splash-line"></div>
     <div class="splash-rest">Restaurante</div>
-    <div class="splash-tagline-nat">Gestión de Cocina</div>
+    <div class="splash-tagline-nat">Gestão de Cozinha</div>
   </div>
   <div class="splash-bar-wrap">
     <div class="splash-bar"></div>
@@ -366,31 +366,31 @@
     <div class="auth-tag">Restaurante · Buffet · Curitiba</div>
     <div class="auth-card">
       <div class="tabs2">
-        <button class="tab2 on" onclick="authTab('login')">Ingresar</button>
-        <button class="tab2" onclick="authTab('register')">Registrarse</button>
+        <button class="tab2 on" onclick="authTab('login')">Entrar</button>
+        <button class="tab2" onclick="authTab('register')">Cadastrar</button>
       </div>
       <div id="login-f">
-        <div class="fld"><label>Correo</label><input type="email" id="l-email" placeholder="tu@correo.com"/></div>
-        <div class="fld"><label>Contraseña</label><input type="password" id="l-pass" placeholder="••••••••"/></div>
-        <button class="btn-main" onclick="doLogin()">Ingresar</button>
+        <div class="fld"><label>E-mail</label><input type="email" id="l-email" placeholder="seu@email.com"/></div>
+        <div class="fld"><label>Senha</label><input type="password" id="l-pass" placeholder="••••••••"/></div>
+        <button class="btn-main" onclick="doLogin()">Entrar</button>
       </div>
       <div id="reg-f" style="display:none">
-        <div class="fld"><label>Nombre</label><input type="text" id="r-name" placeholder="Tu nombre"/></div>
-        <div class="fld"><label>Correo</label><input type="email" id="r-email" placeholder="tu@correo.com"/></div>
-        <div class="fld"><label>Contraseña</label><input type="password" id="r-pass" placeholder="mínimo 6 caracteres"/></div>
-        <div class="fld"><label>Rol</label>
+        <div class="fld"><label>Nome</label><input type="text" id="r-name" placeholder="Seu nome"/></div>
+        <div class="fld"><label>E-mail</label><input type="email" id="r-email" placeholder="seu@email.com"/></div>
+        <div class="fld"><label>Senha</label><input type="password" id="r-pass" placeholder="mínimo 6 caracteres"/></div>
+        <div class="fld"><label>Função</label>
           <select id="r-role">
             <option value="gerente">👩‍💼 Gerente</option>
             <option value="chef">👨‍🍳 Chef</option>
-            <option value="cocinero">🧑‍🍳 Cocinero</option>
-            <option value="deposito">📦 Depósito</option>
-            <option value="salon">🍽️ Salón</option>
+            <option value="cocinero">🧑‍🍳 Cozinheiro</option>
+            <option value="deposito">📦 Estoque</option>
+            <option value="salon">🍽️ Salão</option>
           </select>
         </div>
-        <div class="fld"><label>Teléfono / WhatsApp</label><input type="tel" id="r-phone" placeholder="+55 41 99999-9999"/></div>
-        <div class="fld"><label>Código de cuenta</label><input type="text" id="r-code" placeholder="ej: SPRING-001"/></div>
-        <button class="btn-main" onclick="doRegister()">Crear cuenta</button>
-        <div class="auth-info">Usá el código que te dio el administrador.</div>
+        <div class="fld"><label>Celular / WhatsApp</label><input type="tel" id="r-phone" placeholder="+55 41 99999-9999"/></div>
+        <div class="fld"><label>Código de acesso</label><input type="text" id="r-code" placeholder="ex: SPRING-001"/></div>
+        <button class="btn-main" onclick="doRegister()">Criar conta</button>
+        <div class="auth-info">Use o código fornecido pelo administrador.</div>
       </div>
       <div class="auth-err" id="auth-err"></div>
     </div>
@@ -403,16 +403,16 @@
     <div class="hdr">
       <div class="hdr-inner">
         <div class="hdr-left">
-          <div class="hdr-greeting" id="hdr-greeting">Bienvenido</div>
+          <div class="hdr-greeting" id="hdr-greeting">Bem-vindo</div>
           <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;font-style:italic;letter-spacing:-1px;color:#2c1a0e;">Spring<span style="color:#c4541a">.</span></div>
         </div>
         <div class="hdr-right">
           <div class="role-pill" id="role-badge">—</div>
-          <button class="btn-out" onclick="doLogout()">Salir</button>
+          <button class="btn-out" onclick="doLogout()">Sair</button>
         </div>
       </div>
     </div>
-    <div class="online" style="margin-bottom:16px"><span class="odot"></span><span class="olbl">Tiempo real activo</span></div>
+    <div class="online" style="margin-bottom:16px"><span class="odot"></span><span class="olbl">Tempo real ativo</span></div>
     <div class="home-date" id="home-date"></div>
     <div class="qs-row" id="qs-row"></div>
     <div id="alert-strip-wrap"></div>
@@ -440,12 +440,12 @@
 <div class="conf-ov" id="conf-ov">
   <div class="conf-box">
     <div class="conf-ico">⚠️</div>
-    <div class="conf-title">¿Eliminar?</div>
+    <div class="conf-title">Excluir?</div>
     <div class="conf-item" id="conf-item">—</div>
-    <div class="conf-note">Esta acción no se puede deshacer.</div>
+    <div class="conf-note">Esta ação não pode ser desfeita.</div>
     <div class="conf-btns">
       <button class="btn-ccancel" onclick="closeConf()">Cancelar</button>
-      <button class="btn-cdel" onclick="runConf()">Eliminar</button>
+      <button class="btn-cdel" onclick="runConf()">Excluir</button>
     </div>
   </div>
 </div>
@@ -453,7 +453,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let user=null,userRole=null,userName=null,accountId=null;
+let user=null,userFunçãoe=null,userName=null,accountId=null;
 let products={},menuItems={},orders={},suppliers={},menuLastChanged=null,menuPrevCount=0;
 let currentTab='inventario';
 let editKey=null,delKey=null,confFn=null;
@@ -462,13 +462,13 @@ let menuView='dia',menuOffset=0;
 const ROLES={
   gerente:{label:'👩‍💼 Gerente',tabs:['inventario','menu','pedidos','proveedores','resumen']},
   chef:{label:'👨‍🍳 Chef',tabs:['inventario','menu','pedidos']},
-  cocinero:{label:'🧑‍🍳 Cocinero',tabs:['inventario','menu']},
-  deposito:{label:'📦 Depósito',tabs:['inventario','pedidos']},
-  salon:{label:'🍽️ Salón',tabs:['menu']},
+  cocinero:{label:'🧑‍🍳 Cozinheiro',tabs:['inventario','menu']},
+  deposito:{label:'📦 Estoque',tabs:['inventario','pedidos']},
+  salon:{label:'🍽️ Salão',tabs:['menu']},
 };
-const TAB_LABELS={inventario:'🥩 Inventario',menu:'📋 Menú',pedidos:'🛒 Pedidos',proveedores:'🏪 Proveedores',resumen:'📊 Resumen'};
+const TAB_LABELS={inventario:'🥩 Inventário',menu:'📋 Menú',pedidos:'🛒 Pedidos',proveedores:'🏪 Fornecedores',resumen:'📊 Resumo'};
 const CAT_COLORS={Res:'#c0392b',Pollo:'#e67e22',Cerdo:'#8e44ad',Pescado:'#2980b9',Suplemento:'#27ae60',Lácteos:'#16a085',Vegetales:'#27ae60',Otro:'#7f8c8d'};
-const UNITS=['kg','g','Piezas','Paquetes','Frascos','Cajas','Litros','Unidades'];
+const UNITS=['kg','g','Piezas','Paquetes','Frascos','Cajas','Litros','Unidadees'];
 const CATS=['Res','Pollo','Cerdo','Pescado','Suplemento','Lácteos','Vegetales','Otro'];
 const DISH_CATS=['Entrada','Plato Principal','Acompañamiento','Postre','Bebida'];
 
@@ -499,8 +499,8 @@ function hideSplash(){
   if(pct)pct.textContent='Listo ✓';
   setTimeout(()=>{
     s.style.opacity='0';
-    setTimeout(()=>s.style.display='none',1000);
-  },800);
+    setTimeout(()=>s.style.display='none',1400);
+  },1500);
 }
 function showAuth(){document.getElementById('auth').style.display='flex';}
 function showApp(){document.getElementById('auth').style.display='none';document.getElementById('app').style.display='flex';}
@@ -516,9 +516,9 @@ function setErr(m){document.getElementById('auth-err').textContent=m;}
 async function doLogin(){
   const email=document.getElementById('l-email').value.trim();
   const pass=document.getElementById('l-pass').value;
-  if(!email||!pass){setErr('Completá todos los campos');return;}
+  if(!email||!pass){setErr('Preencha todos os campos');return;}
   try{const{auth,signInWithEmailAndPassword}=window._fb;await signInWithEmailAndPassword(auth,email,pass);}
-  catch(e){setErr('Correo o contraseña incorrectos');}
+  catch(e){setErr('E-mail o contraseña incorrectos');}
 }
 
 async function doRegister(){
@@ -527,7 +527,7 @@ async function doRegister(){
   const pass=document.getElementById('r-pass').value;
   const role=document.getElementById('r-role').value;
   const code=document.getElementById('r-code').value.trim();
-  if(!name||!email||!pass||!code){setErr('Completá todos los campos');return;}
+  if(!name||!email||!pass||!code){setErr('Preencha todos os campos');return;}
   if(pass.length<6){setErr('Mínimo 6 caracteres');return;}
   try{
     const{auth,db,ref,set,createUserWithEmailAndPassword}=window._fb;
@@ -535,7 +535,7 @@ async function doRegister(){
     const phone=document.getElementById('r-phone')?.value.trim()||'';
     await set(ref(db,`userAccounts/${cred.user.uid}`),{code,role,name,email,phone});
   }catch(e){
-    if(e.code==='auth/email-already-in-use')setErr('Ese correo ya está registrado');
+    if(e.code==='auth/email-already-in-use')setErr('Este e-mail já está cadastrado');
     else setErr('Error: '+e.message);
   }
 }
@@ -543,7 +543,7 @@ async function doRegister(){
 async function doLogout(){
   const{auth,signOut}=window._fb;
   await signOut(auth);
-  user=null;userRole=null;accountId=null;
+  user=null;userFunçãoe=null;accountId=null;
   products={};menuItems={};orders={};suppliers={};
   document.getElementById('app').style.display='none';
   document.getElementById('fab').style.display='none';
@@ -555,10 +555,10 @@ async function loadUser(){
   const snap=await get(ref(db,`userAccounts/${user.uid}`));
   if(!snap.exists()){doLogout();return;}
   const data=snap.val();
-  userRole=data.role||'salon';
+  userFunçãoe=data.role||'salon';
   userName=data.name||user.email;
   accountId=data.code||'SPRING-001';
-  document.getElementById('role-badge').textContent=ROLES[userRole]?.label||userRole;
+  document.getElementById('role-badge').textContent=ROLES[userFunçãoe]?.label||userFunçãoe;
   buildNav();
   showApp();
   onValue(ref(db,`accounts/${accountId}/products`),s=>{products=s.val()||{};refreshView();});
@@ -580,12 +580,12 @@ async function loadUser(){
 }
 
 const NAV_ICONS={inventario:'🥩',menu:'📋',pedidos:'🛒',proveedores:'🏪',resumen:'📊'};
-const NAV_LABELS={inventario:'Inventario',menu:'Menú del día',pedidos:'Pedidos',proveedores:'Proveedores',resumen:'Resumen'};
-const NAV_SUBS={inventario:'Stock y productos',menu:'Carta del buffet',pedidos:'Lista de compras',proveedores:'Contactos',resumen:'Vista gerencial'};
+const NAV_LABELS={inventario:'Inventário',menu:'Cardápio do dia',pedidos:'Pedidos',proveedores:'Fornecedores',resumen:'Resumo'};
+const NAV_SUBS={inventario:'Estoque e produtos',menu:'Cardápio do buffet',pedidos:'Lista de compras',proveedores:'Contatos',resumen:'Visão gerencial'};
 const NAV_COLS={inventario:'inv',menu:'men',pedidos:'ped',proveedores:'pro',resumen:'res'};
 
 function buildNav(){
-  const tabs=ROLES[userRole]?.tabs||['menu'];
+  const tabs=ROLES[userFunçãoe]?.tabs||['menu'];
   if(!tabs.includes(currentTab))currentTab=tabs[0];
   renderHome();
 }
@@ -603,11 +603,11 @@ function renderHome(){
   document.getElementById('qs-row').innerHTML=`
     <div class="qs stat-btn" onclick="goTab('inventario')">
       <div class="qs-val">${arr.length}</div>
-      <div class="qs-lbl">Productos</div>
+      <div class="qs-lbl">Produtos</div>
     </div>
     <div class="qs${low.length?' alert':''} stat-btn" onclick="${low.length?'goTab(\'inventario\');setTimeout(filterLowStock,150)':'null'}">
       <div class="qs-val${low.length?' r':''}">${low.length}</div>
-      <div class="qs-lbl">Por acabar ${low.length?'↗':''}</div>
+      <div class="qs-lbl">Acabando ${low.length?'↗':''}</div>
     </div>
     <div class="qs">
       <div class="qs-val g" style="font-size:${val>99999?'14px':'22px'}">R$${Math.round(val/1000)>0?Math.round(val/1000)+'k':Math.round(val)}</div>
@@ -623,14 +623,14 @@ function renderHome(){
     <div class="alert-strip" onclick="filterLowStock()">
       <div class="alert-strip-ico">⚠️</div>
       <div class="alert-strip-text">
-        <div class="alert-strip-title">${low.length} producto${low.length>1?'s':''} con stock bajo</div>
-        <div class="alert-strip-sub">Tocá para ver y agregar al pedido</div>
+        <div class="alert-strip-title">${low.length} producto${low.length>1?'s':''} con stock baixo</div>
+        <div class="alert-strip-sub">Toque para ver e adicionar ao pedido</div>
       </div>
       <div class="alert-strip-arr">›</div>
     </div>`:'';
 
   // Big nav buttons
-  const tabs=ROLES[userRole]?.tabs||['menu'];
+  const tabs=ROLES[userFunçãoe]?.tabs||['menu'];
   document.getElementById('big-nav').innerHTML=tabs.map(t=>`
     <button class="big-btn ${NAV_COLS[t]}" onclick="goTab('${t}')">
       <div class="btn-ico-wrap">${NAV_ICONS[t]}</div>
@@ -649,14 +649,14 @@ function renderHome(){
     wrap.innerHTML=`
       <div style="padding:0 20px">
         <div class="today-menu-hdr">
-          <div class="today-menu-title">Menú de Hoy</div>
-          <button class="today-menu-link" onclick="goTab('menu')">Ver todo →</button>
+          <div class="today-menu-title">Cardápio de Hoje</div>
+          <button class="today-menu-link" onclick="goTab('menu')">Ver tudo →</button>
         </div>
         ${todayItems.length?todayItems.slice(0,3).map(m=>`
           <div class="today-dish">
             <div class="today-dish-cat">🍽️</div>
             <div><div class="today-dish-name">${m.name}</div><div class="today-dish-type">${m.category||''}</div></div>
-          </div>`).join(''):`<div class="today-empty">Sin platos cargados para hoy</div>`}
+          </div>`).join(''):`<div class="today-empty">Nenhum prato cadastrado para hoje</div>`}
       </div>`;
   }else{wrap.innerHTML='';}
 }
@@ -690,28 +690,28 @@ function renderTab(){
   const fab=document.getElementById('fab');
   fab.style.display='none';fab.onclick=null;
   c.innerHTML='';
-  if(currentTab==='inventario')doInventario(c,fab);
+  if(currentTab==='inventario')doInventário(c,fab);
   else if(currentTab==='menu')doMenu(c,fab);
   else if(currentTab==='pedidos')doPedidos(c,fab);
-  else if(currentTab==='proveedores')doProveedores(c,fab);
-  else if(currentTab==='resumen')doResumen(c);
+  else if(currentTab==='proveedores')doFornecedores(c,fab);
+  else if(currentTab==='resumen')doResumo(c);
 }
 
 // ── INVENTARIO ──
-function doInventario(el,fab){
+function doInventário(el,fab){
   const arr=Object.values(products);
   const low=arr.filter(p=>p.quantity<=p.minStock);
   const val=arr.reduce((a,p)=>a+(p.quantity*p.price),0);
-  const canEdit=['gerente','chef','cocinero','deposito'].includes(userRole);
+  const canEdit=['gerente','chef','cocinero','deposito'].includes(userFunçãoe);
 
   el.innerHTML=`
     <div class="stats">
-      <div class="stat" onclick="doInventario(document.getElementById('main-content'),document.getElementById('fab'))" style="cursor:pointer"><div class="stat-v">${arr.length}</div><div class="stat-l">Todos ↓</div></div>
-      <div class="stat warn" onclick="filterLowStock()" style="cursor:pointer"><div class="stat-v r">${low.length}</div><div class="stat-l">Stock Bajo ↓</div></div>
+      <div class="stat" onclick="doInventário(document.getElementById('main-content'),document.getElementById('fab'))" style="cursor:pointer"><div class="stat-v">${arr.length}</div><div class="stat-l">Todos ↓</div></div>
+      <div class="stat warn" onclick="filterLowStock()" style="cursor:pointer"><div class="stat-v r">${low.length}</div><div class="stat-l">Estoque Baixo ↓</div></div>
       <div class="stat"><div class="stat-v g" style="font-size:14px">R$${Math.round(val).toLocaleString('pt-BR')}</div><div class="stat-l">Valor</div></div>
     </div>
     <div class="srow">
-      <input class="sinput" id="srch" placeholder="🔍 Buscar producto..." oninput="renderProductList()"/>
+      <input class="sinput" id="srch" placeholder="🔍 Buscar produto..." oninput="renderProductList()"/>
       <select class="sfilt" id="sfilt" onchange="renderProductList()">
         <option value="">Todos</option>${CATS.map(c=>`<option>${c}</option>`).join('')}
       </select>
@@ -724,12 +724,12 @@ function doInventario(el,fab){
 function renderProductList(){
   const srch=(document.getElementById('srch')?.value||'').toLowerCase();
   const cat=document.getElementById('sfilt')?.value||'';
-  const canEdit=['gerente','chef','cocinero','deposito'].includes(userRole);
+  const canEdit=['gerente','chef','cocinero','deposito'].includes(userFunçãoe);
   const filtered=Object.entries(products).filter(([k,p])=>p.name.toLowerCase().includes(srch)&&(!cat||p.category===cat));
   const plist=document.getElementById('plist');
   if(!plist)return;
 
-  if(!filtered.length){plist.innerHTML='<div class="empty"><div class="empty-ico">🥩</div><p>No hay productos</p></div>';return;}
+  if(!filtered.length){plist.innerHTML='<div class="empty"><div class="empty-ico">🥩</div><p>Nenhum produto</p></div>';return;}
   plist.innerHTML=filtered.map(([key,p])=>{
     const isLow=p.quantity<=p.minStock;
     const pct=Math.min(100,(p.quantity/Math.max(1,p.minStock*2))*100);
@@ -737,7 +737,7 @@ function renderProductList(){
     return`<div class="card${isLow?' low':''}" style="border-left-color:${cc}">
       <div class="card-top">
         <div>
-          <div class="card-name">${p.name}${isLow?'<span class="low-tag">bajo</span>':''}</div>
+          <div class="card-name">${p.name}${isLow?'<span class="low-tag">baixo</span>':''}</div>
           <div class="card-sub" style="color:${cc}">${p.category}</div>
         </div>
         <div class="card-acts">
@@ -773,18 +773,18 @@ function openProd(key){
   editKey=key;const p=key?products[key]:null;
   const sups=Object.entries(suppliers).map(([k,s])=>`<option value="${k}"${p?.supplierId===k?' selected':''}>${s.name}</option>`).join('');
   showSheet(`${p?'Editar':'Nuevo'} Producto`,`
-    <div class="sh-fld"><label>Nombre</label><input id="pf-n" value="${p?.name||''}" placeholder="Ej: Picanha"/></div>
+    <div class="sh-fld"><label>Nome</label><input id="pf-n" value="${p?.name||''}" placeholder="Ex: Picanha"/></div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Categoría</label><select id="pf-c">${CATS.map(c=>`<option${p?.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
-      <div class="sh-fld"><label>Unidad</label><select id="pf-u">${UNITS.map(u=>`<option${p?.unit===u?' selected':''}>${u}</option>`).join('')}</select></div>
+      <div class="sh-fld"><label>Categoria</label><select id="pf-c">${CATS.map(c=>`<option${p?.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
+      <div class="sh-fld"><label>Unidade</label><select id="pf-u">${UNITS.map(u=>`<option${p?.unit===u?' selected':''}>${u}</option>`).join('')}</select></div>
     </div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Cantidad</label><input type="number" id="pf-q" value="${p?.quantity||''}" placeholder="0"/></div>
-      <div class="sh-fld"><label>Stock mínimo</label><input type="number" id="pf-m" value="${p?.minStock||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Quantidade</label><input type="number" id="pf-q" value="${p?.quantity||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Estoque mínimo</label><input type="number" id="pf-m" value="${p?.minStock||''}" placeholder="0"/></div>
     </div>
-    <div class="sh-fld"><label>Precio (R$)</label><input type="number" id="pf-p" value="${p?.price||''}" placeholder="0"/></div>
-    <div class="sh-fld"><label>Proveedor</label><select id="pf-s"><option value="">Sin proveedor</option>${sups}</select></div>
-    <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveProd()">Guardar</button></div>
+    <div class="sh-fld"><label>Preço (R$)</label><input type="number" id="pf-p" value="${p?.price||''}" placeholder="0"/></div>
+    <div class="sh-fld"><label>Fornecedor</label><select id="pf-s"><option value="">Sem fornecedor</option>${sups}</select></div>
+    <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveProd()">Salvar</button></div>
   `);
 }
 
@@ -792,28 +792,28 @@ async function saveProd(){
   const name=document.getElementById('pf-n').value.trim();
   const qty=parseFloat(document.getElementById('pf-q').value);
   const min=parseFloat(document.getElementById('pf-m').value);
-  if(!name||isNaN(qty)||isNaN(min)){showToast('Completá los campos obligatorios');return;}
+  if(!name||isNaN(qty)||isNaN(min)){showToast('Preencha os campos obrigatórios');return;}
   const data={name,category:document.getElementById('pf-c').value,unit:document.getElementById('pf-u').value,quantity:qty,minStock:min,price:parseFloat(document.getElementById('pf-p').value)||0,supplierId:document.getElementById('pf-s').value,updatedAt:Date.now()};
   const{db,ref,set,push}=window._fb;
   if(editKey)await set(ref(db,`accounts/${accountId}/products/${editKey}`),{...products[editKey],...data});
   else{data.createdAt=Date.now();await push(ref(db,`accounts/${accountId}/products`),data);}
-  closeSheet();showToast(editKey?'Producto actualizado ✓':'Producto agregado ✓');
+  closeSheet();showToast(editKey?'Produto atualizado ✓':'Produto adicionado ✓');
 }
 
 function delProd(){
   const{db,ref,remove}=window._fb;
   remove(ref(db,`accounts/${accountId}/products/${delKey}`));
-  showToast('Eliminado');closeConf();
+  showToast('Excluído');closeConf();
 }
 
 // ── MENÚ ──
 function doMenu(el,fab){
-  const canEdit=['gerente','chef'].includes(userRole);
+  const canEdit=['gerente','chef'].includes(userFunçãoe);
   el.innerHTML=`
     <div class="cal-tabs">
-      <button class="cal-tab${menuView==='dia'?' on':''}" onclick="setMV('dia')">Día</button>
+      <button class="cal-tab${menuView==='dia'?' on':''}" onclick="setMV('dia')">Dia</button>
       <button class="cal-tab${menuView==='semana'?' on':''}" onclick="setMV('semana')">Semana</button>
-      <button class="cal-tab${menuView==='mes'?' on':''}" onclick="setMV('mes')">Mes</button>
+      <button class="cal-tab${menuView==='mes'?' on':''}" onclick="setMV('mes')">Mês</button>
     </div>
     <div class="cal-nav">
       <button class="cal-btn" onclick="mNav(-1)">‹</button>
@@ -834,13 +834,13 @@ function renderMenuBody(){
   const title=document.getElementById('cal-title');
   if(!body)return;
   const today=new Date();
-  const canEdit=['gerente','chef'].includes(userRole);
+  const canEdit=['gerente','chef'].includes(userFunçãoe);
 
   if(menuView==='dia'){
     const d=new Date(today);d.setDate(d.getDate()+menuOffset);
     title.textContent=d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long'});
     const items=Object.entries(menuItems).filter(([k,m])=>m.date===dkey(d));
-    body.innerHTML=items.length?items.map(([k,m])=>dishCard(k,m,canEdit)).join(''):'<div class="empty"><div class="empty-ico">🍽️</div><p>Sin platos para este día</p></div>';
+    body.innerHTML=items.length?items.map(([k,m])=>dishCard(k,m,canEdit)).join(''):'<div class="empty"><div class="empty-ico">🍽️</div><p>Nenhum prato para este dia</p></div>';
   }else if(menuView==='semana'){
     const start=new Date(today);
     const dow=start.getDay()||7;
@@ -852,7 +852,7 @@ function renderMenuBody(){
       const items=Object.entries(menuItems).filter(([k,m])=>m.date===dkey(d));
       html+=`<div class="menu-day">
         <div class="menu-date">${d.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'short'})}</div>
-        ${items.length?items.map(([k,m])=>dishRow(k,m,canEdit)).join(''):'<p style="color:var(--t3);font-size:13px">Sin platos</p>'}
+        ${items.length?items.map(([k,m])=>dishRow(k,m,canEdit)).join(''):'<p style="color:var(--t3);font-size:13px">Sem pratos</p>'}
       </div>`;
     }
     body.innerHTML=html;
@@ -869,7 +869,7 @@ function renderMenuBody(){
         ${items.map(([k,m])=>dishRow(k,m,canEdit)).join('')}
       </div>`;
     }
-    body.innerHTML=html||'<div class="empty"><div class="empty-ico">📅</div><p>Sin platos este mes</p></div>';
+    body.innerHTML=html||'<div class="empty"><div class="empty-ico">📅</div><p>Sem pratos este mes</p></div>';
   }
 }
 
@@ -894,41 +894,41 @@ function openDish(key){
   editKey=key;const m=key?menuItems[key]:null;
   const td=dkey(new Date());
   showSheet(`${m?'Editar':'Nuevo'} Plato`,`
-    <div class="sh-fld"><label>Nombre del plato</label><input id="df-n" value="${m?.name||''}" placeholder="Ej: Churrasco"/></div>
-    <div class="sh-fld"><label>Categoría</label><select id="df-c">${DISH_CATS.map(c=>`<option${m?.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
-    <div class="sh-fld"><label>Fecha</label><input type="date" id="df-d" value="${m?.date||td}"/></div>
-    <div class="sh-fld"><label>Descripción (opcional)</label><textarea id="df-desc" placeholder="Ingredientes, notas...">${m?.description||''}</textarea></div>
-    <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveDish()">Guardar</button></div>
+    <div class="sh-fld"><label>Nome del plato</label><input id="df-n" value="${m?.name||''}" placeholder="Ex: Churrasco"/></div>
+    <div class="sh-fld"><label>Categoria</label><select id="df-c">${DISH_CATS.map(c=>`<option${m?.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="sh-fld"><label>Data</label><input type="date" id="df-d" value="${m?.date||td}"/></div>
+    <div class="sh-fld"><label>Descrição (opcional)</label><textarea id="df-desc" placeholder="Ingredientes, observações...">${m?.description||''}</textarea></div>
+    <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveDish()">Salvar</button></div>
   `);
 }
 
 async function saveDish(){
   const name=document.getElementById('df-n').value.trim();
   const date=document.getElementById('df-d').value;
-  if(!name||!date){showToast('Completá nombre y fecha');return;}
+  if(!name||!date){showToast('Preencha nome e data');return;}
   const data={name,category:document.getElementById('df-c').value,date,description:document.getElementById('df-desc').value.trim(),updatedAt:Date.now()};
   const{db,ref,set,push}=window._fb;
   if(editKey)await set(ref(db,`accounts/${accountId}/menu/${editKey}`),data);
   else{data.createdAt=Date.now();await push(ref(db,`accounts/${accountId}/menu`),data);}
-  closeSheet();showToast(editKey?'Plato actualizado ✓':'Plato agregado ✓');
+  closeSheet();showToast(editKey?'Prato atualizado ✓':'Prato adicionado ✓');
 }
 
 function delDish(){
   const{db,ref,remove}=window._fb;
   remove(ref(db,`accounts/${accountId}/menu/${delKey}`));
-  showToast('Plato eliminado');closeConf();
+  showToast('Prato excluído');closeConf();
 }
 
 // ── PEDIDOS ──
 function doPedidos(el,fab){
-  const canEdit=['gerente','chef','deposito'].includes(userRole);
-  const pend=Object.entries(orders).filter(([k,o])=>o.status==='pendiente');
-  const done=Object.entries(orders).filter(([k,o])=>o.status==='completado');
+  const canEdit=['gerente','chef','deposito'].includes(userFunçãoe);
+  const pend=Object.entries(orders).filter(([k,o])=>o.status==='pendente');
+  const done=Object.entries(orders).filter(([k,o])=>o.status==='concluído');
   el.innerHTML=`
     <div class="sec-hdr"><div class="sec-ttl">Pedidos</div>${canEdit?'<button class="btn-sm" onclick="openOrder(null)">+ Nuevo</button>':''}</div>
-    ${pend.length?`<p class="sec-label">Pendientes (${pend.length})</p>${pend.map(([k,o])=>orderCard(k,o,canEdit)).join('')}`:''}
-    ${done.length?`<p class="sec-label">Completados (${done.length})</p>${done.map(([k,o])=>orderCard(k,o,false)).join('')}`:''}
-    ${!pend.length&&!done.length?'<div class="empty"><div class="empty-ico">🛒</div><p>No hay pedidos</p></div>':''}`;
+    ${pend.length?`<p class="sec-label">Pendentes (${pend.length})</p>${pend.map(([k,o])=>orderCard(k,o,canEdit)).join('')}`:''}
+    ${done.length?`<p class="sec-label">Concluídos (${done.length})</p>${done.map(([k,o])=>orderCard(k,o,false)).join('')}`:''}
+    ${!pend.length&&!done.length?'<div class="empty"><div class="empty-ico">🛒</div><p>Nenhum pedido</p></div>':''}`;
 }
 
 function orderCard(key,o,canEdit){
@@ -936,12 +936,12 @@ function orderCard(key,o,canEdit){
   return`<div class="order-card">
     <div class="order-top">
       <div><div class="order-name">${o.productName}</div>${sup?`<div class="order-prov">📦 ${sup.name}</div>`:''}</div>
-      <span class="order-status ${o.status==='pendiente'?'status-pend':'status-done'}">${o.status}</span>
+      <span class="order-status ${o.status==='pendente'?'status-pend':'status-done'}">${o.status}</span>
     </div>
-    <p style="font-size:13px;color:var(--t2)">Cantidad: <strong style="color:var(--t1)">${o.quantity} ${o.unit||''}</strong></p>
+    <p style="font-size:13px;color:var(--t2)">Quantidade: <strong style="color:var(--t1)">${o.quantity} ${o.unit||''}</strong></p>
     ${o.notes?`<p style="font-size:12px;color:var(--t3);margin-top:6px">${o.notes}</p>`:''}
     ${canEdit?`<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-      ${o.status==='pendiente'?`<button class="btn-sm-ghost" onclick="completeOrd('${key}')">✓ Completado</button>`:''}
+      ${o.status==='pendente'?`<button class="btn-sm-ghost" onclick="completeOrd('${key}')">✓ Concluído</button>`:''}
       <button class="btn-sm-ghost" onclick="openOrder('${key}')">✏️ Editar</button>
       <button class="ic-btn red" onclick="askDel('${key}','${o.productName.replace(/'/g,"\\'")}',delOrder)">🗑️</button>
     </div>`:''}
@@ -952,14 +952,14 @@ function quickOrder(prodKey){
   const p=products[prodKey];if(!p)return;
   editKey=null;
   const sups=Object.entries(suppliers).map(([k,s])=>`<option value="${k}"${p.supplierId===k?' selected':''}>${s.name}</option>`).join('');
-  showSheet('Agregar a Pedido',`
+  showSheet('Adicionar ao Pedido',`
     <div class="sh-fld"><label>Producto</label><input id="of-n" value="${p.name}" readonly style="opacity:.7"/></div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Cantidad</label><input type="number" id="of-q" value="${p.minStock}" placeholder="0"/></div>
-      <div class="sh-fld"><label>Unidad</label><input id="of-u" value="${p.unit}" readonly style="opacity:.7"/></div>
+      <div class="sh-fld"><label>Quantidade</label><input type="number" id="of-q" value="${p.minStock}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Unidade</label><input id="of-u" value="${p.unit}" readonly style="opacity:.7"/></div>
     </div>
-    <div class="sh-fld"><label>Proveedor</label><select id="of-s"><option value="">Sin proveedor</option>${sups}</select></div>
-    <div class="sh-fld"><label>Notas</label><input id="of-notes" placeholder="Notas adicionales"/></div>
+    <div class="sh-fld"><label>Fornecedor</label><select id="of-s"><option value="">Sem fornecedor</option>${sups}</select></div>
+    <div class="sh-fld"><label>Observações</label><input id="of-notes" placeholder="Observações adicionais"/></div>
     <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveOrd('${p.name}','${p.unit}')">Agregar</button></div>
   `);
 }
@@ -968,46 +968,46 @@ function openOrder(key){
   editKey=key;const o=key?orders[key]:null;
   const sups=Object.entries(suppliers).map(([k,s])=>`<option value="${k}"${o?.supplierId===k?' selected':''}>${s.name}</option>`).join('');
   showSheet(`${o?'Editar':'Nuevo'} Pedido`,`
-    <div class="sh-fld"><label>Producto</label><input id="of-n" value="${o?.productName||''}" placeholder="Nombre del producto"/></div>
+    <div class="sh-fld"><label>Producto</label><input id="of-n" value="${o?.productName||''}" placeholder="Nome del producto"/></div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Cantidad</label><input type="number" id="of-q" value="${o?.quantity||''}" placeholder="0"/></div>
-      <div class="sh-fld"><label>Unidad</label><select id="of-u">${UNITS.map(u=>`<option${o?.unit===u?' selected':''}>${u}</option>`).join('')}</select></div>
+      <div class="sh-fld"><label>Quantidade</label><input type="number" id="of-q" value="${o?.quantity||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Unidade</label><select id="of-u">${UNITS.map(u=>`<option${o?.unit===u?' selected':''}>${u}</option>`).join('')}</select></div>
     </div>
-    <div class="sh-fld"><label>Proveedor</label><select id="of-s"><option value="">Sin proveedor</option>${sups}</select></div>
-    <div class="sh-fld"><label>Notas</label><input id="of-notes" value="${o?.notes||''}" placeholder="Notas adicionales"/></div>
-    <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveOrd('','')">Guardar</button></div>
+    <div class="sh-fld"><label>Fornecedor</label><select id="of-s"><option value="">Sem fornecedor</option>${sups}</select></div>
+    <div class="sh-fld"><label>Observações</label><input id="of-notes" value="${o?.notes||''}" placeholder="Observações adicionais"/></div>
+    <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveOrd('','')">Salvar</button></div>
   `);
 }
 
 async function saveOrd(pName,pUnit){
   const name=(document.getElementById('of-n')?.value.trim())||pName;
   const qty=parseFloat(document.getElementById('of-q').value);
-  if(!name||isNaN(qty)){showToast('Completá nombre y cantidad');return;}
-  const data={productName:name,quantity:qty,unit:document.getElementById('of-u')?.value||pUnit,supplierId:document.getElementById('of-s').value,notes:document.getElementById('of-notes').value.trim(),status:'pendiente',updatedAt:Date.now()};
+  if(!name||isNaN(qty)){showToast('Preencha nome e quantidade');return;}
+  const data={productName:name,quantity:qty,unit:document.getElementById('of-u')?.value||pUnit,supplierId:document.getElementById('of-s').value,notes:document.getElementById('of-notes').value.trim(),status:'pendente',updatedAt:Date.now()};
   const{db,ref,set,push}=window._fb;
   if(editKey)await set(ref(db,`accounts/${accountId}/orders/${editKey}`),{...orders[editKey],...data});
   else{data.createdAt=Date.now();await push(ref(db,`accounts/${accountId}/orders`),data);}
-  closeSheet();showToast('Pedido guardado ✓');
+  closeSheet();showToast('Pedido salvo ✓');
 }
 
 async function completeOrd(key){
   const{db,ref,update}=window._fb;
-  await update(ref(db,`accounts/${accountId}/orders/${key}`),{status:'completado',completedAt:Date.now()});
-  showToast('Marcado como completado ✓');
+  await update(ref(db,`accounts/${accountId}/orders/${key}`),{status:'concluído',completedAt:Date.now()});
+  showToast('Marcado como concluído ✓');
 }
 
 function delOrder(){
   const{db,ref,remove}=window._fb;
   remove(ref(db,`accounts/${accountId}/orders/${delKey}`));
-  showToast('Pedido eliminado');closeConf();
+  showToast('Pedido excluído');closeConf();
 }
 
 // ── PROVEEDORES ──
-function doProveedores(el,fab){
-  el.innerHTML=`<div class="sec-hdr"><div class="sec-ttl">Proveedores</div></div><div id="slist"></div>`;
+function doFornecedores(el,fab){
+  el.innerHTML=`<div class="sec-hdr"><div class="sec-ttl">Fornecedores</div></div><div id="slist"></div>`;
   const slist=document.getElementById('slist');
   const arr=Object.entries(suppliers);
-  if(!arr.length){slist.innerHTML='<div class="empty"><div class="empty-ico">🏪</div><p>No hay proveedores</p></div>';return;}
+  if(!arr.length){slist.innerHTML='<div class="empty"><div class="empty-ico">🏪</div><p>Nenhum fornecedor</p></div>';return;}
   slist.innerHTML=arr.map(([key,s])=>{
     const prods=Object.values(products).filter(p=>p.supplierId===key);
     return`<div class="sup-card">
@@ -1019,7 +1019,7 @@ function doProveedores(el,fab){
         </div>
       </div>
       ${s.notes?`<p style="font-size:13px;color:var(--t2);margin-bottom:10px">${s.notes}</p>`:''}
-      <div class="sup-prods">${prods.length?prods.map(p=>`<span class="sup-tag">🥩 ${p.name}</span>`).join(''):'<span style="font-size:12px;color:var(--t3)">Sin productos asignados</span>'}</div>
+      <div class="sup-prods">${prods.length?prods.map(p=>`<span class="sup-tag">🥩 ${p.name}</span>`).join(''):'<span style="font-size:12px;color:var(--t3)">Sem produtos associados</span>'}</div>
     </div>`;
   }).join('');
   fab.style.display='flex';fab.onclick=()=>openSup(null);
@@ -1027,73 +1027,81 @@ function doProveedores(el,fab){
 
 function openSup(key){
   editKey=key;const s=key?suppliers[key]:null;
-  showSheet(`${s?'Editar':'Nuevo'} Proveedor`,`
-    <div class="sh-fld"><label>Nombre</label><input id="sf-n" value="${s?.name||''}" placeholder="Ej: Frigorífico Central"/></div>
-    <div class="sh-fld"><label>Teléfono</label><input id="sf-p" value="${s?.phone||''}" placeholder="+55 41 ..."/></div>
+  showSheet(`${s?'Editar':'Nuevo'} Fornecedor`,`
+    <div class="sh-fld"><label>Nome</label><input id="sf-n" value="${s?.name||''}" placeholder="Ex: Frigorífico Central"/></div>
+    <div class="sh-fld"><label>Telefone</label><input id="sf-p" value="${s?.phone||''}" placeholder="+55 41 ..."/></div>
     <div class="sh-fld"><label>Email</label><input type="email" id="sf-e" value="${s?.email||''}" placeholder="proveedor@email.com"/></div>
-    <div class="sh-fld"><label>Notas</label><textarea id="sf-no" placeholder="Horarios, condiciones...">${s?.notes||''}</textarea></div>
-    <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveSup()">Guardar</button></div>
+    <div class="sh-fld"><label>Observações</label><textarea id="sf-no" placeholder="Horários, condições...">${s?.notes||''}</textarea></div>
+    <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveSup()">Salvar</button></div>
   `);
 }
 
 async function saveSup(){
   const name=document.getElementById('sf-n').value.trim();
-  if(!name){showToast('El nombre es obligatorio');return;}
-  const data={name,phone:document.getElementById('sf-p').value.trim(),email:document.getElementById('sf-e').value.trim(),notes:document.getElementById('sf-no').value.trim(),updatedAt:Date.now()};
+  if(!name){showToast('O nome é obrigatório');return;}
+  const data={name,
+    contact:document.getElementById('sf-contact').value.trim(),
+    phone:document.getElementById('sf-p').value.trim(),
+    whatsapp:document.getElementById('sf-wa').value.trim(),
+    email:document.getElementById('sf-e').value.trim(),
+    mainProducts:document.getElementById('sf-prods').value.trim(),
+    deliveryDays:document.getElementById('sf-days').value.trim(),
+    notes:document.getElementById('sf-no').value.trim(),
+    updatedAt:Date.now()};
   const{db,ref,set,push}=window._fb;
   if(editKey)await set(ref(db,`accounts/${accountId}/suppliers/${editKey}`),{...suppliers[editKey],...data});
   else{data.createdAt=Date.now();await push(ref(db,`accounts/${accountId}/suppliers`),data);}
-  closeSheet();showToast(editKey?'Proveedor actualizado ✓':'Proveedor agregado ✓');
+  closeSheet();showToast(editKey?'Fornecedor actualizado ✓':'Fornecedor agregado ✓');
 }
 
 function delSup(){
   const{db,ref,remove}=window._fb;
   remove(ref(db,`accounts/${accountId}/suppliers/${delKey}`));
-  showToast('Proveedor eliminado');closeConf();
+  showToast('Fornecedor eliminado');closeConf();
 }
 
 // ── RESUMEN ──
-function doResumen(el){
+function doResumo(el){
   const arr=Object.values(products);
   const low=arr.filter(p=>p.quantity<=p.minStock);
   const val=arr.reduce((a,p)=>a+(p.quantity*p.price),0);
-  const pend=Object.values(orders).filter(o=>o.status==='pendiente');
+  const pend=Object.values(orders).filter(o=>o.status==='pendente');
   const td=dkey(new Date());
   const todayMenu=Object.values(menuItems).filter(m=>m.date===td);
   const bySup={};
-  pend.forEach(o=>{const n=suppliers[o.supplierId]?.name||'Sin proveedor';if(!bySup[n])bySup[n]=[];bySup[n].push(o);});
+  pend.forEach(o=>{const n=suppliers[o.supplierId]?.name||'Sem fornecedor';if(!bySup[n])bySup[n]=[];bySup[n].push(o);});
 
   el.innerHTML=`
     <div class="sum-section">
-      <div class="sum-title">📊 Resumen General</div>
-      <div class="sum-row"><span class="sum-label">Total productos</span><span class="sum-val">${arr.length}</span></div>
-      <div class="sum-row"><span class="sum-label">Stock bajo</span><span class="sum-val" style="color:var(--acc)">${low.length}</span></div>
-      <div class="sum-row"><span class="sum-label">Valor del inventario</span><span class="sum-val" style="color:var(--grn)">R$ ${Math.round(val).toLocaleString('pt-BR')}</span></div>
-      <div class="sum-row"><span class="sum-label">Pedidos pendientes</span><span class="sum-val" style="color:var(--ylw)">${pend.length}</span></div>
-      <div class="sum-row"><span class="sum-label">Platos en menú hoy</span><span class="sum-val">${todayMenu.length}</span></div>
+      <div class="sum-title">📊 Resumo General</div>
+      <div class="sum-row"><span class="sum-label">Total de produtos</span><span class="sum-val">${arr.length}</span></div>
+      <div class="sum-row"><span class="sum-label">Estoque baixo</span><span class="sum-val" style="color:var(--acc)">${low.length}</span></div>
+      <div class="sum-row"><span class="sum-label">Valor do inventário</span><span class="sum-val" style="color:var(--grn)">R$ ${Math.round(val).toLocaleString('pt-BR')}</span></div>
+      <div class="sum-row"><span class="sum-label">Pedidos pendentes</span><span class="sum-val" style="color:var(--ylw)">${pend.length}</span></div>
+      <div class="sum-row"><span class="sum-label">Pratos no cardápio hoje</span><span class="sum-val">${todayMenu.length}</span></div>
     </div>
     ${low.length?`<div class="sum-section">
-      <div class="sum-title">⚠️ Stock Bajo</div>
+      <div class="sum-title">⚠️ Estoque Baixo</div>
       ${low.map(p=>`<div class="sum-row"><span class="sum-label">${p.name}</span><span class="sum-val" style="color:var(--acc)">${p.quantity} ${p.unit} <span style="color:var(--t3);font-size:12px">(mín ${p.minStock})</span></span></div>`).join('')}
     </div>`:''}
     ${pend.length?`<div class="sum-section">
-      <div class="sum-title">🛒 Pedidos por Proveedor</div>
+      <div class="sum-title">🛒 Pedidos por Fornecedor</div>
       ${Object.entries(bySup).map(([sup,items])=>`
         <p style="font-size:11px;color:var(--blu);letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px;font-weight:600">${sup}</p>
         ${items.map(o=>`<div class="sum-row"><span class="sum-label">${o.productName}</span><span class="sum-val">${o.quantity} ${o.unit||''}</span></div>`).join('')}
       `).join('')}
     </div>`:''}
     ${todayMenu.length?`<div class="sum-section">
-      <div class="sum-title">🍽️ Menú de Hoy</div>
+      <div class="sum-title">🍽️ Cardápio de Hoje</div>
       ${todayMenu.map(m=>`<div class="sum-row"><span class="sum-label">${m.name}</span><span class="sum-val" style="color:var(--ylw);font-size:12px">${m.category}</span></div>`).join('')}
     </div>`:''}
-  ${userRole==='gerente'?`
+  ${userFunçãoe==='gerente'?`
     <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--b1)">
-      <p style="font-size:12px;color:var(--t3);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600">Herramientas de Admin</p>
+      <p style="font-size:12px;color:var(--t3);margin-bottom:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600">Ferramentas de Admin</p>
       <button onclick="seedProducts()" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:var(--r2);padding:13px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 14px var(--grn-glow)">
-        🌱 Cargar productos del almacén
+        🌱 Carregar produtos do estoque
       </button>
-      <p style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">Solo usar una vez — carga los 30 productos</p>
+      <p style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">Usar apenas uma vez — carrega os 30 produtos</p>
     </div>`:''}
   `;
 }
@@ -1112,10 +1120,10 @@ function runConf(){if(confFn)confFn();}
 function filterLowStock(){
   if(currentTab!=='inventario'){goTab('inventario');setTimeout(()=>filterLowStock(),100);return;}
   const low=Object.entries(products).filter(([k,p])=>p.quantity<=p.minStock);
-  if(!low.length){showToast('No hay productos con stock bajo ✅');return;}
+  if(!low.length){showToast('No hay produtos com estoque baixo ✅');return;}
   const plist=document.getElementById('plist');
   if(!plist)return;
-  const canEdit=['gerente','chef','cocinero','deposito'].includes(userRole);
+  const canEdit=['gerente','chef','cocinero','deposito'].includes(userFunçãoe);
   // Reset filters
   const srch=document.getElementById('srch');
   const sfilt=document.getElementById('sfilt');
@@ -1123,13 +1131,13 @@ function filterLowStock(){
   if(sfilt)sfilt.value='';
   plist.innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <p style="font-size:11px;color:var(--acc);letter-spacing:1px;text-transform:uppercase">⚠️ Stock bajo (${low.length})</p>
-      <button onclick="doInventario(document.getElementById('main-content'),document.getElementById('fab'))" style="background:var(--s2);border:1px solid var(--b2);border-radius:8px;color:var(--t2);padding:6px 12px;font-size:12px;font-family:var(--font-b);cursor:pointer">← Ver todos</button>
+      <p style="font-size:11px;color:var(--acc);letter-spacing:1px;text-transform:uppercase">⚠️ Estoque baixo (${low.length})</p>
+      <button onclick="doInventário(document.getElementById('main-content'),document.getElementById('fab'))" style="background:var(--s2);border:1px solid var(--b2);border-radius:8px;color:var(--t2);padding:6px 12px;font-size:12px;font-family:var(--font-b);cursor:pointer">← Ver todos</button>
     </div>`+low.map(([key,p])=>{
     const cc=CAT_COLORS[p.category]||'#7f8c8d';
     return`<div class="card low" style="border-left-color:${cc}">
       <div class="card-top">
-        <div><div class="card-name">${p.name}<span class="low-tag">bajo</span></div><div class="card-sub" style="color:${cc}">${p.category}</div></div>
+        <div><div class="card-name">${p.name}<span class="low-tag">baixo</span></div><div class="card-sub" style="color:${cc}">${p.category}</div></div>
         <div class="card-acts">
           <button class="ic-btn grn" title="Agregar a pedido" onclick="quickOrder('${key}')">🛒</button>
           ${canEdit?`<button class="ic-btn" onclick="openProd('${key}')">✏️</button><button class="ic-btn red" onclick="askDel('${key}','${p.name.replace(/'/g,"\\'")}',delProd)">🗑️</button>`:''}
@@ -1193,7 +1201,7 @@ async function seedProducts(){
   for(const p of products){
     await push(ref(db,base),{...p,createdAt:Date.now(),updatedAt:Date.now()});
   }
-  showToast('✅ 30 productos cargados!');
+  showToast('✅ 30 produtos carregados!');
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2500);}
