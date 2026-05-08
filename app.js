@@ -550,9 +550,12 @@ function delOrder(){
 // ── PROVEEDORES ──
 function doFornecedores(el,fab){
   el.innerHTML=`<div class="sec-hdr"><div class="sec-ttl">Fornecedores</div></div><div id="slist"></div>`;
+  // Show FAB always for gerente
+  fab.style.display='flex';
+  fab.onclick=()=>openSup(null);
   const slist=document.getElementById('slist');
   const arr=Object.entries(suppliers);
-  if(!arr.length){slist.innerHTML='<div class="empty"><div class="empty-ico">🏪</div><p>Nenhum fornecedor</p></div>';return;}
+  if(!arr.length){slist.innerHTML='<div class="empty"><div class="empty-ico">🏪</div><p>Nenhum fornecedor</p><p style="font-size:14px;margin-top:8px">Toque em + para adicionar</p></div>';return;}
   slist.innerHTML=arr.map(([key,s])=>{
     const prods=Object.values(products).filter(p=>p.supplierId===key);
     return`<div class="sup-card">
@@ -567,8 +570,6 @@ function doFornecedores(el,fab){
       <div class="sup-prods">${prods.length?prods.map(p=>`<span class="sup-tag">🥩 ${p.name}</span>`).join(''):'<span style="font-size:12px;color:var(--t3)">Sem produtos associados</span>'}</div>
     </div>`;
   }).join('');
-  fab.style.display='flex';
-  fab.onclick=()=>openSup(null);
 }
 
 function openSup(key){
