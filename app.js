@@ -1,5 +1,5 @@
 let user=null,userRole=null,userName=null,accountId=null;
-let products={},menuItems={},orders={},suppliers={},menuLastChanged=null,menuPrevCount=0;
+let products={},menuItems={},orders={},suppliers={},userAccounts={},menuLastChanged=null,menuPrevCount=0;
 let currentTab='inventario';
 let editKey=null,delKey=null,confFn=null;
 let menuView='dia',menuOffset=0;
@@ -273,6 +273,8 @@ async function loadUser(){
     sessionStorage.setItem('welcomeShown','1');
     setTimeout(()=>showWelcomeModal(),800);
   }
+  // Listen to userAccounts for pending users notification
+  onValue(ref(db,'userAccounts'),s=>{userAccounts=s.val()||{};refreshView();});
   onValue(ref(db,`accounts/${accountId}/products`),s=>{products=s.val()||{};refreshView();});
   onValue(ref(db,`accounts/${accountId}/menu`),s=>{
     const newItems=s.val()||{};
@@ -291,7 +293,13 @@ async function loadUser(){
   onValue(ref(db,`accounts/${accountId}/suppliers`),s=>{suppliers=s.val()||{};refreshView();});
 }
 
-const NAV_ICONS={inventario:'🥩',menu:'📋',pedidos:'🛒',proveedores:'🏪',resumen:'📊'};
+const NAV_ICONS={
+  inventario:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/><circle cx="7" cy="6" r="1" fill="currentColor"/><circle cx="7" cy="12" r="1" fill="currentColor"/><circle cx="7" cy="18" r="1" fill="currentColor"/></svg>`,
+  menu:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M8 8h5M8 16h6"/></svg>`,
+  pedidos:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`,
+  proveedores:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  resumen:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`
+};
 const NAV_LABELS={inventario:'Inventário',menu:'Cardápio do dia',pedidos:'Pedidos',proveedores:'Fornecedores',resumen:'Resumo'};
 const NAV_SUBS={inventario:'Estoque e produtos',menu:'Cardápio do buffet',pedidos:'Lista de compras',proveedores:'Contatos',resumen:'Visão gerencial'};
 const NAV_COLS={inventario:'inv',menu:'men',pedidos:'ped',proveedores:'pro',resumen:'res'};
@@ -331,15 +339,42 @@ function renderHome(){
   const menuChangeRecent=menuLastChanged&&((new Date()-menuLastChanged)<3600000);
 
   const alertWrap=document.getElementById('alert-strip-wrap');
-  alertWrap.innerHTML=low.length?`
-    <div class="alert-strip" onclick="goTabAndFilter()">
-      <div class="alert-strip-ico">⚠️</div>
+
+  // Pending users notification for gerente
+  const pendingCount=userRole==='gerente'?Object.values(userAccounts).filter(u=>u.status==='pendente').length:0;
+
+  alertWrap.innerHTML=`
+    ${pendingCount>0?`<div class="alert-strip" onclick="goTab('resumen')" style="background:var(--burg);box-shadow:0 4px 16px rgba(122,30,30,0.3);margin-bottom:8px">
+      <div class="alert-strip-ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      </div>
       <div class="alert-strip-text">
-        <div class="alert-strip-title">${low.length} producto${low.length>1?'s':''} con stock baixo</div>
+        <div class="alert-strip-title" style="color:#fff">${pendingCount} solicitaç${pendingCount>1?'ões':'ão'} de acesso pendente${pendingCount>1?'s':''}</div>
+        <div class="alert-strip-sub" style="color:rgba(255,255,255,0.8)">Toque para aprovar no Resumo</div>
+      </div>
+      <div class="alert-strip-arr" style="color:#fff">›</div>
+    </div>`:''}
+    ${low.length>0?`<div class="alert-strip" onclick="goTabAndFilter()" style="margin-bottom:8px">
+      <div class="alert-strip-ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div class="alert-strip-text">
+        <div class="alert-strip-title">${low.length} produto${low.length>1?'s':''} com estoque baixo</div>
         <div class="alert-strip-sub">Toque para ver e adicionar ao pedido</div>
       </div>
       <div class="alert-strip-arr">›</div>
-    </div>`:'';
+    </div>`:''}
+    ${menuChangeRecent?`<div class="alert-strip" onclick="goTab('menu')" style="background:var(--grn);box-shadow:0 4px 16px var(--grn-glow);margin-bottom:8px">
+      <div class="alert-strip-ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      </div>
+      <div class="alert-strip-text">
+        <div class="alert-strip-title" style="color:#fff">Mudança de última hora</div>
+        <div class="alert-strip-sub" style="color:rgba(255,255,255,0.8)">O cardápio de hoje foi alterado</div>
+      </div>
+      <div class="alert-strip-arr" style="color:#fff">›</div>
+    </div>`:''}
+  `;
 
   // Big nav buttons
   const tabs=ROLES[userRole]?.tabs||['menu'];
@@ -347,8 +382,8 @@ function renderHome(){
     <button class="big-btn ${NAV_COLS[t]}" onclick="goTab('${t}')">
       <div class="btn-ico-wrap">${NAV_ICONS[t]}</div>
       <div>
-        <div class="big-btn-title">${NAV_LABELS[t]}</div>
-        <div class="big-btn-sub">${NAV_SUBS[t]}</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:#fff;letter-spacing:-.1px;margin-top:2px">${NAV_LABELS[t]}</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.75);font-weight:400;margin-top:3px;letter-spacing:.2px">${NAV_SUBS[t]}</div>
       </div>
       <div class="big-btn-arr">›</div>
     </button>`).join('');
