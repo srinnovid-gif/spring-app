@@ -72,16 +72,25 @@ async function doRegister(){
   const pass=document.getElementById('r-pass').value;
   const role=document.getElementById('r-role').value;
   const code=document.getElementById('r-code').value.trim();
+  const phone=document.getElementById('r-phone')?.value.trim()||'';
   if(!name||!email||!pass||!code){setErr('Preencha todos os campos obrigatórios (*)');return;}
   if(pass.length<6){setErr('Mínimo 6 caracteres');return;}
   try{
     const{auth,db,ref,set,createUserWithEmailAndPassword}=window._fb;
     const cred=await createUserWithEmailAndPassword(auth,email,pass);
-    const phone=document.getElementById('r-phone')?.value.trim()||'';
-    await set(ref(db,`userAccounts/${cred.user.uid}`),{code,role,name,email,phone});
+    await set(ref(db,`userAccounts/${cred.user.uid}`),{code,role,name,email,phone,status:'pendente',createdAt:Date.now()});
+    try{
+      await emailjs.send('ch1zqsy','template_uw9djui',{
+        name,email,
+        role:ROLES[role]?.label||role,
+        phone:phone||'Não informado',
+        code
+      },'OVEsOgP7lLroHL8Bo');
+    }catch(emailErr){console.warn('EmailJS:',emailErr);}
+    showToast('Cadastro realizado! Aguarde o código de acesso ✓');
   }catch(e){
     if(e.code==='auth/email-already-in-use')setErr('Este e-mail já está cadastrado');
-    else setErr('Error: '+e.message);
+    else setErr('Erro: '+e.message);
   }
 }
 
@@ -318,14 +327,14 @@ function openProd(key){
   editKey=key;const p=key?products[key]:null;
   const sups=Object.entries(suppliers).map(([k,s])=>`<option value="${k}"${p?.supplierId===k?' selected':''}>${s.name}</option>`).join('');
   showSheet(`${p?'Editar':'Nuevo'} Producto`,`
-    <div class="sh-fld"><label>Nome *</label><input id="pf-n" value="${p?.name||''}" placeholder="Ex: Picanha"/></div>
+    <div class="sh-fld"><label>Nome <span style="color:var(--acc);font-weight:700">*</span></label><input id="pf-n" value="${p?.name||''}" placeholder="Ex: Picanha"/></div>
     <div class="sh-row">
       <div class="sh-fld"><label>Categoria</label><select id="pf-c">${CATS.map(c=>`<option${p?.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
       <div class="sh-fld"><label>Unidade</label><select id="pf-u">${UNITS.map(u=>`<option${p?.unit===u?' selected':''}>${u}</option>`).join('')}</select></div>
     </div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Quantidade *</label><input type="number" id="pf-q" value="${p?.quantity||''}" placeholder="0"/></div>
-      <div class="sh-fld"><label>Estoque mínimo *</label><input type="number" id="pf-m" value="${p?.minStock||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Quantidade <span style="color:var(--acc);font-weight:700">*</span></label><input type="number" id="pf-q" value="${p?.quantity||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Estoque mínimo <span style="color:var(--acc);font-weight:700">*</span></label><input type="number" id="pf-m" value="${p?.minStock||''}" placeholder="0"/></div>
     </div>
     <div class="sh-fld"><label>Preço (R$)</label><input type="number" id="pf-p" value="${p?.price||''}" placeholder="0"/></div>
     <div class="sh-fld"><label>Fornecedor</label><select id="pf-s"><option value="">Sem fornecedor</option>${sups}</select></div>
@@ -441,7 +450,7 @@ function openDish(key){
   showSheet(`${m?'Editar':'Nuevo'} Plato`,`
     <div class="sh-fld"><label>Nome del plato</label><input id="df-n" value="${m?.name||''}" placeholder="Ex: Churrasco"/></div>
     <div class="sh-fld"><label>Categoria</label><select id="df-c">${DISH_CATS.map(c=>`<option${m?.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
-    <div class="sh-fld"><label>Data *</label><input type="date" id="df-d" value="${m?.date||td}"/></div>
+    <div class="sh-fld"><label>Data <span style="color:var(--acc);font-weight:700">*</span></label><input type="date" id="df-d" value="${m?.date||td}"/></div>
     <div class="sh-fld"><label>Descrição (opcional)</label><textarea id="df-desc" placeholder="Ingredientes, observações...">${m?.description||''}</textarea></div>
     <div class="sh-acts"><button class="btn-cancel" onclick="closeSheet()">Cancelar</button><button class="btn-save" onclick="saveDish()">Salvar</button></div>
   `);
@@ -500,7 +509,7 @@ function quickOrder(prodKey){
   showSheet('Adicionar ao Pedido',`
     <div class="sh-fld"><label>Producto</label><input id="of-n" value="${p.name}" readonly style="opacity:.7"/></div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Quantidade *</label><input type="number" id="of-q" value="${p.minStock}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Quantidade <span style="color:var(--acc);font-weight:700">*</span></label><input type="number" id="of-q" value="${p.minStock}" placeholder="0"/></div>
       <div class="sh-fld"><label>Unidade</label><input id="of-u" value="${p.unit}" readonly style="opacity:.7"/></div>
     </div>
     <div class="sh-fld"><label>Fornecedor</label><select id="of-s"><option value="">Sem fornecedor</option>${sups}</select></div>
@@ -515,7 +524,7 @@ function openOrder(key){
   showSheet(`${o?'Editar':'Nuevo'} Pedido`,`
     <div class="sh-fld"><label>Producto</label><input id="of-n" value="${o?.productName||''}" placeholder="Nome del producto"/></div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Quantidade *</label><input type="number" id="of-q" value="${o?.quantity||''}" placeholder="0"/></div>
+      <div class="sh-fld"><label>Quantidade <span style="color:var(--acc);font-weight:700">*</span></label><input type="number" id="of-q" value="${o?.quantity||''}" placeholder="0"/></div>
       <div class="sh-fld"><label>Unidade</label><select id="of-u">${UNITS.map(u=>`<option${o?.unit===u?' selected':''}>${u}</option>`).join('')}</select></div>
     </div>
     <div class="sh-fld"><label>Fornecedor</label><select id="of-s"><option value="">Sem fornecedor</option>${sups}</select></div>
@@ -612,10 +621,10 @@ function openSup(key){
   const existingTags=s?.tags||[];
   const tagsHtml=SUP_TAGS.map(t=>`<button type="button" onclick="toggleTag(this)" data-tag="${t}" style="background:${existingTags.includes(t)?'var(--acc)':'var(--s2)'};color:${existingTags.includes(t)?'#fff':'var(--t2)'};border:1px solid ${existingTags.includes(t)?'var(--acc)':'var(--b2)'};border-radius:20px;padding:6px 12px;font-size:12px;font-family:var(--font-b);cursor:pointer;margin:3px;transition:all .2s">${t}</button>`).join('');
   showSheet(`${s?'Editar':'Novo'} Fornecedor`,`
-    <div class="sh-fld"><label>Nome da empresa *</label><input id="sf-n" value="${s?.name||''}" placeholder="Ex: Frigorífico Central"/></div>
+    <div class="sh-fld"><label>Nome da empresa <span style="color:var(--acc);font-weight:700">*</span></label><input id="sf-n" value="${s?.name||''}" placeholder="Ex: Frigorífico Central"/></div>
     <div class="sh-fld"><label>Responsável</label><input id="sf-contact" value="${s?.contact||''}" placeholder="Nome do contato"/></div>
     <div class="sh-row">
-      <div class="sh-fld"><label>Telefone *</label><input id="sf-p" value="${s?.phone||''}" placeholder="+55 41 ..."/></div>
+      <div class="sh-fld"><label>Telefone <span style="color:var(--acc);font-weight:700">*</span></label><input id="sf-p" value="${s?.phone||''}" placeholder="+55 41 ..."/></div>
       <div class="sh-fld"><label>WhatsApp</label><input id="sf-wa" value="${s?.whatsapp||''}" placeholder="+55 41 ..."/></div>
     </div>
     <div class="sh-fld"><label>E-mail</label><input type="email" id="sf-e" value="${s?.email||''}" placeholder="fornecedor@email.com"/></div>
@@ -640,22 +649,33 @@ function toggleTag(btn){
 }
 
 async function saveSup(){
-  const name=document.getElementById('sf-n').value.trim();
-  if(!name){showToast('O nome é obrigatório');return;}
-  const selectedTags=[...document.querySelectorAll('[data-tag]')].filter(b=>b.style.background.includes('196')||b.style.background.includes('acc')).map(b=>b.dataset.tag);
-  const data={name,
-    contact:document.getElementById('sf-contact').value.trim(),
-    phone:document.getElementById('sf-p').value.trim(),
-    whatsapp:document.getElementById('sf-wa').value.trim(),
-    email:document.getElementById('sf-e').value.trim(),
-    deliveryDays:document.getElementById('sf-days').value.trim(),
-    tags:selectedTags,
-    notes:document.getElementById('sf-no').value.trim(),
-    updatedAt:Date.now()};
-  const{db,ref,set,push}=window._fb;
-  if(editKey)await set(ref(db,`accounts/${accountId}/suppliers/${editKey}`),{...suppliers[editKey],...data});
-  else{data.createdAt=Date.now();await push(ref(db,`accounts/${accountId}/suppliers`),data);}
-  closeSheet();showToast(editKey?'Fornecedor actualizado ✓':'Fornecedor agregado ✓');
+  try{
+    const nameEl=document.getElementById('sf-n');
+    if(!nameEl){showToast('Erro no formulário');return;}
+    const name=nameEl.value.trim();
+    if(!name){showToast('O nome é obrigatório');return;}
+    const g=id=>document.getElementById(id)?.value.trim()||'';
+    const selectedTags=[...document.querySelectorAll('[data-tag]')].filter(b=>b.style.background&&(b.style.background.includes('196')||b.style.background.includes('c45'))).map(b=>b.dataset.tag);
+    const data={
+      name,
+      contact:g('sf-contact'),
+      phone:g('sf-p'),
+      whatsapp:g('sf-wa'),
+      email:g('sf-e'),
+      deliveryDays:g('sf-days'),
+      tags:selectedTags,
+      notes:g('sf-no'),
+      updatedAt:Date.now()
+    };
+    const{db,ref,set,push}=window._fb;
+    if(editKey)await set(ref(db,`accounts/${accountId}/suppliers/${editKey}`),{...suppliers[editKey],...data});
+    else{data.createdAt=Date.now();await push(ref(db,`accounts/${accountId}/suppliers`),data);}
+    closeSheet();
+    showToast(editKey?'Fornecedor atualizado ✓':'Fornecedor adicionado ✓');
+  }catch(e){
+    showToast('Erro ao salvar: '+e.message);
+    console.error(e);
+  }
 }
 
 function delSup(){
