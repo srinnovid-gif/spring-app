@@ -268,9 +268,9 @@ async function loadUser(){
   }
   buildNav();
   showApp();
-  // Show welcome modal only once per session
-  if(!sessionStorage.getItem('welcomeShown')){
-    sessionStorage.setItem('welcomeShown','1');
+  // Show welcome modal only once ever (localStorage persists across sessions)
+  if(!localStorage.getItem('welcomeShown_'+user.uid)){
+    localStorage.setItem('welcomeShown_'+user.uid,'1');
     setTimeout(()=>showWelcomeModal(),800);
   }
   // Listen to userAccounts for pending users notification
@@ -380,10 +380,10 @@ function renderHome(){
   const tabs=ROLES[userRole]?.tabs||['menu'];
   document.getElementById('big-nav').innerHTML=tabs.map(t=>`
     <button class="big-btn ${NAV_COLS[t]}" onclick="goTab('${t}')">
-      <div class="btn-ico-wrap">${NAV_ICONS[t]}</div>
+      <div style="opacity:0.9;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.18));margin-bottom:10px">${NAV_ICONS[t]}</div>
       <div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;color:#fff;letter-spacing:-.1px;margin-top:2px">${NAV_LABELS[t]}</div>
-        <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,255,255,0.75);font-weight:400;margin-top:3px;letter-spacing:.2px">${NAV_SUBS[t]}</div>
+        <div style="font-family:'Jost',sans-serif;font-size:15px;font-weight:600;color:#fff;letter-spacing:.3px;text-transform:uppercase">${NAV_LABELS[t]}</div>
+        <div style="font-family:'Jost',sans-serif;font-size:10px;color:rgba(255,255,255,0.7);font-weight:400;margin-top:3px;letter-spacing:.5px;text-transform:uppercase">${NAV_SUBS[t]}</div>
       </div>
       <div class="big-btn-arr">›</div>
     </button>`).join('');
@@ -412,8 +412,21 @@ function goHome(){
   document.getElementById('home-screen').style.display='block';
   document.getElementById('inner-screen').style.display='none';
   document.getElementById('fab').style.display='none';
+  history.pushState({tab:'home'},'','?tab=home');
   renderHome();
 }
+
+// Handle browser/phone back button
+window.addEventListener('popstate',(e)=>{
+  if(!user)return;
+  const homeVisible=document.getElementById('home-screen').style.display!=='none';
+  if(homeVisible){
+    // Already on home - push state again to prevent exit
+    history.pushState({tab:'home'},'','?tab=home');
+  } else {
+    goHome();
+  }
+});
 
 function refreshView(){
   const homeVisible = document.getElementById('home-screen').style.display !== 'none';
@@ -947,14 +960,6 @@ function doResumo(el){
 
   el.innerHTML=`
     ${userRole==='gerente'?`
-    <div class="sum-card" style="margin-bottom:16px">
-      <div class="sum-title">👥 Usuários Pendentes</div>
-      <div id="pending-users"><p style="font-size:13px;color:var(--t3)">Carregando...</p></div>
-    </div>
-    <div class="sum-card" style="margin-bottom:16px">
-      <div class="sum-title">🛠️ Ferramentas</div>
-      <button onclick="seedProducts()" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:var(--r2);padding:13px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 14px var(--grn-glow)">🌱 Carregar produtos do estoque</button>
-      <p style="font-size:11px;color:var(--t3);margin-top:8px;text-align:center">Usar apenas uma vez</p>
     </div>`:''}
     <div class="sum-section">
       <div class="sum-title">📊 Resumo General</div>
