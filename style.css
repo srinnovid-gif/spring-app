@@ -34,45 +34,33 @@
       pointer-events:none;z-index:0;}
 
     /* SPLASH */
-    #splash{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:80px 40px 60px;z-index:999;transition:opacity 1.4s ease;overflow:hidden;}
-
-    /* BACKGROUND - beige from start with warm radial */
+    #splash{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:60px 40px 50px;z-index:999;transition:opacity 1.4s ease;overflow:hidden;}
     .splash-bg{position:absolute;inset:0;background:var(--bg);z-index:0;}
-    .splash-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 45%,rgba(196,84,26,0.06) 0%,transparent 70%);}
+
+    /* LEAVES */
+    .splash-leaf{position:absolute;opacity:0;}
+    .splash-leaf-tl{width:150px;height:150px;top:-10px;left:-10px;animation:leafIn 1.2s ease 0.2s forwards;}
+    .splash-leaf-br{width:150px;height:150px;bottom:-10px;right:-10px;animation:leafIn 1.2s ease 0.4s forwards;}
+    .splash-leaf-tr{width:90px;height:90px;top:30px;right:20px;animation:leafIn 1s ease 0.6s forwards;}
+    .splash-leaf-bl{width:90px;height:90px;bottom:30px;left:20px;animation:leafIn 1s ease 0.7s forwards;}
+    @keyframes leafIn{from{opacity:0;transform:scale(0.5) rotate(-15deg)}to{opacity:1;transform:scale(1) rotate(0deg)}}
 
     /* CENTER */
-    .splash-center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;}
+    .splash-center{display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:2;}
 
-    /* LETTER BY LETTER - Spring written caligraphically */
-    .splash-name-wrap{font-family:var(--font-h);font-size:82px;font-weight:700;letter-spacing:-4px;color:var(--t1);line-height:1;display:flex;}
-    .splash-name-wrap span{opacity:0;display:inline-block;transform:translateY(20px);}
-    .splash-s{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.4s forwards;}
-    .splash-p{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.62s forwards;}
-    .splash-r{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.84s forwards;}
-    .splash-i{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 1.06s forwards;}
-    .splash-n{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 1.28s forwards;}
-    .splash-g{animation:letterIn 0.5s cubic-bezier(0.16,1,0.3,1) 1.50s forwards;}
-    @keyframes letterIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-
-    /* ORANGE LINE DRAWS ITSELF */
-    .splash-line{width:0;height:2px;background:var(--acc);border-radius:2px;animation:lineGrow 1s ease 2.2s forwards;box-shadow:0 0 8px var(--acc-glow);}
-    @keyframes lineGrow{from{width:0}to{width:56px}}
-
-    /* RESTAURANTE - appears letter by letter */
-    .splash-rest{font-family:var(--font-b);font-size:11px;letter-spacing:0px;text-transform:uppercase;color:var(--t2);font-weight:600;opacity:0;animation:restReveal 1.1s ease 2.4s forwards;}
-    @keyframes restReveal{from{opacity:0;letter-spacing:0px}to{opacity:1;letter-spacing:8px}}
-
-    /* GESTIÓN DE COCINA - fades in last */
-    .splash-tagline-nat{font-family:var(--font-h);font-size:15px;color:var(--t3);opacity:0;animation:fadeUp 1s ease 3.2s forwards;}
+    /* LOGO */
+    .splash-logo-wrap{opacity:0;animation:logoIn 1s cubic-bezier(0.16,1,0.3,1) 0.8s forwards;}
+    @keyframes logoIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+    .splash-logo-img{width:160px;height:160px;border-radius:36px;box-shadow:0 16px 48px rgba(44,26,14,0.18);}
+    .splash-tagline-nat{font-family:var(--font-b);font-size:12px;letter-spacing:5px;text-transform:uppercase;color:var(--t3);font-weight:500;opacity:0;animation:fadeUp 0.8s ease 1.6s forwards;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
     /* BAR */
     .splash-bar-wrap{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:2;}
-    .splash-bar{width:0;max-width:160px;height:1px;background:var(--b2);border-radius:2px;overflow:hidden;position:relative;animation:barAppear 0.1s ease 1s forwards;}
-    @keyframes barAppear{to{width:160px}}
-    .splash-bar::after{content:'';position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--grn),var(--acc));animation:splashLoad 3s ease 1s forwards;}
+    .splash-bar{width:80px;height:1px;background:var(--b2);border-radius:2px;overflow:hidden;position:relative;}
+    .splash-bar::after{content:'';position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--grn),var(--acc));animation:splashLoad 3s ease forwards;}
     @keyframes splashLoad{0%{width:0%}60%{width:70%}85%{width:92%}100%{width:100%}}
-    .splash-pct{font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:500;opacity:0;animation:fadeUp 0.5s ease 1.2s forwards;}
+    .splash-pct{font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:500;opacity:0;animation:fadeUp 0.5s ease 1s forwards;}
 
     /* AUTH */
     #auth{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;flex-direction:column;position:relative;z-index:1;background:var(--bg);}
