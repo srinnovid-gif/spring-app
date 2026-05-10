@@ -61,7 +61,7 @@ function showWelcomeModal(){
         <div style="width:52px;height:52px;border-radius:16px;background:rgba(196,84,26,0.10);border:1px solid rgba(196,84,26,0.20);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🌿</div>
         <div>
           <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:3px">Bem-vindo de volta</div>
-          <div style="font-family:var(--font-h);font-size:22px;font-weight:700;font-style:italic;color:var(--t1)">${userName.split(' ')[0]}</div>
+          <div style="font-family:var(--font-h);font-size:22px;font-weight:700;color:var(--t1)">${userName.split(' ')[0]}</div>
         </div>
       </div>
       <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:20px;margin-bottom:20px;text-align:center">
@@ -87,7 +87,7 @@ function showChangeCode(modal){
       <div style="width:52px;height:52px;border-radius:16px;background:rgba(196,84,26,0.10);border:1px solid rgba(196,84,26,0.20);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔑</div>
       <div>
         <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:3px">Personalizar</div>
-        <div style="font-family:var(--font-h);font-size:22px;font-weight:700;font-style:italic;color:var(--t1)">Novo código</div>
+        <div style="font-family:var(--font-h);font-size:22px;font-weight:700;color:var(--t1)">Novo código</div>
       </div>
     </div>
     <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:20px;margin-bottom:20px">
@@ -213,7 +213,7 @@ async function doRegister(){
 function showPendingScreen(){
   document.getElementById('auth').innerHTML=`
     <div class="auth-wrap">
-      <div style="font-family:var(--font-h);font-size:48px;font-weight:700;font-style:italic;text-align:center;margin-bottom:4px;color:var(--t1)">Spring<span style="color:var(--acc)">.</span></div>
+      <div style="font-family:var(--font-h);font-size:48px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--t1)">Spring<span style="color:var(--acc)">.</span></div>
       <div style="text-align:center;font-size:11px;color:var(--t3);letter-spacing:4px;text-transform:uppercase;margin-bottom:32px">Gestão de Cozinha</div>
       <div style="background:var(--s1);border:1px solid var(--b2);border-radius:24px;padding:32px 24px;text-align:center;box-shadow:0 4px 32px rgba(80,45,20,0.10)">
         <div style="font-size:48px;margin-bottom:16px">🌿</div>
@@ -402,7 +402,7 @@ function renderHome(){
         ${todayItems.length?todayItems.slice(0,3).map(m=>`
           <div class="today-dish">
             <div class="today-dish-cat">🍽️</div>
-            <div><div class="today-dish-name">${m.name}</div><div class="today-dish-type">${m.category||''}</div></div>
+            <div><div style="font-family:var(--font-b);font-size:16px;font-weight:600;color:var(--t1)">${m.name}</div><div class="today-dish-type">${m.category||''}</div></div>
           </div>`).join(''):`<div class="today-empty">Nenhum prato cadastrado para hoje</div>`}
       </div>`;
   }else{wrap.innerHTML='';}
@@ -505,8 +505,24 @@ function doInventário(el,fab){
         <option value="">Todos</option>${CATS.map(c=>`<option>${c}</option>`).join('')}
       </select>
     </div>
+    <div style="padding:0 20px;display:flex;justify-content:flex-end;margin-bottom:8px">
+      <div style="display:flex;background:var(--s2);border-radius:10px;border:1px solid var(--b2);overflow:hidden">
+        <button id="btn-list" onclick="setView('list')" style="background:var(--acc);color:#fff;border:none;padding:7px 14px;font-size:12px;font-family:var(--font-b);font-weight:600;cursor:pointer">☰ Lista</button>
+        <button id="btn-grid" onclick="setView('grid')" style="background:none;color:var(--t2);border:none;padding:7px 14px;font-size:12px;font-family:var(--font-b);font-weight:600;cursor:pointer">⊞ Grid</button>
+      </div>
+    </div>
     <div id="plist" style="padding:0 20px"></div>`;
 
+  renderProductList();
+}
+
+let productView='list';
+function setView(v){
+  productView=v;
+  document.getElementById('btn-list').style.background=v==='list'?'var(--acc)':'none';
+  document.getElementById('btn-list').style.color=v==='list'?'#fff':'var(--t2)';
+  document.getElementById('btn-grid').style.background=v==='grid'?'var(--acc)':'none';
+  document.getElementById('btn-grid').style.color=v==='grid'?'#fff':'var(--t2)';
   renderProductList();
 }
 
@@ -809,10 +825,7 @@ function doFornecedores(el,fab){
 
   const filtered=supTagFilter?arr.filter(([k,s])=>(s.tags||[]).includes(supTagFilter)):arr;
 
-  let html=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-    <div style="font-size:18px;font-weight:700;font-family:var(--font-h);font-style:italic">Fornecedores</div>
-    <button onclick="openSup(null)" style="background:var(--acc);color:#fff;border:none;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:600;cursor:pointer">+ Novo</button>
-  </div>${filterHtml}`;
+  let html=`<div style="margin-bottom:14px">${filterHtml}</div>`;
 
   if(!arr.length){
     html+='<div class="empty"><div class="empty-ico">🏪</div><p>Nenhum fornecedor cadastrado</p></div>';
@@ -836,7 +849,7 @@ function doFornecedores(el,fab){
         </div>
         ${tagsHtml?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin:10px 0">'+tagsHtml+'</div>':''}
         ${s.deliveryDays?'<div style="font-size:12px;color:var(--t3);margin-bottom:6px">🚚 '+s.deliveryDays+'</div>':''}
-        ${s.notes?'<div style="font-size:12px;color:var(--t3);font-style:italic;margin-bottom:8px">'+s.notes+'</div>':''}
+        ${s.notes?'<div style="font-size:12px;color:var(--t3);margin-bottom:8px">'+s.notes+'</div>':''}
         <div class="sup-prods">${prods.length?prods.map(p=>'<span class="sup-tag">🥩 '+p.name+'</span>').join(''):'<span style="font-size:12px;color:var(--t3)">Sem produtos associados</span>'}</div>
       </div>`;
     });
@@ -942,7 +955,7 @@ function doResumo(el){
     const usersEl=document.getElementById('pending-users');
     if(!usersEl)return;
     if(!pending.length){
-      usersEl.innerHTML='<p style="font-size:13px;color:var(--t3);font-style:italic">Nenhum usuário pendente</p>';
+      usersEl.innerHTML='<p style="font-size:13px;color:var(--t3);font-weight:500">Nenhum usuário pendente</p>';
       return;
     }
     usersEl.innerHTML=pending.map(u=>`
@@ -987,7 +1000,7 @@ function doResumo(el){
   `;
   // Reload pending users
   const{db:db2,ref:ref2,get:get2}=window._fb;
-  get2(ref2(db2,'userAccounts')).then(snap=>{const pending=[];if(snap.exists()){snap.forEach(child=>{const d=child.val();if(d.status==='pendente')pending.push({uid:child.key,...d});});}const usersEl=document.getElementById('pending-users');if(!usersEl)return;if(!pending.length){usersEl.innerHTML='<p style="font-size:13px;color:var(--t3);font-style:italic">Nenhum usuário pendente</p>';return;}usersEl.innerHTML=pending.map(u=>`<div style="background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:14px;margin-bottom:10px"><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">${u.name||u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">✉️ ${u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">${ROLES[u.role]?.label||u.role}</div>${u.phone?`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">📞 ${u.phone}</div>`:''}<button onclick="approveUser('${u.uid}','${u.email}','${u.name||''}')" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer">✓ Aprovar e enviar código</button></div>`).join('');});
+  get2(ref2(db2,'userAccounts')).then(snap=>{const pending=[];if(snap.exists()){snap.forEach(child=>{const d=child.val();if(d.status==='pendente')pending.push({uid:child.key,...d});});}const usersEl=document.getElementById('pending-users');if(!usersEl)return;if(!pending.length){usersEl.innerHTML='<p style="font-size:13px;color:var(--t3);font-weight:500">Nenhum usuário pendente</p>';return;}usersEl.innerHTML=pending.map(u=>`<div style="background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:14px;margin-bottom:10px"><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">${u.name||u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">✉️ ${u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">${ROLES[u.role]?.label||u.role}</div>${u.phone?`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">📞 ${u.phone}</div>`:''}<button onclick="approveUser('${u.uid}','${u.email}','${u.name||''}')" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer">✓ Aprovar e enviar código</button></div>`).join('');});
 }
 
 // ── UTILS ──
