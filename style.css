@@ -34,92 +34,82 @@
       pointer-events:none;z-index:0;}
 
     /* SPLASH */
-    #splash{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:70px 40px 55px;overflow:hidden;transition:opacity 1.4s ease;}
-    .sp-bg-base{position:absolute;inset:0;background:var(--bg);z-index:0;}
+    #splash{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:70px 40px 55px;overflow:hidden;transition:opacity 1.4s ease;background:#f6efe6;}
+    .sp-bg-base{position:absolute;inset:0;background:#f6efe6;z-index:0;}
 
-    /* BOTANICAL SVG */
-    .sp-botanical{position:absolute;inset:0;width:100%;height:100%;z-index:1;overflow:hidden;}
-
-    /* LEFT LEAVES - slide in from left */
-    .sp-tl-1{animation:slideFromLeft 1s cubic-bezier(0.16,1,0.3,1) 0.1s both;}
-    .sp-tl-2{animation:slideFromLeft 1s cubic-bezier(0.16,1,0.3,1) 0.35s both;}
-    .sp-tl-3{animation:slideFromLeft 1s cubic-bezier(0.16,1,0.3,1) 0.55s both;}
-    .sp-tl-4{animation:slideFromLeft 0.8s cubic-bezier(0.16,1,0.3,1) 0.7s both;}
-    @keyframes slideFromLeft{
-      from{opacity:0;transform:translateX(-120px)}
-      to{opacity:1;transform:translateX(0)}
+    /* PALM LEAVES LEFT - slides in from left with rotation */
+    .sp-palm-left{
+      position:absolute;
+      top:-5%;
+      left:-75%;
+      height:65%;
+      object-fit:cover;
+      opacity:0;
+      z-index:1;
+      animation:slideLeavesLeft 2s cubic-bezier(0.25,1,0.5,1) 0.1s forwards;
+    }
+    @keyframes slideLeavesLeft{
+      0%{transform:translateX(0) rotate(-10deg);opacity:0;}
+      100%{transform:translateX(68%) rotate(0deg);opacity:1;}
     }
 
-    /* RIGHT LEAVES - slide in from right */
-    .sp-tr-1{animation:slideFromRight 1s cubic-bezier(0.16,1,0.3,1) 0.2s both;}
-    .sp-tr-2{animation:slideFromRight 1s cubic-bezier(0.16,1,0.3,1) 0.42s both;}
-    .sp-tr-3{animation:slideFromRight 1s cubic-bezier(0.16,1,0.3,1) 0.62s both;}
-    .sp-tr-4{animation:slideFromRight 0.8s cubic-bezier(0.16,1,0.3,1) 0.78s both;}
-    @keyframes slideFromRight{
-      from{opacity:0;transform:translateX(120px)}
-      to{opacity:1;transform:translateX(0)}
+    /* PALM LEAVES RIGHT - slides in from right mirrored */
+    .sp-palm-right{
+      position:absolute;
+      bottom:-5%;
+      right:-75%;
+      height:65%;
+      object-fit:cover;
+      opacity:0;
+      z-index:1;
+      transform:scaleX(-1) scaleY(-1);
+      animation:slideLeavesRight 2s cubic-bezier(0.25,1,0.5,1) 0.3s forwards;
     }
-
-    /* Subtle sway after entering */
-    .sp-tropical-leaf{animation-fill-mode:both;}
-    .sp-tl-1,.sp-tl-3{animation:slideFromLeft 1s cubic-bezier(0.16,1,0.3,1) var(--d,0.1s) both,sway 4s ease-in-out calc(var(--d,0.1s) + 1s) infinite alternate;}
-    .sp-tl-2,.sp-tl-4{animation:slideFromLeft 1s cubic-bezier(0.16,1,0.3,1) var(--d,0.35s) both,swayAlt 4.5s ease-in-out calc(var(--d,0.35s) + 1s) infinite alternate;}
-    .sp-tr-1,.sp-tr-3{animation:slideFromRight 1s cubic-bezier(0.16,1,0.3,1) var(--d,0.2s) both,sway 4s ease-in-out calc(var(--d,0.2s) + 1s) infinite alternate;}
-    .sp-tr-2,.sp-tr-4{animation:slideFromRight 1s cubic-bezier(0.16,1,0.3,1) var(--d,0.42s) both,swayAlt 4.5s ease-in-out calc(var(--d,0.42s) + 1s) infinite alternate;}
-
-    @keyframes sway{from{transform:rotate(-1.5deg) translateX(0)}to{transform:rotate(1.5deg) translateX(2px)}}
-    @keyframes swayAlt{from{transform:rotate(1deg) translateX(0)}to{transform:rotate(-1deg) translateX(-2px)}}
-
-    /* Fix individual timings */
-    .sp-tl-1{--d:0.1s;}
-    .sp-tl-2{--d:0.35s;}
-    .sp-tl-3{--d:0.55s;}
-    .sp-tl-4{--d:0.7s;}
-    .sp-tr-1{--d:0.2s;}
-    .sp-tr-2{--d:0.42s;}
-    .sp-tr-3{--d:0.62s;}
-    .sp-tr-4{--d:0.78s;}
+    @keyframes slideLeavesRight{
+      0%{transform:scaleX(-1) scaleY(-1) translateX(0) rotate(-10deg);opacity:0;}
+      100%{transform:scaleX(-1) scaleY(-1) translateX(68%) rotate(0deg);opacity:1;}
+    }
 
     /* CENTER */
-    .sp-center{display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:3;}
-
-    /* HANDWRITING ANIMATION */
-    .sp-text-svg{width:280px;height:auto;overflow:visible;filter:drop-shadow(0 2px 8px rgba(44,26,14,0.10));}
-
-    /* Each letter draws itself - stroke-dasharray trick */
-    .sp-letter{stroke-dasharray:300;stroke-dashoffset:300;opacity:0;}
-    .sp-letter-1{animation:writeLetter 0.6s ease 1.2s forwards;}
-    .sp-letter-2{animation:writeLetter 0.5s ease 1.7s forwards;}
-    .sp-letter-3{animation:writeLetter 0.35s ease 2.1s forwards;}
-    .sp-letter-4{animation:writeLetter 0.25s ease 2.38s forwards;}
-    .sp-letter-5{animation:writeLetter 0.45s ease 2.55s forwards;}
-    .sp-letter-6{animation:writeLetter 0.55s ease 2.9s forwards;}
-    @keyframes writeLetter{
-      0%{stroke-dashoffset:300;opacity:1;}
-      100%{stroke-dashoffset:0;opacity:1;}
+    .sp-center{
+      display:flex;flex-direction:column;align-items:center;
+      gap:14px;position:relative;z-index:3;
     }
 
-    /* Dot on i */
-    .sp-dot{opacity:0;animation:dotPop 0.2s ease 2.42s forwards;}
-    @keyframes dotPop{
-      0%{opacity:0;transform:scale(0);}
-      60%{transform:scale(1.4);}
-      100%{opacity:1;transform:scale(1);}
+    /* LOGO CONTAINER */
+    .sp-logo-container{
+      position:relative;
+      width:72vw;
+      max-width:280px;
     }
 
-    /* Restaurante fades in after Spring is written */
-    .sp-restaurante{opacity:0;animation:subIn 0.6s ease 3.3s forwards;}
-    .sp-line{width:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--acc),transparent);animation:lineGrow 0.6s ease 3.6s forwards;}
-    @keyframes lineGrow{to{width:100px}}
-    .sp-sub{font-family:var(--font-b);font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--t3);font-weight:500;opacity:0;animation:subIn 0.7s ease 3.8s forwards;}
+    /* SPRING LOGO - reveal left to right like writing */
+    .sp-spring-logo{
+      width:100%;
+      display:block;
+      clip-path:polygon(0 0, 0 0, 0 100%, 0% 100%);
+      animation:revealLogo 2.5s ease-in-out 1s forwards;
+      filter:drop-shadow(0 2px 8px rgba(44,26,14,0.08));
+    }
+    @keyframes revealLogo{
+      0%{clip-path:polygon(0 0, 0 0, 0 100%, 0% 100%);}
+      100%{clip-path:polygon(0 0, 100% 0, 100% 100%, 0% 100%);}
+    }
+
+    /* SUB TEXT */
+    .sp-sub{
+      font-family:var(--font-b);font-size:10px;letter-spacing:5px;
+      text-transform:uppercase;color:#7a5a3a;font-weight:500;
+      opacity:0;animation:subIn 0.7s ease 3.2s forwards;
+    }
     @keyframes subIn{from{opacity:0;letter-spacing:1px}to{opacity:1;letter-spacing:5px}}
 
     /* BOTTOM */
     .sp-bottom{width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:3;}
-    .sp-bar{width:70px;height:1px;background:var(--b2);border-radius:1px;overflow:hidden;}
-    .sp-bar-fill{height:100%;width:0;background:linear-gradient(90deg,var(--grn),var(--acc));animation:barFill 3s ease 0.2s forwards;}
+    .sp-bar{width:70px;height:1px;background:rgba(44,26,14,0.12);border-radius:1px;overflow:hidden;}
+    .sp-bar-fill{height:100%;width:0;background:linear-gradient(90deg,#5a7028,#c4541a);animation:barFill 3.5s ease 0.2s forwards;}
     @keyframes barFill{0%{width:0}55%{width:65%}82%{width:88%}100%{width:100%}}
-    .sp-pct{font-size:9px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;font-weight:500;opacity:0;animation:subIn 0.5s ease 0.6s forwards;}
+    .sp-pct{font-size:9px;color:#7a5a3a;letter-spacing:3px;text-transform:uppercase;font-weight:500;opacity:0;animation:subIn 0.5s ease 0.6s forwards;}
 
     /* AUTH */
     #auth{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;flex-direction:column;position:relative;z-index:1;background:var(--bg);}
