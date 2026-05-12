@@ -5,11 +5,11 @@ let editKey=null,delKey=null,confFn=null;
 let menuView='dia',menuOffset=0;
 
 const ROLES={
-  gerente:{label:'👩‍💼 Gerente',tabs:['inventario','menu','pedidos','proveedores','resumen']},
-  chef:{label:'👨‍🍳 Chef',tabs:['inventario','menu','pedidos']},
-  cocinero:{label:'🧑‍🍳 Cozinheiro',tabs:['inventario','menu']},
-  deposito:{label:'📦 Estoque',tabs:['inventario','pedidos']},
-  salon:{label:'🍽️ Salão',tabs:['menu']},
+  gerente:{label:'◈ Gerente',tabs:['inventario','menu','pedidos','proveedores','resumen']},
+  chef:{label:'⚙ Chef',tabs:['inventario','menu','pedidos']},
+  cocinero:{label:'✦ Cozinheiro',tabs:['inventario','menu']},
+  deposito:{label:'▦ Estoque',tabs:['inventario','pedidos']},
+  salon:{label:'◇ Salão',tabs:['menu']},
 };
 const TAB_LABELS={inventario:'🥩 Inventário',menu:'📋 Menú',pedidos:'🛒 Pedidos',proveedores:'🏪 Fornecedores',resumen:'📊 Resumo'};
 const CAT_COLORS={Res:'#c0392b',Pollo:'#e67e22',Cerdo:'#8e44ad',Pescado:'#2980b9',Suplemento:'#27ae60',Lácteos:'#16a085',Vegetales:'#27ae60',Otro:'#7f8c8d'};
@@ -180,11 +180,12 @@ async function doRegister(){
     const{auth,db,ref,set,createUserWithEmailAndPassword,signOut}=window._fb;
     const cred=await createUserWithEmailAndPassword(auth,email,pass);
     // Save user as pending - no code yet
+    const sede=document.getElementById('r-sede')?.value||'juveve';
     await set(ref(db,`userAccounts/${cred.user.uid}`),{
       code:'',role,
       name:`${name} ${lastname}`.trim(),
       firstName:name,lastName:lastname,
-      email,phone,birthday,
+      email,phone,birthday,sede,
       status:'pendente',
       password:pass,
       createdAt:Date.now()
