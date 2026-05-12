@@ -79,7 +79,7 @@
         <div class="fld"><label>E-mail <span style="color:#c4541a;font-weight:700">*</span></label><input type="email" id="r-email" placeholder="seu@email.com"/></div>
         <div class="fld"><label>Celular / WhatsApp <span style="color:#c4541a;font-weight:700">*</span></label><input type="tel" id="r-phone" placeholder="+55 41 99999-9999"/></div>
         <div class="fld">
-          <label>Data de nascimento <span style="color:#c4541a;font-weight:700">*</span></label>
+          <label>Quando é seu aniversário? <span style="color:#c4541a;font-weight:700">*</span></label>
           <div style="display:grid;grid-template-columns:2fr 2fr 3fr;gap:8px;margin-top:2px">
             <select id="r-day" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:13px 8px;color:var(--t1);font-size:15px;font-family:var(--font-b);outline:none">
               <option value="" disabled selected style="color:var(--t3)">Dia</option>
@@ -98,13 +98,19 @@
             </select>
           </div>
         </div>
+        <div class="fld"><label>Unidade <span style="color:#c4541a;font-weight:700">*</span></label>
+          <select id="r-sede">
+            <option value="juveve">🏠 Juvevê</option>
+            <option value="batel">🏠 Batel</option>
+          </select>
+        </div>
         <div class="fld"><label>Função <span style="color:#c4541a;font-weight:700">*</span></label>
           <select id="r-role">
-            <option value="gerente">👩‍💼 Gerente</option>
-            <option value="chef">👨‍🍳 Chef</option>
-            <option value="cocinero">🧑‍🍳 Cozinheiro</option>
-            <option value="deposito">📦 Estoque</option>
-            <option value="salon">🍽️ Salão</option>
+            <option value="gerente">⬡ Gerente</option>
+            <option value="chef">⚙ Chef</option>
+            <option value="cocinero">✦ Cozinheiro</option>
+            <option value="deposito">▦ Estoque</option>
+            <option value="salon">◈ Salão</option>
           </select>
         </div>
         <button class="btn-main" onclick="doRegister()">Solicitar acesso</button>
