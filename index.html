@@ -66,7 +66,7 @@
       <!-- LOGIN -->
       <div id="login-f">
         <div class="fld"><label>E-mail <span style="color:#c4541a;font-weight:700">*</span></label><input type="email" id="l-email" placeholder="seu@email.com"/></div>
-        <div class="fld"><label>Código de Acesso <span style="color:#c4541a;font-weight:700">*</span> <span style="color:var(--t3);font-size:10px;font-weight:400">(4 dígitos)</span></label><input type="number" id="l-code" placeholder="• • • •" maxlength="4" style="letter-spacing:6px;font-weight:400;font-size:22px;text-align:center;font-family:'DM Sans',sans-serif" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)"/></div>
+        <div class="fld"><label>Código de Acesso <span style="color:#c4541a;font-weight:700">*</span> <span style="color:var(--t3);font-size:10px;font-weight:400">(4 dígitos)</span></label><input type="password" inputmode="numeric" pattern="[0-9]*" id="l-code" placeholder="• • • •" maxlength="4" autocomplete="off" style="letter-spacing:10px;font-weight:700;font-size:24px;text-align:center;font-family:'DM Sans',sans-serif;-webkit-text-security:disc" oninput="this.value=this.value.replace(/[^0-9]/g,'');if(this.value.length>4)this.value=this.value.slice(0,4)"/></div>
         <button class="btn-main" onclick="doLogin()">Entrar</button>
       </div>
 
@@ -177,6 +177,21 @@
 <div class="toast" id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    function selectRole(btn, role){
+      document.querySelectorAll('.role-btn').forEach(b=>{
+        b.style.background='var(--s2)';
+        b.style.borderColor='var(--b2)';
+        b.querySelectorAll('svg')[0].style.stroke='currentColor';
+        b.querySelectorAll('div')[0].style.color='var(--t1)';
+      });
+      btn.style.background='var(--acc)';
+      btn.style.borderColor='var(--acc)';
+      btn.querySelectorAll('svg')[0].style.stroke='white';
+      btn.querySelectorAll('div')[0].style.color='white';
+      document.getElementById('r-role').value=role;
+    }
+  </script>
   <script>
     if('serviceWorker' in navigator){
       navigator.serviceWorker.register('/sw.js').catch(()=>{});
