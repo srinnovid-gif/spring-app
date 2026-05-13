@@ -21,6 +21,7 @@ const DISH_CATS=['Entrada','Plato Principal','Acompañamiento','Postre','Bebida'
 function waitFB(cb,t=0){if(window._fb){cb();}else if(t<30){setTimeout(()=>waitFB(cb,t+1),200);}else{alert('Error conectando Firebase');}}
 
 window.addEventListener('load',()=>{
+  window._splashStart=Date.now();
   waitFB(()=>{
     const{auth,onAuthStateChanged}=window._fb;
     // Add timeout only for splash animation, not for auth
@@ -28,9 +29,9 @@ window.addEventListener('load',()=>{
       const s=document.getElementById('splash');
       if(s&&s.style.opacity!=='0'){
         s.style.opacity='0';
-        setTimeout(()=>s.style.display='none',500);
+        setTimeout(()=>s.style.display='none',1800);
       }
-    },3000);
+    },9500);
     onAuthStateChanged(auth,u=>{
       hideSplash();
       if(u){user=u;loadUser();}
@@ -42,11 +43,14 @@ window.addEventListener('load',()=>{
 function hideSplash(){
   const s=document.getElementById('splash');
   const pct=document.getElementById('splash-pct');
-  if(pct)pct.textContent='Listo ✓';
+  if(pct)pct.textContent='Pronto ✓';
+  // Wait minimum 9.5s for full animation
+  const elapsed=Date.now()-window._splashStart;
+  const remaining=Math.max(0,9500-elapsed);
   setTimeout(()=>{
     s.style.opacity='0';
-    setTimeout(()=>s.style.display='none',1400);
-  },1500);
+    setTimeout(()=>s.style.display='none',1800);
+  },remaining);
 }
 function showAuth(){document.getElementById('auth').style.display='flex';}
 function showApp(){document.getElementById('auth').style.display='none';document.getElementById('app').style.display='flex';}
