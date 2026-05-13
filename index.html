@@ -39,6 +39,11 @@
 
 <div id="splash">
   <div class="sp-bg-base"></div>
+
+  <!-- Decorative subtle glow -->
+  <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(196,84,26,0.06) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-60%);z-index:1;animation:glowIn 2s ease 0.5s both;"></div>
+
+  <!-- Perfectly centered content -->
   <div class="sp-center">
     <div class="splash-name-wrap">
       <span class="splash-s">S</span><span class="splash-p">p</span><span class="splash-r">r</span><span class="splash-i">i</span><span class="splash-n">n</span><span class="splash-g">g</span>
@@ -47,6 +52,8 @@
     <div class="splash-rest">Restaurante</div>
     <div class="splash-tagline-nat">Gestão de Cozinha</div>
   </div>
+
+  <!-- Bottom progress bar -->
   <div class="sp-bottom">
     <div class="sp-bar"><div class="sp-bar-fill"></div></div>
     <div class="sp-pct" id="splash-pct">Carregando...</div>
