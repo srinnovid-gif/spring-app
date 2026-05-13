@@ -107,8 +107,9 @@
         </div>
         <div class="fld"><label>Unidade <span style="color:#c4541a;font-weight:700">*</span></label>
           <select id="r-sede">
-            <option value="juveve">🏠 Juvevê</option>
-            <option value="batel">🏠 Batel</option>
+            <option value="juveve">Juvevê</option>
+            <option value="batel">Batel</option>
+            <option value="comendador">Comendador</option>
           </select>
         </div>
         <div class="fld">
@@ -154,26 +155,43 @@
     </div>
 
     <!-- DOWNLOAD APK BANNER -->
-    <div style="margin-top:16px;width:100%;max-width:400px;padding:0 20px;box-sizing:border-box">
-      <a href="https://drive.google.com/uc?export=download&id=1ilLNKTKeqIy4GrVwKNozYVWHTXw7m1U8" 
-         style="display:flex;align-items:center;gap:12px;background:var(--s1);border:1.5px solid var(--b2);border-radius:16px;padding:14px 18px;text-decoration:none;transition:all .2s">
-        <div style="width:40px;height:40px;border-radius:12px;background:rgba(196,84,26,0.10);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c4541a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div style="margin-top:20px;width:100%;max-width:400px;padding:0 20px;box-sizing:border-box">
+
+      <!-- Android download -->
+      <a href="https://drive.google.com/uc?export=download&id=1ilLNKTKeqIy4GrVwKNozYVWHTXw7m1U8"
+         style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#2c1a0e,#4a2e18);border-radius:18px;padding:16px 20px;text-decoration:none;box-shadow:0 8px 24px rgba(44,26,14,0.20);position:relative;overflow:hidden">
+        <!-- Shine effect -->
+        <div style="position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent);border-radius:18px 18px 0 0;pointer-events:none"></div>
+        <!-- Android icon -->
+        <div style="width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(255,255,255,0.12)">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round">
+            <path d="M4 16.5A2.5 2.5 0 0 1 1.5 14V10A2.5 2.5 0 0 1 4 7.5"/>
+            <path d="M20 16.5A2.5 2.5 0 0 0 22.5 14V10A2.5 2.5 0 0 0 20 7.5"/>
+            <rect x="4" y="5" width="16" height="14" rx="3"/>
+            <path d="M8 5L6.5 2M16 5L17.5 2"/>
+            <circle cx="9" cy="12" r="1" fill="#fff"/>
+            <circle cx="15" cy="12" r="1" fill="#fff"/>
+          </svg>
+        </div>
+        <div style="flex:1">
+          <div style="font-family:var(--font-b);font-size:15px;font-weight:700;color:#fff;letter-spacing:-.2px">Baixar para Android</div>
+          <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.6);margin-top:3px">Spring Restaurante · APK mais recente</div>
+        </div>
+        <div style="background:var(--acc);border-radius:10px;padding:8px 14px;flex-shrink:0">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
             <polyline points="7 10 12 15 17 10"/>
             <line x1="12" y1="15" x2="12" y2="3"/>
           </svg>
         </div>
-        <div>
-          <div style="font-family:var(--font-b);font-size:14px;font-weight:700;color:var(--t1)">Baixar app Spring</div>
-          <div style="font-family:var(--font-b);font-size:11px;color:var(--t3);margin-top:2px">Instalar no Android · versão mais recente</div>
-        </div>
-        <div style="margin-left:auto;color:var(--t3)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </div>
       </a>
-      <div style="font-family:var(--font-b);font-size:10px;color:var(--t3);text-align:center;margin-top:8px;letter-spacing:.5px">
-        iOS: adicione à tela de início pelo Safari
+
+      <!-- iOS note -->
+      <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;background:var(--s1);border:1px solid var(--b1);border-radius:12px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 8v4m0 4h.01"/></svg>
+        <div style="font-family:var(--font-b);font-size:11px;color:var(--t3)">
+          <strong style="color:var(--t2)">iPhone:</strong> abra no Safari → compartilhar → "Adicionar à Tela de Início"
+        </div>
       </div>
     </div>
 
