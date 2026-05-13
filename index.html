@@ -106,28 +106,34 @@
         </div>
         <div class="fld">
           <label>Função <span style="color:#c4541a;font-weight:700">*</span></label>
-          <input type="hidden" id="r-role" value="cocinero"/>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
-            <button type="button" onclick="selectRole(this,'gerente')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px">
+          <input type="hidden" id="r-role" value=""/>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px">
+
+            <button type="button" onclick="selectRole(this,'gerente')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <div style="font-size:12px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Gerente</div>
+              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Gerente</div>
             </button>
-            <button type="button" onclick="selectRole(this,'chef')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px">
+
+            <button type="button" onclick="selectRole(this,'chef')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
-              <div style="font-size:12px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Chef</div>
+              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Chef</div>
             </button>
-            <button type="button" onclick="selectRole(this,'cocinero')" class="role-btn role-active" style="background:var(--acc);border:1.5px solid var(--acc);border-radius:12px;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8l-5-5-5 5M12 3v13"/><path d="M5 19h14"/></svg>
-              <div style="font-size:12px;font-weight:600;color:#fff;font-family:var(--font-b)">Cozinheiro</div>
+
+            <button type="button" onclick="selectRole(this,'cocinero')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2l1.5 1.5M12 2c0 4.4-3.6 8-8 8"/><path d="M3 10c4.4 0 8-3.6 8-8M19 22l-8.5-8.5M22 19l-8.5-8.5M14.5 14.5L22 22"/></svg>
+              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Cozinheiro</div>
             </button>
-            <button type="button" onclick="selectRole(this,'deposito')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-              <div style="font-size:12px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Estoque</div>
+
+            <button type="button" onclick="selectRole(this,'deposito')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l10-5 10 5v10l-10 5L2 17z"/><path d="M12 22V12M2 7l10 5 10-5"/></svg>
+              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Estoque</div>
             </button>
-            <button type="button" onclick="selectRole(this,'salon')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:14px 8px;cursor:pointer;transition:all .2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;grid-column:span 2">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-              <div style="font-size:12px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Salão</div>
+
+            <button type="button" onclick="selectRole(this,'salon')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/><path d="M5 6v12M19 6v12"/></svg>
+              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Salão</div>
             </button>
+
           </div>
         </div>
         <button class="btn-main" onclick="doRegister()">Solicitar acesso</button>
