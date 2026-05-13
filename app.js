@@ -135,21 +135,21 @@ function authTab(t){
 function setErr(m){document.getElementById('auth-err').textContent=m;}
 
 async function doLogin(){
-  const email=document.getElementById('l-email').value.trim();
   const code=document.getElementById('l-code').value.trim();
-  if(!email||!code){setErr('Preencha todos os campos (*)');return;}
+  if(!code){setErr('Digite seu código de acesso');return;}
+  if(code.length!==4){setErr('O código deve ter 4 dígitos');return;}
   try{
     const{auth,db,ref,get,signInWithEmailAndPassword}=window._fb;
     const snap=await get(ref(db,'userAccounts'));
-    if(!snap.exists()){setErr('Usuário não encontrado');return;}
-    let foundData=null;let foundUid=null;
+    if(!snap.exists()){setErr('Nenhum usuário encontrado');return;}
+    let foundData=null;let foundEmail=null;
     snap.forEach(child=>{
-      if(child.val().email===email){foundData=child.val();foundUid=child.key;}
+      const d=child.val();
+      if(d.code&&String(d.code)===String(code)){foundData=d;foundEmail=d.email;}
     });
-    if(!foundData){setErr('E-mail não encontrado');return;}
-    if(!foundData.code||String(foundData.code)!==String(code)){setErr('Código de acesso incorreto');return;}
+    if(!foundData){setErr('Código não encontrado');return;}
     if(foundData.status==='pendente'){setErr('Acesso ainda não aprovado. Aguarde o e-mail com seu código.');return;}
-    // Try stored password first, then fallback options
+    // Try stored password
     const passwords=[
       foundData.password,
       code,
@@ -158,7 +158,7 @@ async function doLogin(){
     let loggedIn=false;
     for(const p of passwords){
       try{
-        await signInWithEmailAndPassword(auth,email,p);
+        await signInWithEmailAndPassword(auth,foundEmail,p);
         loggedIn=true;
         break;
       }catch(e){continue;}
