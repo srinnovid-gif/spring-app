@@ -10,6 +10,7 @@ const ROLES={
   cocinero:{label:'✂ Cozinheiro',tabs:['inventario','menu']},
   deposito:{label:'▣ Estoque',tabs:['inventario','pedidos']},
   salon:{label:'⬜ Salão',tabs:['menu']},
+  bar:{label:'◬ Bar',tabs:['menu','pedidos']},
 };
 const TAB_LABELS={inventario:'🥩 Inventário',menu:'📋 Menú',pedidos:'🛒 Pedidos',proveedores:'🏪 Fornecedores',resumen:'📊 Resumo'};
 const CAT_COLORS={Res:'#c0392b',Pollo:'#e67e22',Cerdo:'#8e44ad',Pescado:'#2980b9',Suplemento:'#27ae60',Lácteos:'#16a085',Vegetales:'#27ae60',Otro:'#7f8c8d'};
