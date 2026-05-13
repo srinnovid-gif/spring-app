@@ -31,7 +31,7 @@ window.addEventListener('load',()=>{
         s.style.opacity='0';
         setTimeout(()=>s.style.display='none',1800);
       }
-    },9500);
+    },8000);
     onAuthStateChanged(auth,u=>{
       hideSplash();
       if(u){user=u;loadUser();}
@@ -46,7 +46,7 @@ function hideSplash(){
   if(pct)pct.textContent='Pronto ✓';
   // Wait minimum 9.5s for full animation
   const elapsed=Date.now()-window._splashStart;
-  const remaining=Math.max(0,9500-elapsed);
+  const remaining=Math.max(0,8000-elapsed);
   setTimeout(()=>{
     s.style.opacity='0';
     setTimeout(()=>s.style.display='none',1800);
