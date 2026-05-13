@@ -351,38 +351,21 @@ function renderHome(){
   // Pending users notification for gerente
   const pendingCount=userRole==='gerente'?Object.values(userAccounts).filter(u=>u.status==='pendente').length:0;
 
-  alertWrap.innerHTML=`
-    ${pendingCount>0?`<div class="alert-strip" onclick="goTab('resumen')" style="background:var(--burg);box-shadow:0 4px 16px rgba(122,30,30,0.3);margin-bottom:8px">
-      <div class="alert-strip-ico">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-      </div>
-      <div class="alert-strip-text">
-        <div class="alert-strip-title" style="color:#fff">${pendingCount} solicitaç${pendingCount>1?'ões':'ão'} de acesso pendente${pendingCount>1?'s':''}</div>
-        <div class="alert-strip-sub" style="color:rgba(255,255,255,0.8)">Toque para aprovar no Resumo</div>
-      </div>
-      <div class="alert-strip-arr" style="color:#fff">›</div>
-    </div>`:''}
-    ${low.length>0?`<div class="alert-strip" onclick="goTabAndFilter()" style="margin-bottom:8px">
-      <div class="alert-strip-ico">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <div class="alert-strip-text">
-        <div class="alert-strip-title">${low.length} produto${low.length>1?'s':''} com estoque baixo</div>
-        <div class="alert-strip-sub">Toque para ver e adicionar ao pedido</div>
-      </div>
-      <div class="alert-strip-arr">›</div>
-    </div>`:''}
-    ${menuChangeRecent?`<div class="alert-strip" onclick="goTab('menu')" style="background:var(--grn);box-shadow:0 4px 16px var(--grn-glow);margin-bottom:8px">
-      <div class="alert-strip-ico">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-      </div>
-      <div class="alert-strip-text">
-        <div class="alert-strip-title" style="color:#fff">Mudança de última hora</div>
-        <div class="alert-strip-sub" style="color:rgba(255,255,255,0.8)">O cardápio de hoje foi alterado</div>
-      </div>
-      <div class="alert-strip-arr" style="color:#fff">›</div>
-    </div>`:''}
-  `;
+  // Compact notification dots instead of full banners
+  let notifs = [];
+  if(pendingCount>0) notifs.push({label:`${pendingCount} acesso${pendingCount>1?'s':''} pendente${pendingCount>1?'s':''}`,color:'var(--burg)',tab:'resumen'});
+  if(low.length>0) notifs.push({label:`${low.length} produto${low.length>1?'s':''} com estoque baixo`,color:'var(--acc)',tab:'inventario'});
+  if(menuChangeRecent) notifs.push({label:'Cardápio alterado hoje',color:'var(--grn)',tab:'menu'});
+
+  alertWrap.innerHTML=notifs.length?`
+    <div style="display:flex;flex-wrap:wrap;gap:6px;padding:0 0 8px">
+      ${notifs.map(n=>`
+        <button onclick="goTab('${n.tab}')" style="display:flex;align-items:center;gap:5px;background:${n.color};border:none;border-radius:20px;padding:5px 12px;cursor:pointer;transition:all .2s">
+          <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.8)"></div>
+          <span style="font-family:var(--font-b);font-size:11px;font-weight:600;color:#fff;white-space:nowrap">${n.label}</span>
+        </button>`).join('')}
+    </div>`:''
+  ;
 
   // Big nav buttons
   const tabs=ROLES[userRole]?.tabs||['menu'];
