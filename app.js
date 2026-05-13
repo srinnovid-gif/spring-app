@@ -22,6 +22,11 @@ function waitFB(cb,t=0){if(window._fb){cb();}else if(t<30){setTimeout(()=>waitFB
 
 window.addEventListener('load',()=>{
   window._splashStart=Date.now();
+  // Trigger brush reveal after eslogan fades (4.8s)
+  setTimeout(()=>{
+    const center=document.querySelector('.sp-center');
+    if(center) center.classList.add('sp-visible');
+  },5000);
   waitFB(()=>{
     const{auth,onAuthStateChanged}=window._fb;
     // Add timeout only for splash animation, not for auth
