@@ -324,23 +324,60 @@ function renderHome(){
   document.getElementById('home-date').textContent=now.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
   document.getElementById('hdr-greeting').textContent=`Olá, ${userName.split(' ')[0]} 👋`;
 
-  // Quick stats
+  // Quick stats - only for estoque and gerente
   const arr=Object.values(products);
   const low=arr.filter(p=>p.quantity<=p.minStock);
   const val=arr.reduce((a,p)=>a+(p.quantity*p.price),0);
-  document.getElementById('qs-row').innerHTML=`
-    <div class="qs stat-btn" onclick="goTab('inventario')">
-      <div class="qs-val">${arr.length}</div>
-      <div class="qs-lbl">Produtos</div>
-    </div>
-    <div class="qs${low.length?' alert':''} stat-btn" onclick="goTabAndFilter()">
-      <div class="qs-val${low.length?' r':''}">${low.length}</div>
-      <div class="qs-lbl">Acabando ${low.length?'↗':''}</div>
-    </div>
-    <div class="qs">
-      <div class="qs-val g" style="font-size:${val>99999?'14px':'22px'}">R$${Math.round(val/1000)>0?Math.round(val/1000)+'k':Math.round(val)}</div>
-      <div class="qs-lbl">Valor</div>
-    </div>`;
+
+  // HOME quick stats - only deposito sees them here
+  if(userRole==='deposito'){
+    document.getElementById('qs-row').innerHTML=`
+      <div class="qs stat-btn" onclick="goTab('inventario')">
+        <div class="qs-val">${arr.length}</div>
+        <div class="qs-lbl">Produtos</div>
+      </div>
+      <div class="qs${low.length?' alert':''} stat-btn" onclick="goTabAndFilter()">
+        <div class="qs-val${low.length?' r':''}">${low.length}</div>
+        <div class="qs-lbl">Acabando ${low.length?'↗':''}</div>
+      </div>
+      <div class="qs">
+        <div class="qs-val g" style="font-size:${val>99999?'14px':'22px'}">R$${Math.round(val/1000)>0?Math.round(val/1000)+'k':Math.round(val)}</div>
+        <div class="qs-lbl">Valor</div>
+      </div>`;
+  } else {
+    document.getElementById('qs-row').innerHTML='';
+  }
+
+  // Bater Ponto - ALL roles see this
+  const baterPontoWrap=document.getElementById('bater-ponto-wrap');
+  if(baterPontoWrap){
+    baterPontoWrap.innerHTML=`
+      <button onclick="baterPonto()" style="
+        width:100%;
+        background:var(--t1);
+        color:var(--bg);
+        border:none;
+        border-radius:50px;
+        padding:18px 32px;
+        font-family:var(--font-b);
+        font-size:16px;
+        font-weight:700;
+        letter-spacing:1px;
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:10px;
+        box-shadow:0 6px 20px rgba(44,26,14,0.18);
+        transition:all .2s;
+      ">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Bater Ponto
+      </button>`;
+  }
 
   // Alert strip
   // Last minute menu change notification
@@ -998,6 +1035,26 @@ function doResumo(el){
   // Reload pending users
   const{db:db2,ref:ref2,get:get2}=window._fb;
   get2(ref2(db2,'userAccounts')).then(snap=>{const pending=[];if(snap.exists()){snap.forEach(child=>{const d=child.val();if(d.status==='pendente')pending.push({uid:child.key,...d});});}const usersEl=document.getElementById('pending-users');if(!usersEl)return;if(!pending.length){usersEl.innerHTML='<p style="font-size:13px;color:var(--t3);font-weight:500">Nenhum usuário pendente</p>';return;}usersEl.innerHTML=pending.map(u=>`<div style="background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:14px;margin-bottom:10px"><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">${u.name||u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">✉️ ${u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">${ROLES[u.role]?.label||u.role}</div>${u.phone?`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">📞 ${u.phone}</div>`:''}<button onclick="approveUser('${u.uid}','${u.email}','${u.name||''}')" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer">✓ Aprovar e enviar código</button></div>`).join('');});
+}
+
+// ── PONTO ──
+function baterPonto(){
+  const now=new Date();
+  const time=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const date=now.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  const{db,ref,push,set}=window._fb;
+  const pontoRef=push(ref(db,`accounts/${accountId}/pontos/${user.uid}`));
+  set(pontoRef,{
+    uid:user.uid,
+    name:userName,
+    role:userRole,
+    timestamp:Date.now(),
+    time,date
+  }).then(()=>{
+    showToast(`✓ Ponto registrado às ${time}`);
+  }).catch(()=>{
+    showToast('Erro ao registrar ponto');
+  });
 }
 
 // ── UTILS ──
