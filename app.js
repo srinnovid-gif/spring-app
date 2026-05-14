@@ -964,6 +964,12 @@ function doResumo(el){
 
   el.innerHTML=`
     ${userRole==='gerente'?`
+    <div class="sum-card" style="margin-bottom:16px">
+      <div class="sum-title" style="display:flex;align-items:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        Solicitações de Acesso
+      </div>
+      <div id="pending-users"><p style="font-size:13px;color:var(--t3);font-weight:500">Carregando...</p></div>
     </div>`:''}
     <div class="sum-section">
       <div class="sum-title">📊 Resumo General</div>
@@ -1023,20 +1029,23 @@ async function approveUser(uid,email,name){
       status:'ativo',
       approvedAt:Date.now()
     });
-    // Send email with code
+    // Send email WITH CODE directly to the USER
     try{
       await emailjs.send('service_ch1zqsy','template_uw9djui',{
+        to_email:email,
+        to_name:name||email,
         name:name||email,
-        email,
-        role:'Acesso aprovado!',
+        email:email,
+        role:'Bem-vindo ao Spring! Seu acesso foi aprovado.',
         phone:'—',
         birthday:'—',
-        code:`Seu código de acesso: ${code}`
+        sede:'—',
+        code:`${code}`
       },'OVEsOgP7lLroHL8Bo');
       showToast(`✓ Código ${code} enviado para ${email}`);
     }catch(emailErr){
-      showToast(`✓ Aprovado! Código: ${code} (email falhou)`);
-      console.warn(emailErr);
+      showToast(`✓ Aprovado! Código: ${code} — email falhou, anote!`);
+      console.warn('Email error:',emailErr);
     }
     // Refresh resumen
     doResumo(document.getElementById('main-content'));
