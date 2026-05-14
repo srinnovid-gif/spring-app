@@ -263,6 +263,9 @@ async function loadUser(){
   userName=data.name||user.email;
   accountId=data.code||'SPRING-001';
   document.getElementById('role-badge').textContent=ROLES[userRole]?.label||userRole;
+  // Set home hero name
+  const heroNameEl=document.getElementById('home-hero-name');
+  if(heroNameEl) heroNameEl.textContent=userName.split(' ')[0];
   // Add change code button to header
   const btnOut=document.querySelector('.btn-out');
   if(btnOut&&!document.getElementById('btn-change-code')){
@@ -322,7 +325,10 @@ function renderHome(){
   // Date
   const now=new Date();
   document.getElementById('home-date').textContent=now.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
-  document.getElementById('hdr-greeting').textContent=`Olá, ${userName.split(' ')[0]} 👋`;
+  // Hero header
+  document.getElementById('hdr-greeting').textContent='Olá,';
+  const heroName=document.getElementById('home-hero-name');
+  if(heroName) heroName.textContent=userName.split(' ')[0];
 
   // Quick stats - only for estoque and gerente
   const arr=Object.values(products);
@@ -354,8 +360,8 @@ function renderHome(){
     baterPontoWrap.innerHTML=`
       <button onclick="baterPonto()" style="
         width:100%;
-        background:var(--t1);
-        color:var(--bg);
+        background:#5a7028;
+        color:#fff;
         border:none;
         border-radius:50px;
         padding:18px 32px;
