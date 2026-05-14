@@ -169,6 +169,12 @@
 
     /* HEADER */
     .hdr{padding:16px 20px 14px;position:sticky;top:0;z-index:50;background:rgba(242,235,224,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);}
+    /* HOME HERO */
+    .home-hero{background:linear-gradient(145deg,#2c1a0e,#5a3a20);padding:52px 20px 22px;margin-bottom:0;}
+    .home-hero-top{display:flex;align-items:flex-start;justify-content:space-between;}
+    .home-hero-greeting{font-family:var(--font-b);font-size:13px;color:rgba(255,255,255,0.55);font-weight:400;letter-spacing:.5px;}
+    .home-hero-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;font-style:italic;color:#fff;line-height:1.1;margin-top:2px;}
+
     .hdr-inner{display:flex;align-items:center;justify-content:space-between;}
     .hdr-greeting{font-size:13px;color:var(--t3);letter-spacing:.5px;margin-bottom:2px;font-weight:400;}
     .hdr-logo{font-family:var(--font-h);font-size:28px;font-weight:700;letter-spacing:-1px;color:var(--t1);}
