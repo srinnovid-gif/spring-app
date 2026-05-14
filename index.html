@@ -196,23 +196,44 @@
 <div id="app">
   <!-- HOME -->
   <div id="home-screen">
-    <div class="hdr">
-      <div class="hdr-inner">
-        <div class="hdr-left">
-          <div class="hdr-greeting" id="hdr-greeting">Bem-vindo</div>
-          <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;font-style:italic;letter-spacing:-1px;color:#2c1a0e;">Spring<span style="color:#c4541a">.</span></div>
+
+    <!-- HERO HEADER -->
+    <div class="home-hero">
+      <!-- Top row: greeting + avatar + logout -->
+      <div class="home-hero-top">
+        <div>
+          <div class="home-hero-greeting" id="hdr-greeting">Olá,</div>
+          <div class="home-hero-name" id="home-hero-name">—</div>
         </div>
-        <div class="hdr-right">
-          <div class="role-pill" id="role-badge">—</div>
-          <button class="btn-out" onclick="doLogout()">Sair</button>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button onclick="doLogout()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:6px 14px;font-family:var(--font-b);font-size:12px;font-weight:600;color:#fff;cursor:pointer;">Sair</button>
+          <!-- Avatar -->
+          <div id="user-avatar" style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
         </div>
       </div>
+
+      <!-- Role badge + date -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+        <div class="role-pill" id="role-badge" style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:11px;">—</div>
+        <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.7);" id="home-date"></div>
+      </div>
+
+      <!-- Bater Ponto button - all roles -->
+      <div id="bater-ponto-wrap" style="margin-top:18px;"></div>
+
+      <!-- Quick stats - only deposito -->
+      <div class="qs-row" id="qs-row" style="margin-top:12px;"></div>
+
+      <!-- Notification pills -->
+      <div id="alert-strip-wrap" style="margin-top:8px;"></div>
     </div>
-    <div class="online" style="margin-bottom:16px"><span class="odot"></span><span class="olbl">Tempo real ativo</span></div>
-    <div class="home-date" id="home-date"></div>
-    <div class="qs-row" id="qs-row"></div>
-    <div id="bater-ponto-wrap" style="padding:0 20px 12px;"></div>
-    <div id="alert-strip-wrap"></div>
+
+    <!-- Online indicator -->
+    <div class="online" style="padding:8px 20px 0"><span class="odot"></span><span class="olbl">Tempo real ativo</span></div>
+
+    <!-- Big nav buttons -->
     <div class="big-nav" id="big-nav"></div>
     <div id="today-menu-wrap"></div>
   </div>
