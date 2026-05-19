@@ -400,6 +400,16 @@ function renderHome(){
       <div class="big-btn-arr">›</div>
     </button>`).join('');
 
+  // Render all home widgets
+  const moodWrap=document.getElementById('mood-wrap');
+  if(moodWrap) renderMoodWidget(moodWrap);
+  const hcardsWrap=document.getElementById('hcards-wrap');
+  if(hcardsWrap) renderHorizontalCards(hcardsWrap);
+  const muralWrap=document.getElementById('mural-wrap');
+  if(muralWrap) renderMural(muralWrap);
+  const rankingWrap=document.getElementById('ranking-wrap');
+  if(rankingWrap) renderRanking(rankingWrap);
+
   // Today menu preview
   const td=dkey(new Date());
   const todayItems=Object.values(menuItems).filter(m=>m.date===td);
@@ -1077,6 +1087,230 @@ function showPerfil(){
         Sair da conta
       </button>
     </div>`;
+}
+
+
+// ── HOME WIDGETS ──
+
+// 1. COMO VOCÊ ESTÁ HOJE
+async function renderMoodWidget(container){
+  const today=dkey(new Date());
+  const{db,ref,get,set}=window._fb;
+  const moodSnap=await get(ref(db,`accounts/${accountId}/moods/${user.uid}/${today}`));
+  
+  if(moodSnap.exists()){
+    // Already answered today
+    container.innerHTML='';
+    return;
+  }
+
+  container.innerHTML=`
+    <div class="widget-card" id="mood-card" style="margin:0 20px 12px">
+      <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:10px">Como você está hoje?</div>
+      <div style="display:flex;justify-content:space-between;gap:6px" id="mood-emojis">
+        ${['😄','🙂','😐','😔','😩'].map((e,i)=>`
+          <button onclick="selectMood('${e}',${i})" style="flex:1;background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 4px;font-size:24px;cursor:pointer;transition:all .2s" id="mood-${i}">${e}</button>
+        `).join('')}
+      </div>
+      <div id="mood-justify" style="display:none;margin-top:10px">
+        <textarea id="mood-text" placeholder="Quer falar sobre isso? (opcional)" style="width:100%;box-sizing:border-box;background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:12px;font-family:var(--font-b);font-size:13px;color:var(--t1);resize:none;outline:none;height:70px"></textarea>
+        <button onclick="submitMood()" style="width:100%;margin-top:8px;background:var(--t1);color:#fff;border:none;border-radius:12px;padding:12px;font-family:var(--font-b);font-size:14px;font-weight:600;cursor:pointer">Enviar</button>
+      </div>
+    </div>`;
+}
+
+let selectedMoodEmoji='';
+let selectedMoodIdx=-1;
+
+function selectMood(emoji, idx){
+  selectedMoodEmoji=emoji;
+  selectedMoodIdx=idx;
+  // Highlight selected
+  for(let i=0;i<5;i++){
+    const btn=document.getElementById('mood-'+i);
+    if(btn){
+      btn.style.background=i===idx?'var(--t1)':'var(--s2)';
+      btn.style.transform=i===idx?'scale(1.15)':'scale(1)';
+    }
+  }
+  // If worst emoji show justification
+  const justify=document.getElementById('mood-justify');
+  if(justify) justify.style.display=idx===4?'block':'none';
+  if(idx!==4) submitMood();
+}
+
+async function submitMood(){
+  const today=dkey(new Date());
+  const text=document.getElementById('mood-text')?.value||'';
+  const{db,ref,set}=window._fb;
+  await set(ref(db,`accounts/${accountId}/moods/${user.uid}/${today}`),{
+    emoji:selectedMoodEmoji,
+    idx:selectedMoodIdx,
+    note:text,
+    name:userName,
+    role:userRole,
+    timestamp:Date.now()
+  });
+  // Show checkmark then disappear
+  const card=document.getElementById('mood-card');
+  if(card){
+    card.innerHTML=`<div style="text-align:center;padding:16px;font-size:36px;animation:fadeUp .4s ease">✅</div>`;
+    setTimeout(()=>{
+      card.style.opacity='0';
+      card.style.transition='opacity .6s ease';
+      setTimeout(()=>{card.innerHTML='';card.style.opacity='1';},600);
+    },1500);
+  }
+}
+
+// 2. HORIZONTAL CARDS ROW
+async function renderHorizontalCards(container){
+  const clima=await fetchClima();
+  const aniversarios=getAniversariosHoje();
+  const evento=getProximoEvento();
+  const meta=await fetchMetaDia();
+
+  container.innerHTML=`
+    <div style="padding:0 20px 4px;font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600">Hoje</div>
+    <div style="display:flex;gap:10px;padding:8px 20px 4px;overflow-x:auto;scrollbar-width:none;" class="hcards-row">
+
+      <!-- META DO DIA - first and most visible -->
+      <div class="hcard hcard-meta" onclick="goTab('resumen')">
+        <div class="hcard-ico">🍽️</div>
+        <div class="hcard-title">Meta do Dia</div>
+        <div class="hcard-val" style="color:var(--grn)">${meta.sold}</div>
+        <div class="hcard-sub">de ${meta.goal} pratos</div>
+        <div style="background:var(--s3);border-radius:4px;height:4px;margin-top:8px;overflow:hidden">
+          <div style="background:var(--grn);height:100%;width:${Math.min(100,Math.round(meta.sold/meta.goal*100))}%;border-radius:4px;transition:width .8s ease"></div>
+        </div>
+      </div>
+
+      <!-- CLIMA -->
+      <div class="hcard hcard-clima">
+        <div class="hcard-ico">${clima.icon}</div>
+        <div class="hcard-title">Curitiba</div>
+        <div class="hcard-val">${clima.temp}°C</div>
+        <div class="hcard-sub">${clima.desc}</div>
+      </div>
+
+      ${aniversarios.length?`
+      <!-- ANIVERSÁRIO -->
+      <div class="hcard hcard-birthday" style="border-color:var(--acc);background:rgba(230,126,34,0.06)">
+        <div class="hcard-ico">🎂</div>
+        <div class="hcard-title">Aniversário</div>
+        <div class="hcard-val" style="font-size:14px;color:var(--acc)">${aniversarios[0]}</div>
+        <div class="hcard-sub">hoje! 🎉</div>
+      </div>`:''}
+
+      ${evento?`
+      <!-- PRÓXIMO EVENTO -->
+      <div class="hcard hcard-evento" onclick="showEventoModal()">
+        <div class="hcard-ico">🗓️</div>
+        <div class="hcard-title">Nos Vemos Em</div>
+        <div class="hcard-val" style="color:var(--t1)">${evento.days}</div>
+        <div class="hcard-sub">dias · ${evento.name}</div>
+        <div style="margin-top:8px;background:var(--grn);color:#fff;border-radius:8px;padding:4px 8px;font-size:10px;font-weight:600;text-align:center">Participar</div>
+      </div>`:''}
+
+    </div>`;
+}
+
+async function fetchClima(){
+  try{
+    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=-25.4284&longitude=-49.2733&current_weather=true&temperature_unit=celsius');
+    const d=await r.json();
+    const code=d.current_weather?.weathercode||0;
+    const temp=Math.round(d.current_weather?.temperature||20);
+    const icons={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
+    const descs={0:'Céu limpo',1:'Pouco nublado',2:'Parcialmente nublado',3:'Nublado',45:'Névoa',51:'Chuvisco',61:'Chuva',71:'Neve',80:'Chuva',95:'Tempestade'};
+    const icon=icons[code]||'🌤️';
+    const desc=descs[code]||'Variável';
+    return{temp,icon,desc};
+  }catch(e){
+    return{temp:'--',icon:'🌤️',desc:'Indisponível'};
+  }
+}
+
+function getAniversariosHoje(){
+  const hoje=new Date();
+  const mm=String(hoje.getMonth()+1).padStart(2,'0');
+  const dd=String(hoje.getDate()).padStart(2,'0');
+  return Object.values(userAccounts||{})
+    .filter(u=>u.birthday&&u.birthday.slice(5,10)===`${mm}-${dd}`)
+    .map(u=>u.firstName||u.name?.split(' ')[0]||'Alguém');
+}
+
+function getProximoEvento(){
+  // Events stored in Firebase - for now return null if none
+  return window._proximoEvento||null;
+}
+
+async function fetchMetaDia(){
+  // Meta do dia from Firebase
+  const today=dkey(new Date());
+  try{
+    const{db,ref,get}=window._fb;
+    const snap=await get(ref(db,`accounts/${accountId}/meta/${today}`));
+    if(snap.exists()) return snap.val();
+  }catch(e){}
+  return{sold:0,goal:150};
+}
+
+// 3. MURAL DO TIME
+async function renderMural(container){
+  try{
+    const{db,ref,get}=window._fb;
+    const snap=await get(ref(db,`accounts/${accountId}/mural`));
+    const posts=snap.exists()?Object.values(snap.val()).sort((a,b)=>b.ts-a.ts):[];
+    const latest=posts[0];
+    const unread=posts.filter(p=>p.ts>(parseInt(localStorage.getItem('muralRead')||0))).length;
+
+    container.innerHTML=`
+      <div class="widget-card" style="margin:0 20px 12px;cursor:pointer" onclick="goTab('mural')">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600">Mural do Time</div>
+          ${unread>0?`<div style="background:var(--acc);color:#fff;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700">${unread} novo${unread>1?'s':''}</div>`:''}
+        </div>
+        ${latest?`
+          <div style="font-size:13px;color:var(--t1);line-height:1.5;margin-bottom:6px">${latest.text?.slice(0,80)}${latest.text?.length>80?'...':''}</div>
+          <div style="font-size:11px;color:var(--t3)">${latest.author||'Gerente'} · ${new Date(latest.ts).toLocaleDateString('pt-BR')}</div>
+        `:`<div style="font-size:13px;color:var(--t3);font-style:italic">Nenhum aviso ainda.</div>`}
+      </div>`;
+  }catch(e){}
+}
+
+// 4. RANKING DE PONTUALIDADE
+async function renderRanking(container){
+  try{
+    const{db,ref,get}=window._fb;
+    const snap=await get(ref(db,`accounts/${accountId}/pontos`));
+    if(!snap.exists()){container.innerHTML='';return;}
+
+    const pontos=snap.val();
+    const counts={};
+    Object.entries(pontos).forEach(([uid,days])=>{
+      counts[uid]=Object.keys(days||{}).length;
+    });
+
+    const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3);
+    const medals=['🥇','🥈','🥉'];
+    const names={};
+    Object.values(userAccounts||{}).forEach(u=>{if(u.uid)names[u.uid]=u.firstName||u.name?.split(' ')[0];});
+    
+    container.innerHTML=`
+      <div class="widget-card" style="margin:0 20px 12px">
+        <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:12px">Ranking de Pontualidade</div>
+        ${sorted.map(([uid,count],i)=>`
+          <div style="display:flex;align-items:center;gap:10px;padding:8px 0;${i<sorted.length-1?'border-bottom:1px solid var(--b1)':''}">
+            <div style="font-size:22px">${medals[i]}</div>
+            <div style="flex:1">
+              <div style="font-size:14px;font-weight:600;color:${uid===user.uid?'var(--acc)':'var(--t1)'}">${names[uid]||'Membro'}${uid===user.uid?' (você)':''}</div>
+              <div style="font-size:11px;color:var(--t3)">${count} dia${count!==1?'s':''} registrado${count!==1?'s':''}</div>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--grn)">${count}d</div>
+          </div>`).join('')}
+      </div>`;
+  }catch(e){}
 }
 
 // ── PONTO ──
