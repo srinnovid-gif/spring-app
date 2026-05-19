@@ -54,7 +54,11 @@ function hideSplash(){
   },remaining);
 }
 function showAuth(){document.getElementById('auth').style.display='flex';}
-function showApp(){document.getElementById('auth').style.display='none';document.getElementById('app').style.display='flex';}
+function showApp(){
+  document.getElementById('auth').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('bottom-nav').style.display='flex';
+}
 
 function showWelcomeModal(){
   const modal=document.createElement('div');
@@ -237,6 +241,7 @@ function showPendingScreen(){
 }
 
 async function doLogout(){
+  document.getElementById('bottom-nav').style.display='none';
   const{auth,signOut}=window._fb;
   await signOut(auth);
   user=null;userRole=null;accountId=null;
@@ -356,34 +361,7 @@ function renderHome(){
 
   // Bater Ponto - ALL roles see this
   const baterPontoWrap=document.getElementById('bater-ponto-wrap');
-  if(baterPontoWrap){
-    baterPontoWrap.innerHTML=`
-      <button onclick="baterPonto()" style="
-        width:100%;
-        background:#5a7028;
-        color:#fff;
-        border:none;
-        border-radius:50px;
-        padding:18px 32px;
-        font-family:var(--font-b);
-        font-size:16px;
-        font-weight:700;
-        letter-spacing:1px;
-        cursor:pointer;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:10px;
-        box-shadow:0 6px 20px rgba(44,26,14,0.18);
-        transition:all .2s;
-      ">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <polyline points="12 6 12 12 16 14"/>
-        </svg>
-        Bater Ponto
-      </button>`;
-  }
+  if(baterPontoWrap) baterPontoWrap.innerHTML='';
 
   // Alert strip
   // Last minute menu change notification
@@ -446,8 +424,21 @@ function goHome(){
   document.getElementById('home-screen').style.display='block';
   document.getElementById('inner-screen').style.display='none';
   document.getElementById('fab').style.display='none';
+  document.getElementById('bottom-nav').style.display='flex';
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const homeBtn=document.getElementById('bnav-home');
+  if(homeBtn) homeBtn.classList.add('active');
   history.pushState({tab:'home'},'','?tab=home');
   renderHome();
+}
+
+function bnavGo(tab){
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('bnav-'+tab);
+  if(btn) btn.classList.add('active');
+  if(tab==='home'){goHome();return;}
+  if(tab==='perfil'){showPerfil();return;}
+  goTab(tab);
 }
 
 // Handle browser/phone back button
@@ -1041,6 +1032,51 @@ function doResumo(el){
   // Reload pending users
   const{db:db2,ref:ref2,get:get2}=window._fb;
   get2(ref2(db2,'userAccounts')).then(snap=>{const pending=[];if(snap.exists()){snap.forEach(child=>{const d=child.val();if(d.status==='pendente')pending.push({uid:child.key,...d});});}const usersEl=document.getElementById('pending-users');if(!usersEl)return;if(!pending.length){usersEl.innerHTML='<p style="font-size:13px;color:var(--t3);font-weight:500">Nenhum usuário pendente</p>';return;}usersEl.innerHTML=pending.map(u=>`<div style="background:var(--s2);border:1px solid var(--b1);border-radius:14px;padding:14px;margin-bottom:10px"><div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:4px">${u.name||u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">✉️ ${u.email}</div><div style="font-size:12px;color:var(--t2);margin-bottom:2px">${ROLES[u.role]?.label||u.role}</div>${u.phone?`<div style="font-size:12px;color:var(--t2);margin-bottom:8px">📞 ${u.phone}</div>`:''}<button onclick="approveUser('${u.uid}','${u.email}','${u.name||''}')" style="width:100%;background:var(--grn);color:#fff;border:none;border-radius:10px;padding:10px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer">✓ Aprovar e enviar código</button></div>`).join('');});
+}
+
+// ── PERFIL ──
+function showPerfil(){
+  currentTab='perfil';
+  document.getElementById('home-screen').style.display='none';
+  document.getElementById('inner-screen').style.display='flex';
+  document.getElementById('inner-title').textContent='Meu Perfil';
+  const el=document.getElementById('main-content');
+  el.innerHTML=`
+    <div style="padding:20px">
+      <!-- Avatar -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 0">
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--s2);border:2px solid var(--b2);display:flex;align-items:center;justify-content:center;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:var(--font-h);font-size:22px;font-weight:700;color:var(--t1)">${userName}</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:4px">${ROLES[userRole]?.label||userRole}</div>
+        </div>
+      </div>
+      <!-- Info -->
+      <div style="background:var(--s1);border-radius:16px;overflow:hidden;border:1px solid var(--b1)">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--b1)">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Código de acesso</div>
+          <div style="font-size:20px;font-weight:700;color:var(--acc);letter-spacing:6px">${accountId||'—'}</div>
+        </div>
+        <div style="padding:14px 18px;border-bottom:1px solid var(--b1)">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Função</div>
+          <div style="font-size:15px;font-weight:600;color:var(--t1)">${ROLES[userRole]?.label||userRole}</div>
+        </div>
+        <div style="padding:14px 18px">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Membro desde</div>
+          <div style="font-size:15px;font-weight:600;color:var(--t1)">${new Date().toLocaleDateString('pt-BR',{month:'long',year:'numeric'})}</div>
+        </div>
+      </div>
+      <!-- Change code button -->
+      <button onclick="showWelcomeModal()" style="width:100%;margin-top:12px;background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:14px;font-family:var(--font-b);font-size:14px;font-weight:600;color:var(--t1);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Alterar código de acesso
+      </button>
+      <button onclick="doLogout()" style="width:100%;margin-top:10px;background:none;border:1.5px solid var(--b2);border-radius:14px;padding:14px;font-family:var(--font-b);font-size:14px;font-weight:600;color:var(--t3);cursor:pointer">
+        Sair da conta
+      </button>
+    </div>`;
 }
 
 // ── PONTO ──
