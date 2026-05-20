@@ -487,6 +487,26 @@
     .hcard-clima{border-color:var(--b1);}
     .hcard-birthday{border-color:rgba(230,126,34,0.3);}
     .hcard-evento{border-color:var(--b2);}
+
+    /* META BOARD */
+    .meta-board{
+      background:linear-gradient(135deg,#212121,#3a3a3a);
+      border-radius:22px;padding:22px;
+      box-shadow:0 8px 28px rgba(0,0,0,0.18);
+    }
+
+    /* MOOD BUTTON */
+    .mood-btn{
+      flex:1;background:var(--s2);border:1.5px solid var(--b2);
+      border-radius:14px;padding:14px 4px;font-size:28px;
+      cursor:pointer;transition:all .2s;
+    }
+
+    /* SLIDE UP ANIMATION */
+    @keyframes slideUp{
+      from{transform:translateY(100%);opacity:0;}
+      to{transform:translateY(0);opacity:1;}
+    }
   </style>
 
 </head>
@@ -496,22 +516,42 @@
   <div class="sp-bg-base"></div>
   <div class="sp-glow"></div>
 
-  <!-- PHASE 1: Eslogan - 4 seconds -->
-  <div class="sp-eslogan-wrap">
+  <!-- PHASE 1: Eslogan (only for first login) -->
+  <div class="sp-eslogan-wrap" id="sp-eslogan">
     <div class="sp-eslogan-line sp-line-1">Juntos Desde</div>
     <div class="sp-eslogan-line sp-line-2">O Primeiro Prato.</div>
   </div>
 
-  <!-- PHASE 2: Spring logo - 4 seconds -->
-  <div class="sp-center">
+  <!-- PHASE 2: Spring logo -->
+  <div class="sp-center" id="sp-logo-center">
     <div class="sp-logo-word"><em>Spring</em><span class="sp-dot">.</span></div>
-    <div class="sp-tagline">Restaurante · Buffet · Curitiba</div>
+    <div class="sp-tagline" id="sp-tagline">Restaurante · Buffet · Curitiba</div>
   </div>
 
   <!-- Bottom -->
   <div class="sp-bottom">
-    <div class="sp-bar"><div class="sp-bar-fill"></div></div>
+    <div class="sp-bar"><div class="sp-bar-fill" id="sp-bar-fill"></div></div>
     <div class="sp-pct" id="splash-pct">Carregando...</div>
+  </div>
+</div>
+
+<!-- MOOD MODAL -->
+<div id="mood-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px)">
+  <div style="background:var(--s1);border-radius:28px 28px 0 0;padding:28px 24px 44px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)">
+    <div style="width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 24px"></div>
+    <div style="font-family:var(--font-h);font-size:22px;font-weight:700;color:var(--t1);margin-bottom:4px">Como você está hoje?</div>
+    <div style="font-size:13px;color:var(--t3);margin-bottom:24px">Sua resposta é importante para o time 🌿</div>
+    <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:16px" id="mood-emojis">
+      <button onclick="selectMoodModal('😄',0)" class="mood-btn" id="moodm-0">😄</button>
+      <button onclick="selectMoodModal('🙂',1)" class="mood-btn" id="moodm-1">🙂</button>
+      <button onclick="selectMoodModal('😐',2)" class="mood-btn" id="moodm-2">😐</button>
+      <button onclick="selectMoodModal('😔',3)" class="mood-btn" id="moodm-3">😔</button>
+      <button onclick="selectMoodModal('😩',4)" class="mood-btn" id="moodm-4">😩</button>
+    </div>
+    <div id="mood-justify-modal" style="display:none">
+      <textarea id="mood-text-modal" placeholder="Quer falar sobre isso? (opcional)" style="width:100%;box-sizing:border-box;background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:14px;font-family:var(--font-b);font-size:14px;color:var(--t1);resize:none;outline:none;height:80px;margin-bottom:10px"></textarea>
+      <button onclick="submitMoodModal()" style="width:100%;background:var(--t1);color:#fff;border:none;border-radius:14px;padding:15px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer">Enviar</button>
+    </div>
   </div>
 </div>
 
