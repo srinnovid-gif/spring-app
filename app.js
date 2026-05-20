@@ -22,22 +22,37 @@ function waitFB(cb,t=0){if(window._fb){cb();}else if(t<30){setTimeout(()=>waitFB
 
 window.addEventListener('load',()=>{
   window._splashStart=Date.now();
-  // Check if user already has session - show only logo for 1s
+
+  // Detect if running as installed PWA/APK (standalone mode)
+  const isStandalone=window.matchMedia('(display-mode: standalone)').matches||
+                     window.navigator.standalone===true||
+                     document.referrer.includes('android-app://');
+
   const hasSession=localStorage.getItem('spring_session');
-  if(hasSession){
-    // Hide eslogan, show only logo immediately with epic transition
+
+  if(hasSession && isStandalone){
+    // APK with session: show only logo for 1.5s - fast and clean
     const eslogan=document.getElementById('sp-eslogan');
     const tagline=document.getElementById('sp-tagline');
     const barFill=document.getElementById('sp-bar-fill');
     if(eslogan) eslogan.style.display='none';
     if(tagline) tagline.style.display='none';
-    if(barFill) barFill.style.animationDuration='1s';
+    if(barFill){barFill.style.animationDuration='1.5s';}
     const logoCenter=document.getElementById('sp-logo-center');
     if(logoCenter){
       logoCenter.style.animation='none';
-      logoCenter.style.opacity='1';
-      logoCenter.style.transform='scale(1)';
+      logoCenter.style.opacity='0';
+      // Epic scale-in transition
+      setTimeout(()=>{
+        logoCenter.style.transition='opacity .4s ease, transform .5s cubic-bezier(0.16,1,0.3,1)';
+        logoCenter.style.opacity='1';
+        logoCenter.style.transform='scale(1)';
+      },50);
     }
+  } else if(!isStandalone && hasSession){
+    // Browser with session: skip splash entirely
+    const splash=document.getElementById('splash');
+    if(splash) splash.style.display='none';
   }
 
   waitFB(()=>{
@@ -60,16 +75,22 @@ window.addEventListener('load',()=>{
 
 function hideSplash(){
   const s=document.getElementById('splash');
+  if(!s||s.style.display==='none')return;
   const pct=document.getElementById('splash-pct');
   if(pct)pct.textContent='Pronto ✓';
   const hasSession=localStorage.getItem('spring_session');
-  const minTime=hasSession?1000:8000;
+  const isStandalone=window.matchMedia('(display-mode: standalone)').matches||
+                     window.navigator.standalone===true||
+                     document.referrer.includes('android-app://');
+  let minTime=8000; // first login - full splash
+  if(hasSession && isStandalone) minTime=1500; // APK with session - 1.5s
+  if(!isStandalone && hasSession) minTime=0; // browser - instant
   const elapsed=Date.now()-window._splashStart;
   const remaining=Math.max(0,minTime-elapsed);
   setTimeout(()=>{
     s.style.opacity='0';
-    s.style.transition='opacity .6s ease';
-    setTimeout(()=>s.style.display='none',600);
+    s.style.transition='opacity .5s ease';
+    setTimeout(()=>s.style.display='none',500);
   },remaining);
 }
 function showAuth(){document.getElementById('auth').style.display='flex';}
