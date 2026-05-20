@@ -22,6 +22,23 @@ function waitFB(cb,t=0){if(window._fb){cb();}else if(t<30){setTimeout(()=>waitFB
 
 window.addEventListener('load',()=>{
   window._splashStart=Date.now();
+  // Check if user already has session - show only logo for 1s
+  const hasSession=localStorage.getItem('spring_session');
+  if(hasSession){
+    // Hide eslogan, show only logo immediately with epic transition
+    const eslogan=document.getElementById('sp-eslogan');
+    const tagline=document.getElementById('sp-tagline');
+    const barFill=document.getElementById('sp-bar-fill');
+    if(eslogan) eslogan.style.display='none';
+    if(tagline) tagline.style.display='none';
+    if(barFill) barFill.style.animationDuration='1s';
+    const logoCenter=document.getElementById('sp-logo-center');
+    if(logoCenter){
+      logoCenter.style.animation='none';
+      logoCenter.style.opacity='1';
+      logoCenter.style.transform='scale(1)';
+    }
+  }
 
   waitFB(()=>{
     const{auth,onAuthStateChanged}=window._fb;
@@ -45,16 +62,19 @@ function hideSplash(){
   const s=document.getElementById('splash');
   const pct=document.getElementById('splash-pct');
   if(pct)pct.textContent='Pronto ✓';
-  // Wait minimum 9.5s for full animation
+  const hasSession=localStorage.getItem('spring_session');
+  const minTime=hasSession?1000:8000;
   const elapsed=Date.now()-window._splashStart;
-  const remaining=Math.max(0,8000-elapsed);
+  const remaining=Math.max(0,minTime-elapsed);
   setTimeout(()=>{
     s.style.opacity='0';
-    setTimeout(()=>s.style.display='none',1800);
+    s.style.transition='opacity .6s ease';
+    setTimeout(()=>s.style.display='none',600);
   },remaining);
 }
 function showAuth(){document.getElementById('auth').style.display='flex';}
 function showApp(){
+  localStorage.setItem('spring_session','1');
   document.getElementById('auth').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('bottom-nav').style.display='flex';
@@ -241,6 +261,7 @@ function showPendingScreen(){
 }
 
 async function doLogout(){
+  localStorage.removeItem('spring_session');
   document.getElementById('bottom-nav').style.display='none';
   const{auth,signOut}=window._fb;
   await signOut(auth);
@@ -1165,47 +1186,57 @@ async function submitMood(){
 
 // 2. HORIZONTAL CARDS ROW
 async function renderHorizontalCards(container){
-  const clima=await fetchClima();
   const aniversarios=getAniversariosHoje();
   const evento=getProximoEvento();
   const meta=await fetchMetaDia();
+  const pct=meta.goal>0?Math.min(100,Math.round(meta.sold/meta.goal*100)):0;
 
   container.innerHTML=`
-    <div style="padding:0 20px 4px;font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600">Hoje</div>
+    <!-- META DO DIA - board style -->
+    <div style="margin:0 20px 14px">
+      <div class="meta-board">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px">Meta do Dia</div>
+            <div style="font-family:var(--font-h);font-size:42px;font-weight:700;color:#fff;line-height:1">${meta.sold}<span style="font-size:20px;color:rgba(255,255,255,0.5)"> / ${meta.goal}</span></div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px">pratos servidos hoje</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:32px;font-weight:800;color:${pct>=100?'#2ECC71':'rgba(255,255,255,0.9)'}">${pct}%</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5)">${pct>=100?'Meta atingida! 🎉':'da meta'}</div>
+          </div>
+        </div>
+        <div style="background:rgba(255,255,255,0.15);border-radius:8px;height:8px;overflow:hidden">
+          <div style="background:${pct>=100?'#2ECC71':'#fff'};height:100%;width:${pct}%;border-radius:8px;transition:width 1s ease"></div>
+        </div>
+        ${userRole==='gerente'?`<button onclick="updateMetaDia()" style="margin-top:12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:10px;padding:8px 16px;font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;width:100%">+ Atualizar pratos</button>`:''}
+      </div>
+    </div>
+
+    <!-- Encuesta button (temp for testing) -->
+    <div style="padding:0 20px 4px">
+      <button onclick="showMoodModal()" style="width:100%;background:var(--s2);border:1.5px dashed var(--b3);border-radius:14px;padding:12px;font-family:var(--font-b);font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Enquete do Dia
+      </button>
+    </div>
+
+    <!-- Horizontal mini cards -->
     <div style="display:flex;gap:10px;padding:8px 20px 4px;overflow-x:auto;scrollbar-width:none;" class="hcards-row">
 
-      <!-- META DO DIA - first and most visible -->
-      <div class="hcard hcard-meta" onclick="goTab('resumen')">
-        <div class="hcard-ico">🍽️</div>
-        <div class="hcard-title">Meta do Dia</div>
-        <div class="hcard-val" style="color:var(--grn)">${meta.sold}</div>
-        <div class="hcard-sub">de ${meta.goal} pratos</div>
-        <div style="background:var(--s3);border-radius:4px;height:4px;margin-top:8px;overflow:hidden">
-          <div style="background:var(--grn);height:100%;width:${Math.min(100,Math.round(meta.sold/meta.goal*100))}%;border-radius:4px;transition:width .8s ease"></div>
-        </div>
-      </div>
-
-      <!-- CLIMA -->
-      <div class="hcard hcard-clima">
-        <div class="hcard-ico">${clima.icon}</div>
-        <div class="hcard-title">Curitiba</div>
-        <div class="hcard-val">${clima.temp}°C</div>
-        <div class="hcard-sub">${clima.desc}</div>
-      </div>
-
       ${aniversarios.length?`
-      <!-- ANIVERSÁRIO -->
-      <div class="hcard hcard-birthday" style="border-color:var(--acc);background:rgba(230,126,34,0.06)">
+      <div class="hcard hcard-birthday">
         <div class="hcard-ico">🎂</div>
         <div class="hcard-title">Aniversário</div>
-        <div class="hcard-val" style="font-size:14px;color:var(--acc)">${aniversarios[0]}</div>
+        <div class="hcard-val" style="font-size:15px;color:var(--acc)">${aniversarios[0]}</div>
         <div class="hcard-sub">hoje! 🎉</div>
       </div>`:''}
 
       ${evento?`
-      <!-- PRÓXIMO EVENTO -->
       <div class="hcard hcard-evento" onclick="showEventoModal()">
-        <div class="hcard-ico">🗓️</div>
+        <div class="hcard-ico">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
         <div class="hcard-title">Nos Vemos Em</div>
         <div class="hcard-val" style="color:var(--t1)">${evento.days}</div>
         <div class="hcard-sub">dias · ${evento.name}</div>
@@ -1213,6 +1244,18 @@ async function renderHorizontalCards(container){
       </div>`:''}
 
     </div>`;
+}
+
+async function updateMetaDia(){
+  const n=prompt('Quantos pratos foram servidos hoje?');
+  if(!n||isNaN(n))return;
+  const today=dkey(new Date());
+  const{db,ref,set}=window._fb;
+  const snap=await (window._fb.get)(ref(db,`accounts/${accountId}/meta/${today}`));
+  const current=snap.exists()?snap.val():{goal:150};
+  await set(ref(db,`accounts/${accountId}/meta/${today}`),{...current,sold:parseInt(n)});
+  showToast('Meta atualizada ✓');
+  renderHome();
 }
 
 async function fetchClima(){
@@ -1311,6 +1354,52 @@ async function renderRanking(container){
           </div>`).join('')}
       </div>`;
   }catch(e){}
+}
+
+
+// ── MOOD MODAL ──
+let _selectedMoodEmoji='';
+let _selectedMoodIdx=-1;
+
+function showMoodModal(){
+  const modal=document.getElementById('mood-modal');
+  if(modal) modal.style.display='flex';
+}
+
+function closeMoodModal(){
+  const modal=document.getElementById('mood-modal');
+  if(modal) modal.style.display='none';
+}
+
+function selectMoodModal(emoji,idx){
+  _selectedMoodEmoji=emoji;
+  _selectedMoodIdx=idx;
+  for(let i=0;i<5;i++){
+    const btn=document.getElementById('moodm-'+i);
+    if(btn){
+      btn.style.background=i===idx?'var(--t1)':'var(--s2)';
+      btn.style.transform=i===idx?'scale(1.2)':'scale(1)';
+    }
+  }
+  const justify=document.getElementById('mood-justify-modal');
+  if(justify) justify.style.display=idx===4?'block':'none';
+  if(idx!==4) submitMoodModal();
+}
+
+async function submitMoodModal(){
+  const today=dkey(new Date());
+  const text=document.getElementById('mood-text-modal')?.value||'';
+  const{db,ref,set}=window._fb;
+  await set(ref(db,`accounts/${accountId}/moods/${user.uid}/${today}`),{
+    emoji:_selectedMoodEmoji,
+    idx:_selectedMoodIdx,
+    note:text,
+    name:userName,
+    role:userRole,
+    timestamp:Date.now()
+  });
+  closeMoodModal();
+  showToast('Obrigado por responder! ✅');
 }
 
 // ── PONTO ──
