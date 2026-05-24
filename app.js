@@ -1599,6 +1599,89 @@ async function updatePontoUI(){
 
 // Colors per step
 const PONTO_COLORS=['#2ECC71','#F1C40F','#E67E22','#E74C3C'];
+
+// ── CLOUDINARY CONFIG ──
+const CLOUDINARY={
+  cloudName:'ddjgwglk2',
+  uploadPreset:'spring_pontos', // unsigned preset - needs to be created
+  apiKey:'651883899346748'
+};
+
+async function uploadSelfie(dataUrl){
+  try{
+    const formData=new FormData();
+    formData.append('file',dataUrl);
+    formData.append('upload_preset',CLOUDINARY.uploadPreset);
+    formData.append('folder','spring/pontos');
+    const r=await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY.cloudName}/image/upload`,{
+      method:'POST',body:formData
+    });
+    const d=await r.json();
+    return d.secure_url||null;
+  }catch(e){
+    console.warn('Cloudinary upload failed:',e);
+    return null;
+  }
+}
+
+// ── SEDES / LOCATION CONFIG ──
+const SEDES={
+  juveve:{name:'Juvevê',lat:-25.4129874,lng:-49.2614169,radius:50},
+  batel:{name:'Batel',lat:-25.4129874,lng:-49.2614169,radius:50},
+  comendador:{name:'Comendador',lat:-25.4129874,lng:-49.2614169,radius:50},
+};
+const DEFAULT_RADIUS=50; // meters
+
+function getDistanceMeters(lat1,lng1,lat2,lng2){
+  const R=6371000;
+  const dLat=(lat2-lat1)*Math.PI/180;
+  const dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)*Math.sin(dLat/2)+
+    Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+    Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+async function validateLocation(){
+  return new Promise((resolve)=>{
+    if(!navigator.geolocation){
+      resolve({ok:false,msg:'Geolocalização não suportada neste dispositivo'});
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos)=>{
+        const{latitude:lat,longitude:lng}=pos.coords;
+        // Check all sedes
+        for(const[key,sede] of Object.entries(SEDES)){
+          const dist=getDistanceMeters(lat,lng,sede.lat,sede.lng);
+          if(dist<=sede.radius){
+            resolve({ok:true,sede:sede.name,dist:Math.round(dist)});
+            return;
+          }
+        }
+        // Not near any sede - find closest
+        let closest=null,minDist=Infinity;
+        for(const[key,sede] of Object.entries(SEDES)){
+          const dist=getDistanceMeters(lat,lng,sede.lat,sede.lng);
+          if(dist<minDist){minDist=dist;closest=sede;}
+        }
+        resolve({
+          ok:false,
+          msg:`Você está a ${Math.round(minDist)}m do restaurante. É necessário estar no estabelecimento.`,
+          dist:Math.round(minDist)
+        });
+      },
+      (err)=>{
+        let msg='Não foi possível obter sua localização.';
+        if(err.code===1) msg='Permissão de localização negada. Ative nas configurações.';
+        if(err.code===2) msg='Localização indisponível. Tente novamente.';
+        if(err.code===3) msg='Tempo esgotado. Tente novamente.';
+        resolve({ok:false,msg});
+      },
+      {enableHighAccuracy:true,timeout:8000,maximumAge:0}
+    );
+  });
+}
 let _pendingPontoStep=null;
 let _pendingPontoIdx=0;
 
@@ -1612,7 +1695,16 @@ async function doBaterPonto(){
   _pendingPontoStep=stepName;
   _pendingPontoIdx=stepIdx;
 
-  // 1. FLASH EFFECT - screen illuminates with step color
+  // 1. Validate location first
+  showToast('Verificando localização...');
+  const loc=await validateLocation();
+  if(!loc.ok){
+    // Show location error
+    showLocationError(loc.msg);
+    return;
+  }
+
+  // 2. FLASH EFFECT
   const flash=document.getElementById('flash-overlay');
   if(flash){
     flash.style.display='block';
@@ -1623,9 +1715,32 @@ async function doBaterPonto(){
     setTimeout(()=>{ flash.style.display='none'; },700);
   }
 
-  // 2. Show confirm modal after flash
+  // 3. Show confirm modal after flash
   setTimeout(()=>showPontoModal(stepName,stepIdx,color), 400);
 }
+
+function showLocationError(msg){
+  // Show friendly location error modal
+  const existing=document.getElementById('loc-error-modal');
+  if(existing) existing.remove();
+
+  const modal=document.createElement('div');
+  modal.id='loc-error-modal';
+  modal.style.cssText='position:fixed;inset:0;z-index:502;background:rgba(0,0,0,0.6);display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)';
+  modal.innerHTML=`
+    <div style="background:#fff;border-radius:28px 28px 0 0;padding:32px 24px 48px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)">
+      <div style="width:40px;height:4px;background:rgba(0,0,0,0.1);border-radius:2px;margin:0 auto 24px"></div>
+      <div style="width:56px;height:56px;border-radius:18px;background:#FEF3F2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E74C3C" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div style="font-family:var(--font-b);font-size:18px;font-weight:700;color:var(--t1);text-align:center;margin-bottom:8px">Fora do estabelecimento</div>
+      <div style="font-family:var(--font-b);font-size:14px;color:var(--t3);text-align:center;line-height:1.6;margin-bottom:24px">${msg}</div>
+      <button onclick="document.getElementById('loc-error-modal').remove()" style="width:100%;background:var(--t1);color:#fff;border:none;border-radius:14px;padding:15px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer">Entendido</button>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+let _selfieDataUrl=null;
 
 function showPontoModal(stepName,stepIdx,color){
   const modal=document.getElementById('ponto-modal');
@@ -1638,16 +1753,84 @@ function showPontoModal(stepName,stepIdx,color){
 
   if(!modal) return;
 
+  _selfieDataUrl=null;
+
   // Set colors and text
   if(icon) icon.style.background=color;
   if(stepEl) stepEl.textContent=stepName;
-  if(btn) btn.style.background=color;
+  if(btn){ btn.style.background=color; btn.textContent='Confirmar Ponto'; }
   if(err){ err.style.display='none'; err.textContent=''; }
   if(input){ input.value=''; }
+
+  // Add selfie section to modal
+  const selfieSection=document.getElementById('ponto-selfie-section');
+  if(selfieSection){
+    selfieSection.innerHTML=`
+      <div style="background:var(--s2);border-radius:14px;padding:14px;margin-bottom:14px;text-align:center">
+        <div id="selfie-preview" style="width:80px;height:80px;border-radius:50%;background:var(--s3);margin:0 auto 10px;overflow:hidden;display:flex;align-items:center;justify-content:center">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1.5" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <button onclick="takeSelfie()" id="selfie-btn" style="background:var(--t1);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-family:var(--font-b);font-size:13px;font-weight:600;cursor:pointer">
+          📷 Tirar selfie
+        </button>
+        <div style="font-size:11px;color:var(--t3);margin-top:6px">Obrigatório para registrar o ponto</div>
+      </div>`;
+  }
 
   modal.style.display='flex';
   setTimeout(()=>{ if(inner) inner.style.transform='translateY(0)'; }, 20);
   setTimeout(()=>{ if(input) input.focus(); }, 400);
+}
+
+async function takeSelfie(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    // Create camera UI
+    const camDiv=document.createElement('div');
+    camDiv.id='camera-ui';
+    camDiv.style.cssText='position:fixed;inset:0;z-index:600;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center';
+    camDiv.innerHTML=`
+      <video id="cam-video" autoplay playsinline style="width:100%;max-height:70vh;object-fit:cover"></video>
+      <div style="padding:24px;display:flex;gap:20px;align-items:center;justify-content:center;width:100%">
+        <button onclick="cancelCamera()" style="background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:50px;height:50px;color:#fff;font-size:20px;cursor:pointer">✕</button>
+        <button onclick="capturePhoto()" style="background:#fff;border:none;border-radius:50%;width:70px;height:70px;cursor:pointer;box-shadow:0 0 0 4px rgba(255,255,255,0.3)">
+          <div style="width:54px;height:54px;border-radius:50%;background:#fff;border:3px solid #ddd;margin:auto"></div>
+        </button>
+        <div style="width:50px"></div>
+      </div>`;
+    document.body.appendChild(camDiv);
+    const video=document.getElementById('cam-video');
+    video.srcObject=stream;
+    window._camStream=stream;
+  }catch(e){
+    showToast('Câmera não disponível');
+  }
+}
+
+function capturePhoto(){
+  const video=document.getElementById('cam-video');
+  if(!video) return;
+  const canvas=document.createElement('canvas');
+  canvas.width=400;canvas.height=400;
+  const ctx=canvas.getContext('2d');
+  // Crop center square
+  const size=Math.min(video.videoWidth,video.videoHeight);
+  const sx=(video.videoWidth-size)/2;
+  const sy=(video.videoHeight-size)/2;
+  ctx.drawImage(video,sx,sy,size,size,0,0,400,400);
+  _selfieDataUrl=canvas.toDataURL('image/jpeg',0.7);
+  cancelCamera();
+  // Show preview
+  const preview=document.getElementById('selfie-preview');
+  if(preview) preview.innerHTML=`<img src="${_selfieDataUrl}" style="width:80px;height:80px;border-radius:50%;object-fit:cover"/>`;
+  const selfieBtn=document.getElementById('selfie-btn');
+  if(selfieBtn){ selfieBtn.textContent='📷 Tirar novamente'; selfieBtn.style.background='var(--grn)'; }
+}
+
+function cancelCamera(){
+  if(window._camStream) window._camStream.getTracks().forEach(t=>t.stop());
+  const ui=document.getElementById('camera-ui');
+  if(ui) ui.remove();
 }
 
 function closePontoModal(){
@@ -1667,6 +1850,12 @@ async function confirmPonto(){
     return;
   }
 
+  // Require selfie
+  if(!_selfieDataUrl){
+    if(err){ err.textContent='Tire uma selfie antes de confirmar'; err.style.display='block'; }
+    return;
+  }
+
   // Validate code
   if(String(accountId)!==String(code)){
     if(err){ err.textContent='Código incorreto. Tente novamente.'; err.style.display='block'; }
@@ -1675,7 +1864,13 @@ async function confirmPonto(){
     return;
   }
 
-  // Code correct - close modal
+  // Code correct - close modal and upload
+  const btn=document.getElementById('ponto-confirm-btn');
+  if(btn){ btn.textContent='Registrando...'; btn.disabled=true; }
+
+  // Upload selfie to Cloudinary
+  const selfieUrl=await uploadSelfie(_selfieDataUrl);
+
   closePontoModal();
 
   // Register ponto
@@ -1692,7 +1887,8 @@ async function confirmPonto(){
     stepIdx:_pendingPontoIdx,
     time,ts:Date.now(),
     name:userName,
-    role:userRole
+    role:userRole,
+    selfie:selfieUrl||null
   });
 
   // SUCCESS ANIMATION
