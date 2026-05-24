@@ -536,21 +536,66 @@
 </div>
 
 <!-- MOOD MODAL -->
-<div id="mood-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px)">
-  <div style="background:var(--s1);border-radius:28px 28px 0 0;padding:28px 24px 44px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)">
-    <div style="width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 24px"></div>
-    <div style="font-family:var(--font-h);font-size:22px;font-weight:700;color:var(--t1);margin-bottom:4px">Como você está hoje?</div>
-    <div style="font-size:13px;color:var(--t3);margin-bottom:24px">Sua resposta é importante para o time 🌿</div>
-    <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:16px" id="mood-emojis">
-      <button onclick="selectMoodModal('😄',0)" class="mood-btn" id="moodm-0">😄</button>
-      <button onclick="selectMoodModal('🙂',1)" class="mood-btn" id="moodm-1">🙂</button>
-      <button onclick="selectMoodModal('😐',2)" class="mood-btn" id="moodm-2">😐</button>
-      <button onclick="selectMoodModal('😔',3)" class="mood-btn" id="moodm-3">😔</button>
-      <button onclick="selectMoodModal('😩',4)" class="mood-btn" id="moodm-4">😩</button>
+<div id="mood-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)">
+  <div style="background:var(--bg);border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;max-width:480px;animation:slideUp .4s cubic-bezier(.32,.72,0,1)">
+    <div style="width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 28px"></div>
+
+    <!-- Header -->
+    <div style="margin-bottom:8px;display:flex;align-items:center;gap:10px">
+      <div style="width:40px;height:40px;border-radius:12px;background:var(--s2);display:flex;align-items:center;justify-content:center">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--t1)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      </div>
+      <div>
+        <div style="font-family:var(--font-h);font-size:20px;font-weight:700;color:var(--t1)">Como você está hoje?</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px">Sua resposta importa para o time</div>
+      </div>
     </div>
+
+    <!-- SVG Monochromatic faces -->
+    <div style="display:flex;justify-content:space-between;gap:6px;margin:24px 0 20px">
+
+      <!-- Muito bem -->
+      <button onclick="selectMoodModal('muito_bem',0)" class="mood-btn" id="moodm-0" title="Muito bem">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 3 4 3 4-3 4-3"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor"/><circle cx="15" cy="9.5" r="1.2" fill="currentColor"/><path d="M9 8.5c.5-.8 1.5-1 2.5-.5M15 8.5c-.5-.8-1.5-1-2.5-.5"/></svg>
+      </button>
+
+      <!-- Bem -->
+      <button onclick="selectMoodModal('bem',1)" class="mood-btn" id="moodm-1" title="Bem">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor"/><circle cx="15" cy="9.5" r="1.2" fill="currentColor"/></svg>
+      </button>
+
+      <!-- Neutro -->
+      <button onclick="selectMoodModal('neutro',2)" class="mood-btn" id="moodm-2" title="Neutro">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor"/><circle cx="15" cy="9.5" r="1.2" fill="currentColor"/></svg>
+      </button>
+
+      <!-- Triste -->
+      <button onclick="selectMoodModal('triste',3)" class="mood-btn" id="moodm-3" title="Triste">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor"/><circle cx="15" cy="9.5" r="1.2" fill="currentColor"/></svg>
+      </button>
+
+      <!-- Muito mal -->
+      <button onclick="selectMoodModal('muito_mal',4)" class="mood-btn" id="moodm-4" title="Muito mal">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M16 17s-1.5-3-4-3-4 3-4 3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><path d="M9 8c.3-.8 1-.5 1.5 0M15 8c-.3-.8-1-.5-1.5 0"/></svg>
+      </button>
+
+    </div>
+
+    <!-- Labels -->
+    <div style="display:flex;justify-content:space-between;padding:0 4px;margin-bottom:20px">
+      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Ótimo</span>
+      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Bem</span>
+      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Ok</span>
+      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Triste</span>
+      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Mal</span>
+    </div>
+
     <div id="mood-justify-modal" style="display:none">
-      <textarea id="mood-text-modal" placeholder="Quer falar sobre isso? (opcional)" style="width:100%;box-sizing:border-box;background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:14px;font-family:var(--font-b);font-size:14px;color:var(--t1);resize:none;outline:none;height:80px;margin-bottom:10px"></textarea>
-      <button onclick="submitMoodModal()" style="width:100%;background:var(--t1);color:#fff;border:none;border-radius:14px;padding:15px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer">Enviar</button>
+      <div style="background:var(--s2);border-radius:16px;padding:14px;margin-bottom:12px;border:1.5px solid var(--b2)">
+        <div style="font-size:12px;color:var(--t3);margin-bottom:8px;font-weight:600">Quer compartilhar o que está sentindo? (opcional)</div>
+        <textarea id="mood-text-modal" placeholder="Pode falar, estamos aqui..." style="width:100%;box-sizing:border-box;background:none;border:none;font-family:var(--font-b);font-size:14px;color:var(--t1);resize:none;outline:none;height:70px"></textarea>
+      </div>
+      <button onclick="submitMoodModal()" style="width:100%;background:var(--t1);color:var(--bg);border:none;border-radius:14px;padding:15px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer">Enviar resposta</button>
     </div>
   </div>
 </div>
@@ -694,35 +739,85 @@
 
     <!-- HERO HEADER -->
     <div class="home-hero">
-      <!-- Top row: greeting + avatar + logout -->
       <div class="home-hero-top">
-        <div>
-          <div class="home-hero-greeting" id="hdr-greeting">Olá,</div>
-          <div class="home-hero-name" id="home-hero-name">—</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <button onclick="doLogout()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:6px 14px;font-family:var(--font-b);font-size:12px;font-weight:600;color:#fff;cursor:pointer;">Sair</button>
-          <!-- Avatar -->
-          <div id="user-avatar" style="width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+        <!-- LEFT: Avatar + Name -->
+        <div style="display:flex;align-items:center;gap:12px">
+          <div id="user-avatar" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;cursor:pointer" onclick="bnavGo('perfil')">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           </div>
+          <div>
+            <div class="home-hero-greeting" id="hdr-greeting">Olá,</div>
+            <div class="home-hero-name" id="home-hero-name">—</div>
+          </div>
+        </div>
+        <!-- RIGHT: Notifications + Alarm -->
+        <div style="display:flex;align-items:center;gap:8px">
+          <!-- Alarm ponto button -->
+          <button onclick="showAlarmConfig()" id="alarm-btn" style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all .2s">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="7"/><polyline points="12 10 12 13 14 15"/><path d="M5 4L2 7M22 7l-3-3"/></svg>
+            <div id="alarm-dot" style="display:none;position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#2ECC71;border:1.5px solid #212121"></div>
+          </button>
+          <!-- Notifications -->
+          <button onclick="showNotifications()" style="width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <div id="notif-dot" style="display:none;position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#E67E22;border:1.5px solid #212121"></div>
+          </button>
         </div>
       </div>
 
-      <!-- Role badge + date -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
-        <div class="role-pill" id="role-badge" style="background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:11px;">—</div>
-        <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.7);" id="home-date"></div>
+      <!-- Role + date row -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <div class="role-pill" id="role-badge" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.9);font-size:11px">—</div>
+        <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.6)" id="home-date"></div>
       </div>
 
-      <!-- Bater Ponto button - all roles -->
-      <div id="bater-ponto-wrap" style="margin-top:18px;"></div>
-
       <!-- Quick stats - only deposito -->
-      <div class="qs-row" id="qs-row" style="margin-top:12px;"></div>
+      <div class="qs-row" id="qs-row" style="margin-top:12px"></div>
+      <div id="bater-ponto-wrap"></div>
+      <div id="alert-strip-wrap" style="margin-top:6px"></div>
+    </div>
 
-      <!-- Notification pills -->
-      <div id="alert-strip-wrap" style="margin-top:8px;"></div>
+    <!-- NOTIFICATIONS PANEL -->
+    <div id="notif-panel" style="display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:150" onclick="this.style.display='none'">
+      <div style="position:absolute;top:100px;right:16px;width:300px;background:#fff;border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,0.18);padding:16px;max-height:400px;overflow-y:auto" onclick="event.stopPropagation()">
+        <div style="font-family:var(--font-b);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--b1)">Notificações</div>
+        <div id="notif-list"><div style="font-size:13px;color:var(--t3);text-align:center;padding:20px">Nenhuma notificação</div></div>
+      </div>
+    </div>
+
+    <!-- ALARM CONFIG PANEL -->
+    <div id="alarm-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)" onclick="this.style.display='none'">
+      <div style="background:#111;border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)" onclick="event.stopPropagation()">
+        <div style="width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 24px"></div>
+        <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">Alarme de Ponto</div>
+        <div style="font-family:var(--font-h);font-size:28px;font-weight:700;color:#fff;margin-bottom:24px">Configurar horário</div>
+        
+        <!-- Time display -->
+        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;text-align:center;margin-bottom:20px">
+          <input type="time" id="alarm-time" style="background:none;border:none;font-size:52px;font-weight:700;color:#fff;text-align:center;width:100%;outline:none;font-family:var(--font-b);cursor:pointer" value="08:00"/>
+          <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:8px;letter-spacing:2px">HORÁRIO DO PONTO</div>
+        </div>
+
+        <!-- Days selector -->
+        <div style="display:flex;gap:6px;margin-bottom:20px;justify-content:center">
+          ${['D','S','T','Q','Q','S','S'].map((d,i)=>`<button onclick="toggleAlarmDay(this,${i})" class="alarm-day-btn" data-day="${i}" style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">${d}</button>`).join('')}
+        </div>
+
+        <!-- Toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border-radius:14px;padding:14px 18px;margin-bottom:20px">
+          <div>
+            <div style="font-family:var(--font-b);font-size:14px;font-weight:600;color:#fff">Ativar alarme</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px">Lembrete para bater ponto</div>
+          </div>
+          <div id="alarm-toggle" onclick="toggleAlarm()" style="width:50px;height:28px;border-radius:14px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);cursor:pointer;position:relative;transition:all .3s">
+            <div id="alarm-thumb" style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.4);transition:all .3s"></div>
+          </div>
+        </div>
+
+        <button onclick="saveAlarmConfig()" style="width:100%;background:#2ECC71;color:#111;border:none;border-radius:16px;padding:16px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.5px">
+          Salvar configuração
+        </button>
+      </div>
     </div>
 
     <!-- Online indicator -->
