@@ -1422,7 +1422,7 @@ function showNotifications(){
 
 
 // ── PONTO BUTTON ──
-const PONTO_4 = ['chef','cocinero'];
+const PONTO_4 = ['chef','cocinero','gerente'];
 const PONTO_STEPS_4 = ['Entrada','Saída almoço','Retorno almoço','Saída'];
 const PONTO_STEPS_2 = ['Entrada','Saída'];
 
