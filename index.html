@@ -512,6 +512,34 @@
       from{transform:translateY(100%);opacity:0;}
       to{transform:translateY(0);opacity:1;}
     }
+
+    /* BIG PONTO CIRCLE BUTTON */
+    .ponto-circle-btn{
+      position:relative;width:150px;height:150px;
+      border-radius:50%;border:none;background:none;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      margin:8px 0;
+    }
+    .ponto-ring{
+      position:absolute;border-radius:50%;border:2px solid rgba(46,204,113,0.25);
+      animation:pontoRing 2.5s ease-in-out infinite;
+    }
+    .ponto-ring-1{width:150px;height:150px;animation-delay:0s;}
+    .ponto-ring-2{width:130px;height:130px;animation-delay:0.4s;border-color:rgba(46,204,113,0.35);}
+    .ponto-ring-3{width:110px;height:110px;animation-delay:0.8s;border-color:rgba(46,204,113,0.15);}
+    @keyframes pontoRing{
+      0%{transform:scale(1);opacity:0.6;}
+      50%{transform:scale(1.08);opacity:1;}
+      100%{transform:scale(1);opacity:0.6;}
+    }
+    .ponto-inner{
+      width:90px;height:90px;border-radius:50%;
+      background:linear-gradient(145deg,#2ECC71,#27ae60);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      box-shadow:0 8px 32px rgba(46,204,113,0.5),0 0 0 4px rgba(46,204,113,0.15);
+      transition:all .2s;z-index:2;position:relative;
+    }
+    .ponto-circle-btn:active .ponto-inner{transform:scale(0.93);}
   </style>
 
 </head>
@@ -861,20 +889,20 @@
     <span class="bnav-label">Home</span>
   </button>
 
-  <!-- Cardápio -->
-  <button class="bnav-item" onclick="bnavGo('menu')" id="bnav-menu">
+  <!-- Taxas -->
+  <button class="bnav-item" onclick="bnavGo('taxas')" id="bnav-taxas">
     <div class="bnav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
     </div>
-    <span class="bnav-label">Cardápio</span>
+    <span class="bnav-label">Taxas</span>
   </button>
 
-  <!-- PONTO - center elevated -->
-  <button class="bnav-ponto" onclick="baterPonto()">
+  <!-- Escala - center elevated -->
+  <button class="bnav-ponto" onclick="bnavGo('escala')">
     <div class="bnav-ponto-circle">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg>
     </div>
-    <span class="bnav-ponto-label">Ponto</span>
+    <span class="bnav-ponto-label">Escala</span>
   </button>
 
   <!-- Estoque -->
