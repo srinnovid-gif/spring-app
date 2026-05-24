@@ -434,8 +434,13 @@ function renderHome(){
   const notifDot=document.getElementById('notif-dot');
   if(notifDot) notifDot.style.display=(pendingCount2>0||low.length>0)?'block':'none';
 
-  // Render all home widgets
-const hcardsWrap=document.getElementById('hcards-wrap');
+  // Render ponto button first (sync - no async dependencies)
+  const pontoWrapEl=document.getElementById('ponto-wrap');
+  if(pontoWrapEl) pontoWrapEl.innerHTML=renderPontoBtn();
+  setTimeout(()=>updatePontoUI(), 150);
+
+  // Render async widgets
+  const hcardsWrap=document.getElementById('hcards-wrap');
   if(hcardsWrap) renderHorizontalCards(hcardsWrap);
   const muralWrap=document.getElementById('mural-wrap');
   if(muralWrap) renderMural(muralWrap);
@@ -1135,9 +1140,7 @@ async function renderHorizontalCards(container){
 
   container.innerHTML=`
     <!-- BATER PONTO - dynamic with progress track -->
-    <div class="ponto-wrap" id="ponto-wrap">
-      ${renderPontoBtn()}
-    </div>
+    <div class="ponto-wrap" id="ponto-wrap"></div>
 
     <!-- META DO DIA - below ponto button -->
     <div style="margin:16px 20px 14px">
