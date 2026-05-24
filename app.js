@@ -1139,10 +1139,7 @@ async function renderHorizontalCards(container){
   const pct=meta.goal>0?Math.min(100,Math.round(meta.sold/meta.goal*100)):0;
 
   container.innerHTML=`
-    <!-- BATER PONTO - dynamic with progress track -->
-    <div class="ponto-wrap" id="ponto-wrap"></div>
-
-    <!-- META DO DIA - below ponto button -->
+    <!-- META DO DIA -->
     <div style="margin:16px 20px 14px">
       <div class="meta-board">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
