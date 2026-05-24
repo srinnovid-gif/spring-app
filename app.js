@@ -1134,17 +1134,9 @@ async function renderHorizontalCards(container){
   const pct=meta.goal>0?Math.min(100,Math.round(meta.sold/meta.goal*100)):0;
 
   container.innerHTML=`
-    <!-- BATER PONTO - big dynamic circle -->
-    <div style="display:flex;flex-direction:column;align-items:center;padding:8px 20px 0">
-      <button onclick="baterPonto()" class="ponto-circle-btn" id="ponto-main-btn">
-        <div class="ponto-ring ponto-ring-1"></div>
-        <div class="ponto-ring ponto-ring-2"></div>
-        <div class="ponto-ring ponto-ring-3"></div>
-        <div class="ponto-inner">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <div style="font-family:var(--font-b);font-size:13px;font-weight:700;color:#fff;margin-top:6px;letter-spacing:.5px">Bater Ponto</div>
-        </div>
-      </button>
+    <!-- BATER PONTO - dynamic with progress track -->
+    <div class="ponto-wrap" id="ponto-wrap">
+      ${renderPontoBtn()}
     </div>
 
     <!-- META DO DIA - below ponto button -->
@@ -1425,6 +1417,121 @@ function saveAlarmConfig(){
 function showNotifications(){
   const panel=document.getElementById('notif-panel');
   if(panel) panel.style.display=panel.style.display==='none'?'block':'none';
+}
+
+
+// ── PONTO BUTTON ──
+const PONTO_4 = ['chef','cocinero'];
+const PONTO_STEPS_4 = ['Entrada','Saída almoço','Retorno almoço','Saída'];
+const PONTO_STEPS_2 = ['Entrada','Saída'];
+
+function getPontoSteps(){
+  return PONTO_4.includes(userRole) ? PONTO_STEPS_4 : PONTO_STEPS_2;
+}
+
+async function getPontosHoje(){
+  const today=dkey(new Date());
+  const{db,ref,get}=window._fb;
+  try{
+    const snap=await get(ref(db,`accounts/${accountId}/pontos/${user.uid}/${today}`));
+    if(!snap.exists()) return [];
+    return Object.values(snap.val()).sort((a,b)=>a.ts-b.ts);
+  }catch(e){ return []; }
+}
+
+function renderPontoBtn(){
+  const steps=getPontoSteps();
+  const now=new Date();
+  const timeStr=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+  // Build track HTML
+  const trackItems=[];
+  for(let i=0;i<steps.length;i++){
+    if(i>0) trackItems.push(`<div class="ponto-step-line" id="ponto-line-${i}"></div>`);
+    const shortLabel=steps[i].length>8?steps[i].split(' ').join('<br>'):steps[i];trackItems.push(`<div class="ponto-step"><div class="ponto-step-dot" id="ponto-dot-${i}"></div><div class="ponto-step-lbl" id="ponto-lbl-${i}">${shortLabel}</div></div>`);
+  }
+
+  return `
+    <button onclick="doBaterPonto()" class="ponto-circle-btn" id="ponto-main-btn">
+      <div class="ponto-ring ponto-ring-1"></div>
+      <div class="ponto-ring ponto-ring-2"></div>
+      <div class="ponto-inner" id="ponto-inner">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a3a1a" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        <div class="ponto-label" id="ponto-main-label">Bater<br>Ponto</div>
+        <div class="ponto-time">${timeStr}</div>
+      </div>
+    </button>
+
+    <!-- Progress track -->
+    <div class="ponto-track">${trackItems.join('')}</div>`;
+}
+
+async function updatePontoUI(){
+  const pontos=await getPontosHoje();
+  const steps=getPontoSteps();
+  const done=pontos.length;
+
+  // Update dots and lines
+  for(let i=0;i<steps.length;i++){
+    const dot=document.getElementById(`ponto-dot-${i}`);
+    const lbl=document.getElementById(`ponto-lbl-${i}`);
+    const line=document.getElementById(`ponto-line-${i}`);
+    if(!dot) continue;
+    if(i<done){
+      dot.className='ponto-step-dot done';
+      if(lbl) lbl.className='ponto-step-lbl done';
+      if(line) line.className='ponto-step-line done';
+    } else if(i===done){
+      dot.className='ponto-step-dot next';
+      if(lbl) lbl.className='ponto-step-lbl next';
+    }
+  }
+
+  // Update button label
+  const label=document.getElementById('ponto-main-label');
+  const inner=document.getElementById('ponto-inner');
+  if(label){
+    if(done>=steps.length){
+      label.innerHTML='Concluído';
+      if(inner) inner.style.background='rgba(200,200,200,0.5)';
+    } else {
+      label.innerHTML=steps[done];
+    }
+  }
+
+  // Update time
+  const timeEl=document.querySelector('.ponto-time');
+  if(timeEl){
+    const now=new Date();
+    timeEl.textContent=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  }
+}
+
+async function doBaterPonto(){
+  const steps=getPontoSteps();
+  const pontos=await getPontosHoje();
+  if(pontos.length>=steps.length){
+    showToast('Todos os pontos do dia já foram registrados ✓');
+    return;
+  }
+  const stepName=steps[pontos.length];
+  const now=new Date();
+  const time=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const today=dkey(now);
+  const{db,ref,push,set}=window._fb;
+  const pontoRef=push(ref(db,`accounts/${accountId}/pontos/${user.uid}/${today}`));
+  await set(pontoRef,{
+    step:stepName,
+    stepIdx:pontos.length,
+    time,ts:Date.now(),
+    name:userName,
+    role:userRole
+  });
+  showToast(`${stepName} registrado às ${time} ✓`);
+  await updatePontoUI();
 }
 
 // ── PONTO ──
