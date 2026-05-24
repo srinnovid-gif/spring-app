@@ -513,33 +513,100 @@
       to{transform:translateY(0);opacity:1;}
     }
 
-    /* BIG PONTO CIRCLE BUTTON */
+    /* PONTO BUTTON - minimal iOS style */
+    .ponto-wrap{
+      display:flex;flex-direction:column;align-items:center;
+      padding:16px 20px 4px;
+    }
     .ponto-circle-btn{
-      position:relative;width:150px;height:150px;
+      position:relative;width:180px;height:180px;
       border-radius:50%;border:none;background:none;
       cursor:pointer;display:flex;align-items:center;justify-content:center;
-      margin:8px 0;
     }
+    /* Outer pulse ring */
     .ponto-ring{
-      position:absolute;border-radius:50%;border:2px solid rgba(46,204,113,0.25);
-      animation:pontoRing 2.5s ease-in-out infinite;
+      position:absolute;border-radius:50%;
+      animation:pontoRing 3s ease-in-out infinite;
     }
-    .ponto-ring-1{width:150px;height:150px;animation-delay:0s;}
-    .ponto-ring-2{width:130px;height:130px;animation-delay:0.4s;border-color:rgba(46,204,113,0.35);}
-    .ponto-ring-3{width:110px;height:110px;animation-delay:0.8s;border-color:rgba(46,204,113,0.15);}
+    .ponto-ring-1{
+      width:180px;height:180px;
+      background:rgba(245,240,232,0.08);
+      border:1.5px solid rgba(245,240,232,0.15);
+      animation-delay:0s;
+    }
+    .ponto-ring-2{
+      width:158px;height:158px;
+      background:rgba(245,240,232,0.06);
+      border:1.5px solid rgba(245,240,232,0.12);
+      animation-delay:0.5s;
+    }
     @keyframes pontoRing{
-      0%{transform:scale(1);opacity:0.6;}
-      50%{transform:scale(1.08);opacity:1;}
-      100%{transform:scale(1);opacity:0.6;}
+      0%{transform:scale(1);opacity:0.5;}
+      50%{transform:scale(1.04);opacity:1;}
+      100%{transform:scale(1);opacity:0.5;}
     }
+    /* Main circle - cream/white iOS style */
     .ponto-inner{
-      width:90px;height:90px;border-radius:50%;
-      background:linear-gradient(145deg,#2ECC71,#27ae60);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      box-shadow:0 8px 32px rgba(46,204,113,0.5),0 0 0 4px rgba(46,204,113,0.15);
-      transition:all .2s;z-index:2;position:relative;
+      width:136px;height:136px;border-radius:50%;
+      background:rgba(245,240,232,0.95);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+      box-shadow:0 4px 24px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.8);
+      transition:all .18s cubic-bezier(0.16,1,0.3,1);
+      z-index:2;position:relative;
     }
-    .ponto-circle-btn:active .ponto-inner{transform:scale(0.93);}
+    .ponto-circle-btn:active .ponto-inner{
+      transform:scale(0.94);
+      box-shadow:0 2px 12px rgba(0,0,0,0.2);
+    }
+    .ponto-label{
+      font-family:var(--font-b);font-size:11px;font-weight:700;
+      color:#1a3a1a;letter-spacing:.5px;text-transform:uppercase;
+      text-align:center;line-height:1.3;
+    }
+    .ponto-time{
+      font-family:var(--font-b);font-size:10px;color:rgba(26,58,26,0.5);
+      font-weight:500;margin-top:1px;
+    }
+
+    /* PONTO PROGRESS TRACK */
+    .ponto-track{
+      display:flex;align-items:center;justify-content:center;
+      gap:0;margin-top:16px;width:100%;max-width:260px;
+    }
+    .ponto-step{
+      display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;
+    }
+    .ponto-step-dot{
+      width:14px;height:14px;border-radius:50%;
+      border:2px solid rgba(245,240,232,0.3);
+      background:transparent;transition:all .3s;
+      position:relative;z-index:1;
+    }
+    .ponto-step-dot.done{
+      background:rgba(245,240,232,0.9);
+      border-color:rgba(245,240,232,0.9);
+      box-shadow:0 0 8px rgba(245,240,232,0.4);
+    }
+    .ponto-step-dot.next{
+      border-color:rgba(245,240,232,0.7);
+      animation:nextPulse 1.5s ease infinite;
+    }
+    @keyframes nextPulse{
+      0%,100%{box-shadow:0 0 0 0 rgba(245,240,232,0.3);}
+      50%{box-shadow:0 0 0 5px rgba(245,240,232,0.1);}
+    }
+    .ponto-step-line{
+      height:2px;flex:1;background:rgba(245,240,232,0.15);
+      margin-top:-20px;transition:background .3s;
+    }
+    .ponto-step-line.done{background:rgba(245,240,232,0.6);}
+    .ponto-step-lbl{
+      font-family:var(--font-b);font-size:9px;
+      color:rgba(245,240,232,0.45);font-weight:500;
+      text-align:center;line-height:1.2;white-space:nowrap;
+    }
+    .ponto-step-lbl.done{color:rgba(245,240,232,0.8);}
+    .ponto-step-lbl.next{color:rgba(245,240,232,0.9);font-weight:700;}
   </style>
 
 </head>
@@ -772,6 +839,11 @@
 
     <!-- HERO HEADER -->
     <div class="home-hero">
+      <!-- Tempo real - top left corner -->
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:14px;opacity:0.6">
+        <span class="odot"></span>
+        <span style="font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:1.5px;text-transform:uppercase">Tempo real</span>
+      </div>
       <div class="home-hero-top">
         <!-- LEFT: Avatar + Name -->
         <div style="display:flex;align-items:center;gap:12px">
@@ -846,8 +918,7 @@
       </div>
     </div>
 
-    <!-- Online indicator -->
-    <div class="online" style="padding:8px 20px 4px"><span class="odot"></span><span class="olbl">Tempo real ativo</span></div>
+
 
     <!-- Mood widget -->
     <div id="mood-wrap"></div>
