@@ -418,7 +418,7 @@ function renderHome(){
   // Last minute menu change notification
   const menuChangeRecent=menuLastChanged&&((new Date()-menuLastChanged)<3600000);
 
-  const alertWrap=document.getElementById('alert-strip-wrap');
+
 
   // Pending users notification for gerente
   const pendingCount=userRole==='gerente'?Object.values(userAccounts).filter(u=>u.status==='pendente').length:0;
@@ -450,6 +450,11 @@ function renderHome(){
       </div>
       <div class="big-btn-arr">›</div>
     </button>`).join('');
+
+  // Update notification dot
+  const pendingCount2=userRole==='gerente'?Object.values(userAccounts||{}).filter(u=>u.status==='pendente').length:0;
+  const notifDot=document.getElementById('notif-dot');
+  if(notifDot) notifDot.style.display=(pendingCount2>0||low.length>0)?'block':'none';
 
   // Render all home widgets
   const moodWrap=document.getElementById('mood-wrap');
