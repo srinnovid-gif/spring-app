@@ -359,8 +359,15 @@ const NAV_SUBS={inventario:'Estoque e produtos',menu:'Cardápio do buffet',pedid
 const NAV_COLS={inventario:'inv',menu:'men',pedidos:'ped',proveedores:'pro',resumen:'res'};
 
 function buildNav(){
-  const tabs=ROLES[userRole]?.tabs||['menu'];
-  if(!tabs.includes(currentTab))currentTab=tabs[0];
+  // Always go to home screen on login
+  document.getElementById('home-screen').style.display='block';
+  document.getElementById('inner-screen').style.display='none';
+  document.getElementById('fab').style.display='none';
+  // Set home as active in bottom nav
+  document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));
+  const homeBtn=document.getElementById('bnav-home');
+  if(homeBtn) homeBtn.classList.add('active');
+  currentTab=null;
   renderHome();
 }
 
