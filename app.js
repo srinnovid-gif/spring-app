@@ -1450,45 +1450,31 @@ function renderPontoBtn(){
   const n=steps.length;
   const now=new Date();
   const timeStr=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  const R=91;
-  const cx=100,cy=100;
-  const circ=2*Math.PI*R;
-  const gap=4; // gap between segments in degrees
-  const segAngle=(360/n);
 
-  // Colors per station
+  // WhatsApp stories style - 4 segments with big gaps
   const COLORS=['#2ECC71','#F1C40F','#E67E22','#E74C3C'];
+  const cx=110,cy=110,R=98;
+  const GAP_DEG=8; // big gap between segments like WhatsApp
+  const segDeg=(360/n)-GAP_DEG;
 
-  // Build SVG arc segments (one per step, with gap)
-  function polarToCart(cx,cy,r,deg){
+  function polar(cx,cy,r,deg){
     const rad=(deg-90)*Math.PI/180;
-    return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};
+    return{x:+(cx+r*Math.cos(rad)).toFixed(2),y:+(cy+r*Math.sin(rad)).toFixed(2)};
   }
-  function arcPath(cx,cy,r,startDeg,endDeg){
-    const s=polarToCart(cx,cy,r,startDeg+gap/2);
-    const e=polarToCart(cx,cy,r,endDeg-gap/2);
-    const large=endDeg-startDeg-gap>180?1:0;
-    return`M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
+  function arc(startDeg,endDeg){
+    const s=polar(cx,cy,R,startDeg);
+    const e=polar(cx,cy,R,endDeg);
+    const large=endDeg-startDeg>180?1:0;
+    return`M${s.x},${s.y} A${R},${R},0,${large},1,${e.x},${e.y}`;
   }
 
-  const segments=steps.map((_,i)=>{
-    const start=i*segAngle;
-    const end=(i+1)*segAngle;
-    const color=COLORS[i]||COLORS[COLORS.length-1];
-    return`<path id="ponto-seg-${i}" d="${arcPath(cx,cy,R,start,end)}"
-      fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="7" stroke-linecap="round"/>
-    <path id="ponto-seg-fill-${i}" d="${arcPath(cx,cy,R,start,end)}"
-      fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round"
-      opacity="0" style="transition:opacity .5s ease"/>`;
-  }).join('');
-
-  // Station dots at segment starts
-  const stationDots=steps.map((_,i)=>{
-    const angle=i*segAngle;
-    const pos=polarToCart(cx,cy,R,angle);
-    const color=COLORS[i]||COLORS[COLORS.length-1];
-    return`<div class="ponto-station" id="ponto-station-${i}"
-      style="left:${pos.x}px;top:${pos.y}px;--sc:${color}"></div>`;
+  // 4 segment tracks (gray) + fills (colored)
+  const segs=steps.map((_,i)=>{
+    const start=i*(360/n)+GAP_DEG/2;
+    const end=start+segDeg;
+    const c=COLORS[i];
+    return`<path d="${arc(start,end)}" fill="none" stroke="rgba(0,0,0,0.10)" stroke-width="5" stroke-linecap="round"/>
+<path id="ps${i}" d="${arc(start,end)}" fill="none" stroke="${c}" stroke-width="5" stroke-linecap="round" opacity="0" style="transition:opacity .5s ease,stroke .3s"/>`;
   }).join('');
 
   const labelsHTML=steps.map((s,i)=>`
@@ -1496,12 +1482,13 @@ function renderPontoBtn(){
 
   return`
     <button onclick="doBaterPonto()" class="ponto-circle-btn" id="ponto-main-btn">
-      <svg class="ponto-svg-ring" viewBox="0 0 200 200" width="200" height="200">
-        ${segments}
+      <!-- Story-style ring -->
+      <svg style="position:absolute;inset:0;width:220px;height:220px;" viewBox="0 0 220 220">
+        ${segs}
       </svg>
-      ${stationDots}
-      <div class="ponto-inner state-0" id="ponto-inner">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a3a1a" stroke-width="1.8" stroke-linecap="round">
+      <!-- Center circle -->
+      <div class="ponto-inner" id="ponto-inner">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a3a1a" stroke-width="1.8" stroke-linecap="round" id="ponto-icon">
           <circle cx="12" cy="12" r="10"/>
           <polyline points="12 6 12 12 16 14"/>
         </svg>
@@ -1512,19 +1499,9 @@ function renderPontoBtn(){
     <div class="ponto-labels-row">${labelsHTML}</div>
 
     <!-- Alarm mini button -->
-    <button onclick="showAlarmConfig()" id="ponto-alarm-btn" style="
-      margin-top:14px;
-      display:flex;align-items:center;gap:7px;
-      background:none;border:1.5px solid rgba(26,58,26,0.15);
-      border-radius:20px;padding:7px 16px;cursor:pointer;
-      transition:all .2s;
-    ">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a3a1a" stroke-width="2" stroke-linecap="round">
-        <circle cx="12" cy="13" r="7"/>
-        <polyline points="12 10 12 13 14 15"/>
-        <path d="M5 4L2 7M22 7l-3-3"/>
-      </svg>
-      <span style="font-family:var(--font-b);font-size:11px;font-weight:600;color:#1a3a1a;" id="alarm-btn-label">Ativar alarme</span>
+    <button onclick="showAlarmConfig()" style="margin-top:14px;display:flex;align-items:center;gap:7px;background:none;border:1.5px solid rgba(0,0,0,0.12);border-radius:20px;padding:7px 16px;cursor:pointer;transition:all .2s">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="7"/><polyline points="12 10 12 13 14 15"/><path d="M5 4L2 7M22 7l-3-3"/></svg>
+      <span style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t2)" id="alarm-btn-label">Ativar alarme</span>
       <div id="alarm-status-dot" style="display:none;width:7px;height:7px;border-radius:50%;background:#2ECC71;margin-left:2px"></div>
     </button>`;
 }
