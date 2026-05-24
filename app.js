@@ -99,6 +99,7 @@ function showApp(){
   document.getElementById('auth').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('bottom-nav').style.display='flex';
+  initScrollNav();
   // Show mood modal once per day
   const today=dkey(new Date());
   const lastMood=localStorage.getItem('spring_mood_day');
@@ -108,6 +109,53 @@ function showApp(){
       if(modal) modal.style.display='flex';
     },1200);
   }
+}
+
+function initScrollNav(){
+  const nav=document.getElementById('bottom-nav');
+  const app=document.getElementById('app');
+  if(!nav||!app) return;
+
+  let lastY=0;
+  let ticking=false;
+  let hideTimer=null;
+
+  app.addEventListener('scroll',()=>{
+    if(ticking) return;
+    ticking=true;
+    requestAnimationFrame(()=>{
+      const y=app.scrollTop;
+      const delta=y-lastY;
+
+      if(delta>8){
+        // Scrolling down - hide nav
+        nav.classList.add('hidden');
+      } else if(delta<-8){
+        // Scrolling up - show nav
+        nav.classList.remove('hidden');
+      }
+
+      lastY=y;
+      ticking=false;
+    });
+  },{passive:true});
+
+  // Also handle touch swipe on the whole document
+  let touchStartY=0;
+  document.addEventListener('touchstart',(e)=>{
+    touchStartY=e.touches[0].clientY;
+  },{passive:true});
+
+  document.addEventListener('touchend',(e)=>{
+    const dy=touchStartY-e.changedTouches[0].clientY;
+    if(dy>30){
+      // Swipe up (scrolling down) - hide
+      nav.classList.add('hidden');
+    } else if(dy<-30){
+      // Swipe down (scrolling up) - show
+      nav.classList.remove('hidden');
+    }
+  },{passive:true});
 }
 
 function showWelcomeModal(){
