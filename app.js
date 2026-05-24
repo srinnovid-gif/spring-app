@@ -319,20 +319,7 @@ async function loadUser(){
   userName=data.name||user.email;
   accountId=data.code||'SPRING-001';
   document.getElementById('role-badge').textContent=ROLES[userRole]?.label||userRole;
-  // Set home hero name
-  const heroNameEl=document.getElementById('home-hero-name');
-  if(heroNameEl) heroNameEl.textContent=userName.split(' ')[0];
-  // Add change code button to header
-  const btnOut=document.querySelector('.btn-out');
-  if(btnOut&&!document.getElementById('btn-change-code')){
-    const btnCode=document.createElement('button');
-    btnCode.id='btn-change-code';
-    btnCode.className='btn-out';
-    btnCode.innerHTML='🔑';
-    btnCode.title='Alterar código';
-    btnCode.onclick=()=>showWelcomeModal();
-    btnOut.parentNode.insertBefore(btnCode,btnOut);
-  }
+
   buildNav();
   showApp();
   // Show welcome modal only once ever (localStorage persists across sessions)
@@ -448,9 +435,7 @@ function renderHome(){
   if(notifDot) notifDot.style.display=(pendingCount2>0||low.length>0)?'block':'none';
 
   // Render all home widgets
-  const moodWrap=document.getElementById('mood-wrap');
-  if(moodWrap) renderMoodWidget(moodWrap);
-  const hcardsWrap=document.getElementById('hcards-wrap');
+const hcardsWrap=document.getElementById('hcards-wrap');
   if(hcardsWrap) renderHorizontalCards(hcardsWrap);
   const muralWrap=document.getElementById('mural-wrap');
   if(muralWrap) renderMural(muralWrap);
@@ -1139,76 +1124,7 @@ function showPerfil(){
 
 // ── HOME WIDGETS ──
 
-// 1. COMO VOCÊ ESTÁ HOJE
-async function renderMoodWidget(container){
-  const today=dkey(new Date());
-  const{db,ref,get,set}=window._fb;
-  const moodSnap=await get(ref(db,`accounts/${accountId}/moods/${user.uid}/${today}`));
-  
-  if(moodSnap.exists()){
-    // Already answered today
-    container.innerHTML='';
-    return;
-  }
-
-  container.innerHTML=`
-    <div class="widget-card" id="mood-card" style="margin:0 20px 12px">
-      <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:10px">Como você está hoje?</div>
-      <div style="display:flex;justify-content:space-between;gap:6px" id="mood-emojis">
-        ${['😄','🙂','😐','😔','😩'].map((e,i)=>`
-          <button onclick="selectMood('${e}',${i})" style="flex:1;background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 4px;font-size:24px;cursor:pointer;transition:all .2s" id="mood-${i}">${e}</button>
-        `).join('')}
-      </div>
-      <div id="mood-justify" style="display:none;margin-top:10px">
-        <textarea id="mood-text" placeholder="Quer falar sobre isso? (opcional)" style="width:100%;box-sizing:border-box;background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:12px;font-family:var(--font-b);font-size:13px;color:var(--t1);resize:none;outline:none;height:70px"></textarea>
-        <button onclick="submitMood()" style="width:100%;margin-top:8px;background:var(--t1);color:#fff;border:none;border-radius:12px;padding:12px;font-family:var(--font-b);font-size:14px;font-weight:600;cursor:pointer">Enviar</button>
-      </div>
-    </div>`;
-}
-
-let selectedMoodEmoji='';
-let selectedMoodIdx=-1;
-
-function selectMood(emoji, idx){
-  selectedMoodEmoji=emoji;
-  selectedMoodIdx=idx;
-  // Highlight selected
-  for(let i=0;i<5;i++){
-    const btn=document.getElementById('mood-'+i);
-    if(btn){
-      btn.style.background=i===idx?'var(--t1)':'var(--s2)';
-      btn.style.transform=i===idx?'scale(1.15)':'scale(1)';
-    }
-  }
-  // If worst emoji show justification
-  const justify=document.getElementById('mood-justify');
-  if(justify) justify.style.display=idx===4?'block':'none';
-  if(idx!==4) submitMood();
-}
-
-async function submitMood(){
-  const today=dkey(new Date());
-  const text=document.getElementById('mood-text')?.value||'';
-  const{db,ref,set}=window._fb;
-  await set(ref(db,`accounts/${accountId}/moods/${user.uid}/${today}`),{
-    emoji:selectedMoodEmoji,
-    idx:selectedMoodIdx,
-    note:text,
-    name:userName,
-    role:userRole,
-    timestamp:Date.now()
-  });
-  // Show checkmark then disappear
-  const card=document.getElementById('mood-card');
-  if(card){
-    card.innerHTML=`<div style="text-align:center;padding:16px;font-size:36px;animation:fadeUp .4s ease">✅</div>`;
-    setTimeout(()=>{
-      card.style.opacity='0';
-      card.style.transition='opacity .6s ease';
-      setTimeout(()=>{card.innerHTML='';card.style.opacity='1';},600);
-    },1500);
-  }
-}
+// Mood handled via modal - see showMoodModal()
 
 // 2. HORIZONTAL CARDS ROW
 async function renderHorizontalCards(container){
@@ -1218,43 +1134,46 @@ async function renderHorizontalCards(container){
   const pct=meta.goal>0?Math.min(100,Math.round(meta.sold/meta.goal*100)):0;
 
   container.innerHTML=`
-    <!-- META DO DIA - redesigned with circular progress -->
-    <div style="margin:0 20px 14px">
+    <!-- BATER PONTO - big dynamic circle -->
+    <div style="display:flex;flex-direction:column;align-items:center;padding:8px 20px 0">
+      <button onclick="baterPonto()" class="ponto-circle-btn" id="ponto-main-btn">
+        <div class="ponto-ring ponto-ring-1"></div>
+        <div class="ponto-ring ponto-ring-2"></div>
+        <div class="ponto-ring ponto-ring-3"></div>
+        <div class="ponto-inner">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div style="font-family:var(--font-b);font-size:13px;font-weight:700;color:#fff;margin-top:6px;letter-spacing:.5px">Bater Ponto</div>
+        </div>
+      </button>
+    </div>
+
+    <!-- META DO DIA - below ponto button -->
+    <div style="margin:16px 20px 14px">
       <div class="meta-board">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
           <div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-              <div style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:3px;text-transform:uppercase">Meta do Dia</div>
-            </div>
-            <div style="font-family:var(--font-h);font-size:54px;font-weight:700;color:#fff;line-height:1;letter-spacing:-2px">${meta.sold}</div>
-            <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:5px">de <strong style="color:rgba(255,255,255,0.65)">${meta.goal}</strong> pratos</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px">Meta do Dia</div>
+            <div style="font-family:var(--font-b);font-size:42px;font-weight:700;color:#fff;line-height:1">${meta.sold}<span style="font-size:18px;color:rgba(255,255,255,0.35)"> /${meta.goal}</span></div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px">pratos servidos hoje</div>
           </div>
-          <!-- Circular SVG progress -->
-          <div style="position:relative;width:72px;height:72px;flex-shrink:0">
-            <svg width="72" height="72" viewBox="0 0 72 72">
-              <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
-              <circle cx="36" cy="36" r="30" fill="none" 
-                stroke="${pct>=100?'#2ECC71':'rgba(255,255,255,0.8)'}" 
+          <div style="position:relative;width:64px;height:64px;flex-shrink:0">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
+              <circle cx="32" cy="32" r="26" fill="none"
+                stroke="${pct>=100?'#2ECC71':'rgba(255,255,255,0.75)'}"
                 stroke-width="5"
-                stroke-dasharray="188.5" 
-                stroke-dashoffset="${Math.round(188.5*(1-pct/100))}"
+                stroke-dasharray="163.4"
+                stroke-dashoffset="${Math.round(163.4*(1-pct/100))}"
                 stroke-linecap="round"
-                transform="rotate(-90 36 36)"/>
+                transform="rotate(-90 32 32)"/>
             </svg>
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
-              <div style="font-family:var(--font-b);font-size:15px;font-weight:700;color:#fff;line-height:1">${pct}%</div>
-            </div>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-b);font-size:13px;font-weight:700;color:#fff">${pct}%</div>
           </div>
         </div>
-        <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:4px;overflow:hidden;margin-bottom:${['gerente'].includes(userRole)?'12':'0'}px">
-          <div style="background:${pct>=100?'#2ECC71':'rgba(255,255,255,0.7)'};height:100%;width:${pct}%;border-radius:6px;transition:width 1.2s ease"></div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:4px;height:3px;overflow:hidden;margin-bottom:${userRole==='gerente'?'12':'0'}px">
+          <div style="background:${pct>=100?'#2ECC71':'rgba(255,255,255,0.6)'};height:100%;width:${pct}%;border-radius:4px;transition:width 1.2s ease"></div>
         </div>
-        ${userRole==='gerente'?`
-        <button onclick="updateMetaDia()" style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);border-radius:10px;padding:10px;font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Atualizar pratos servidos
-        </button>`:''}
+        ${userRole==='gerente'?`<button onclick="updateMetaDia()" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);color:rgba(255,255,255,0.55);border-radius:10px;padding:9px;font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer">+ Atualizar pratos</button>`:''}
       </div>
     </div>
 
@@ -1303,21 +1222,7 @@ async function updateMetaDia(){
   renderHome();
 }
 
-async function fetchClima(){
-  try{
-    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=-25.4284&longitude=-49.2733&current_weather=true&temperature_unit=celsius');
-    const d=await r.json();
-    const code=d.current_weather?.weathercode||0;
-    const temp=Math.round(d.current_weather?.temperature||20);
-    const icons={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',61:'🌧️',71:'❄️',80:'🌧️',95:'⛈️'};
-    const descs={0:'Céu limpo',1:'Pouco nublado',2:'Parcialmente nublado',3:'Nublado',45:'Névoa',51:'Chuvisco',61:'Chuva',71:'Neve',80:'Chuva',95:'Tempestade'};
-    const icon=icons[code]||'🌤️';
-    const desc=descs[code]||'Variável';
-    return{temp,icon,desc};
-  }catch(e){
-    return{temp:'--',icon:'🌤️',desc:'Indisponível'};
-  }
-}
+
 
 function getAniversariosHoje(){
   const hoje=new Date();
