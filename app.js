@@ -1549,24 +1549,123 @@ async function updatePontoUI(){
   if(timeEl) timeEl.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 }
 
+// Colors per step
+const PONTO_COLORS=['#2ECC71','#F1C40F','#E67E22','#E74C3C'];
+let _pendingPontoStep=null;
+let _pendingPontoIdx=0;
+
 async function doBaterPonto(){
   const steps=getPontoSteps();
   const pontos=await getPontosHoje();
   const stepIdx=pontos.length%steps.length;
   const stepName=steps[stepIdx];
+  const color=PONTO_COLORS[stepIdx]||'#2ECC71';
+
+  _pendingPontoStep=stepName;
+  _pendingPontoIdx=stepIdx;
+
+  // 1. FLASH EFFECT - screen illuminates with step color
+  const flash=document.getElementById('flash-overlay');
+  if(flash){
+    flash.style.display='block';
+    flash.style.background=color;
+    flash.style.animation='none';
+    void flash.offsetWidth;
+    flash.style.animation='flashIn 0.7s ease forwards';
+    setTimeout(()=>{ flash.style.display='none'; },700);
+  }
+
+  // 2. Show confirm modal after flash
+  setTimeout(()=>showPontoModal(stepName,stepIdx,color), 400);
+}
+
+function showPontoModal(stepName,stepIdx,color){
+  const modal=document.getElementById('ponto-modal');
+  const inner=document.getElementById('ponto-modal-inner');
+  const icon=document.getElementById('ponto-modal-icon');
+  const stepEl=document.getElementById('ponto-modal-step');
+  const btn=document.getElementById('ponto-confirm-btn');
+  const input=document.getElementById('ponto-code-input');
+  const err=document.getElementById('ponto-modal-err');
+
+  if(!modal) return;
+
+  // Set colors and text
+  if(icon) icon.style.background=color;
+  if(stepEl) stepEl.textContent=stepName;
+  if(btn) btn.style.background=color;
+  if(err){ err.style.display='none'; err.textContent=''; }
+  if(input){ input.value=''; }
+
+  modal.style.display='flex';
+  setTimeout(()=>{ if(inner) inner.style.transform='translateY(0)'; }, 20);
+  setTimeout(()=>{ if(input) input.focus(); }, 400);
+}
+
+function closePontoModal(){
+  const modal=document.getElementById('ponto-modal');
+  const inner=document.getElementById('ponto-modal-inner');
+  if(inner) inner.style.transform='translateY(100%)';
+  setTimeout(()=>{ if(modal) modal.style.display='none'; }, 400);
+}
+
+async function confirmPonto(){
+  const input=document.getElementById('ponto-code-input');
+  const err=document.getElementById('ponto-modal-err');
+  const code=input?.value?.trim();
+
+  if(!code||code.length!==4){
+    if(err){ err.textContent='Digite os 4 dígitos'; err.style.display='block'; }
+    return;
+  }
+
+  // Validate code
+  if(String(accountId)!==String(code)){
+    if(err){ err.textContent='Código incorreto. Tente novamente.'; err.style.display='block'; }
+    input.value='';
+    input.focus();
+    return;
+  }
+
+  // Code correct - close modal
+  closePontoModal();
+
+  // Register ponto
+  const steps=getPontoSteps();
   const now=new Date();
   const time=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   const today=dkey(now);
+  const color=PONTO_COLORS[_pendingPontoIdx]||'#2ECC71';
+
   const{db,ref,push,set}=window._fb;
   const pontoRef=push(ref(db,`accounts/${accountId}/pontos/${user.uid}/${today}`));
   await set(pontoRef,{
-    step:stepName,
-    stepIdx:stepIdx,
+    step:_pendingPontoStep,
+    stepIdx:_pendingPontoIdx,
     time,ts:Date.now(),
     name:userName,
     role:userRole
   });
-  showToast(`${stepName} registrado às ${time} ✓`);
+
+  // SUCCESS ANIMATION
+  setTimeout(()=>{
+    const success=document.getElementById('ponto-success');
+    const circle=document.getElementById('ponto-success-circle');
+    const text=document.getElementById('ponto-success-text');
+    if(!success) return;
+
+    success.style.background=color+'dd';
+    success.style.display='flex';
+    if(circle){ circle.style.background=color; setTimeout(()=>circle.style.transform='scale(1)',50); }
+    if(text){ text.textContent=`${_pendingPontoStep} · ${time}`; setTimeout(()=>text.style.opacity='1',100); }
+
+    setTimeout(()=>{
+      success.style.opacity='0';
+      success.style.transition='opacity .5s ease';
+      setTimeout(()=>{ success.style.display='none'; success.style.opacity='1'; success.style.transition=''; if(circle) circle.style.transform='scale(0)'; if(text){ text.style.opacity='0'; } },500);
+    },1800);
+  },500);
+
   await updatePontoUI();
 }
 
