@@ -1509,42 +1509,37 @@ function renderPontoBtn(){
 async function updatePontoUI(){
   const pontos=await getPontosHoje();
   const steps=getPontoSteps();
+  const n=steps.length;
   const done=pontos.length;
+  const stepIdx=done%n;
+  const COLORS=['#2ECC71','#F1C40F','#E67E22','#E74C3C'];
+  const INNER_COLORS=['#fff','#f0fff4','#fffde7','#fff3e0'];
 
-  // Update dots and lines
-  for(let i=0;i<steps.length;i++){
-    const dot=document.getElementById(`ponto-dot-${i}`);
-    const lbl=document.getElementById(`ponto-lbl-${i}`);
-    const line=document.getElementById(`ponto-line-${i}`);
-    if(!dot) continue;
-    if(i<done){
-      dot.className='ponto-step-dot done';
-      if(lbl) lbl.className='ponto-step-lbl done';
-      if(line) line.className='ponto-step-line done';
-    } else if(i===done){
-      dot.className='ponto-step-dot next';
-      if(lbl) lbl.className='ponto-step-lbl next';
+  // Fill completed segments - using ps0, ps1, ps2, ps3
+  for(let i=0;i<n;i++){
+    const seg=document.getElementById('ps'+i);
+    const lbl=document.getElementById('ponto-lbl-'+i);
+    const isDone=i<stepIdx;
+    const isNext=i===stepIdx;
+    if(seg) seg.style.opacity=isDone?'1':'0';
+    if(lbl){
+      if(isDone) lbl.className='ponto-lbl-item done';
+      else if(isNext) lbl.className='ponto-lbl-item next';
+      else lbl.className='ponto-lbl-item';
     }
   }
 
-  // Update button label
-  const label=document.getElementById('ponto-main-label');
+  // Update inner button color
   const inner=document.getElementById('ponto-inner');
-  if(label){
-    if(done>=steps.length){
-      label.innerHTML='Concluído';
-      if(inner) inner.style.background='rgba(200,200,200,0.5)';
-    } else {
-      label.innerHTML=steps[done];
-    }
-  }
+  const label=document.getElementById('ponto-main-label');
+  const icon=document.getElementById('ponto-icon');
+  if(inner) inner.style.background=INNER_COLORS[stepIdx]||'#fff';
+  if(icon) icon.setAttribute('stroke',COLORS[stepIdx]||'#1a3a1a');
+  if(label) label.innerHTML=steps[stepIdx];
 
   // Update time
-  const timeEl=document.querySelector('.ponto-time');
-  if(timeEl){
-    const now=new Date();
-    timeEl.textContent=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  }
+  const timeEl=document.querySelector('.ponto-sublabel');
+  if(timeEl) timeEl.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
 }
 
 async function doBaterPonto(){
