@@ -1445,39 +1445,56 @@ function renderPontoBtn(){
   const n=steps.length;
   const now=new Date();
   const timeStr=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-  const R=91; // radius for 200px circle
+  const R=91;
   const cx=100,cy=100;
   const circ=2*Math.PI*R;
+  const gap=4; // gap between segments in degrees
+  const segAngle=(360/n);
 
-  // Station positions around circle
-  const stations=steps.map((_,i)=>{
-    const angle=(i/n)*2*Math.PI - Math.PI/2;
-    const x=cx+R*Math.cos(angle);
-    const y=cy+R*Math.sin(angle);
-    return{x,y,label:steps[i]};
-  });
+  // Colors per station
+  const COLORS=['#2ECC71','#F1C40F','#E67E22','#E74C3C'];
 
-  const stationHTML=stations.map((s,i)=>`
-    <div class="ponto-station" id="ponto-station-${i}"
-      style="left:${s.x}px;top:${s.y}px;">
-    </div>`).join('');
+  // Build SVG arc segments (one per step, with gap)
+  function polarToCart(cx,cy,r,deg){
+    const rad=(deg-90)*Math.PI/180;
+    return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};
+  }
+  function arcPath(cx,cy,r,startDeg,endDeg){
+    const s=polarToCart(cx,cy,r,startDeg+gap/2);
+    const e=polarToCart(cx,cy,r,endDeg-gap/2);
+    const large=endDeg-startDeg-gap>180?1:0;
+    return`M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
+  }
+
+  const segments=steps.map((_,i)=>{
+    const start=i*segAngle;
+    const end=(i+1)*segAngle;
+    const color=COLORS[i]||COLORS[COLORS.length-1];
+    return`<path id="ponto-seg-${i}" d="${arcPath(cx,cy,R,start,end)}"
+      fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="7" stroke-linecap="round"/>
+    <path id="ponto-seg-fill-${i}" d="${arcPath(cx,cy,R,start,end)}"
+      fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round"
+      opacity="0" style="transition:opacity .5s ease"/>`;
+  }).join('');
+
+  // Station dots at segment starts
+  const stationDots=steps.map((_,i)=>{
+    const angle=i*segAngle;
+    const pos=polarToCart(cx,cy,R,angle);
+    const color=COLORS[i]||COLORS[COLORS.length-1];
+    return`<div class="ponto-station" id="ponto-station-${i}"
+      style="left:${pos.x}px;top:${pos.y}px;--sc:${color}"></div>`;
+  }).join('');
 
   const labelsHTML=steps.map((s,i)=>`
     <div class="ponto-lbl-item" id="ponto-lbl-${i}">${s}</div>`).join('');
 
-  return `
+  return`
     <button onclick="doBaterPonto()" class="ponto-circle-btn" id="ponto-main-btn">
-      <!-- SVG circular progress ring -->
       <svg class="ponto-svg-ring" viewBox="0 0 200 200" width="200" height="200">
-        <circle class="ponto-ring-track" cx="${cx}" cy="${cy}" r="${R}"/>
-        <circle class="ponto-ring-progress" id="ponto-ring-fill"
-          cx="${cx}" cy="${cy}" r="${R}"
-          stroke-dasharray="${circ.toFixed(1)}"
-          stroke-dashoffset="${circ.toFixed(1)}"/>
+        ${segments}
       </svg>
-      <!-- Station dots -->
-      ${stationHTML}
-      <!-- Center button -->
+      ${stationDots}
       <div class="ponto-inner state-0" id="ponto-inner">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a3a1a" stroke-width="1.8" stroke-linecap="round">
           <circle cx="12" cy="12" r="10"/>
@@ -1487,7 +1504,6 @@ function renderPontoBtn(){
         <div class="ponto-sublabel">${timeStr}</div>
       </div>
     </button>
-    <!-- Labels row -->
     <div class="ponto-labels-row">${labelsHTML}</div>`;
 }
 
