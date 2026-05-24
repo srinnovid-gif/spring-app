@@ -425,19 +425,10 @@ function renderHome(){
 
   // Compact notification dots instead of full banners
   let notifs = [];
-  if(pendingCount>0) notifs.push({label:`${pendingCount} acesso${pendingCount>1?'s':''} pendente${pendingCount>1?'s':''}`,color:'var(--burg)',tab:'resumen'});
-  if(low.length>0) notifs.push({label:`${low.length} produto${low.length>1?'s':''} com estoque baixo`,color:'var(--acc)',tab:'inventario'});
-  if(menuChangeRecent) notifs.push({label:'Cardápio alterado hoje',color:'var(--grn)',tab:'menu'});
-
-  alertWrap.innerHTML=notifs.length?`
-    <div style="display:flex;flex-wrap:wrap;gap:6px;padding:0 0 8px">
-      ${notifs.map(n=>`
-        <button onclick="goTab('${n.tab}')" style="display:flex;align-items:center;gap:5px;background:${n.color};border:none;border-radius:20px;padding:5px 12px;cursor:pointer;transition:all .2s">
-          <div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.8)"></div>
-          <span style="font-family:var(--font-b);font-size:11px;font-weight:600;color:#fff;white-space:nowrap">${n.label}</span>
-        </button>`).join('')}
-    </div>`:''
-  ;
+  // Update notification dot only
+  const notifDot2=document.getElementById('notif-dot');
+  const hasNotifs=pendingCount>0||low.length>0||menuChangeRecent;
+  if(notifDot2) notifDot2.style.display=hasNotifs?'block':'none';
 
   // Big nav buttons
   const tabs=ROLES[userRole]?.tabs||['menu'];
