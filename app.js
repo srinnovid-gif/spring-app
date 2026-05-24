@@ -99,6 +99,15 @@ function showApp(){
   document.getElementById('auth').style.display='none';
   document.getElementById('app').style.display='flex';
   document.getElementById('bottom-nav').style.display='flex';
+  // Show mood modal once per day
+  const today=dkey(new Date());
+  const lastMood=localStorage.getItem('spring_mood_day');
+  if(lastMood!==today){
+    setTimeout(()=>{
+      const modal=document.getElementById('mood-modal');
+      if(modal) modal.style.display='flex';
+    },1200);
+  }
 }
 
 function showWelcomeModal(){
@@ -1213,24 +1222,43 @@ async function renderHorizontalCards(container){
   const pct=meta.goal>0?Math.min(100,Math.round(meta.sold/meta.goal*100)):0;
 
   container.innerHTML=`
-    <!-- META DO DIA - board style -->
+    <!-- META DO DIA - redesigned with circular progress -->
     <div style="margin:0 20px 14px">
       <div class="meta-board">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
           <div>
-            <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:3px;text-transform:uppercase;margin-bottom:4px">Meta do Dia</div>
-            <div style="font-family:var(--font-h);font-size:42px;font-weight:700;color:#fff;line-height:1">${meta.sold}<span style="font-size:20px;color:rgba(255,255,255,0.5)"> / ${meta.goal}</span></div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:4px">pratos servidos hoje</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+              <div style="font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:3px;text-transform:uppercase">Meta do Dia</div>
+            </div>
+            <div style="font-family:var(--font-h);font-size:54px;font-weight:700;color:#fff;line-height:1;letter-spacing:-2px">${meta.sold}</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:5px">de <strong style="color:rgba(255,255,255,0.65)">${meta.goal}</strong> pratos</div>
           </div>
-          <div style="text-align:right">
-            <div style="font-size:32px;font-weight:800;color:${pct>=100?'#2ECC71':'rgba(255,255,255,0.9)'}">${pct}%</div>
-            <div style="font-size:11px;color:rgba(255,255,255,0.5)">${pct>=100?'Meta atingida! 🎉':'da meta'}</div>
+          <!-- Circular SVG progress -->
+          <div style="position:relative;width:72px;height:72px;flex-shrink:0">
+            <svg width="72" height="72" viewBox="0 0 72 72">
+              <circle cx="36" cy="36" r="30" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
+              <circle cx="36" cy="36" r="30" fill="none" 
+                stroke="${pct>=100?'#2ECC71':'rgba(255,255,255,0.8)'}" 
+                stroke-width="5"
+                stroke-dasharray="188.5" 
+                stroke-dashoffset="${Math.round(188.5*(1-pct/100))}"
+                stroke-linecap="round"
+                transform="rotate(-90 36 36)"/>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <div style="font-family:var(--font-b);font-size:15px;font-weight:700;color:#fff;line-height:1">${pct}%</div>
+            </div>
           </div>
         </div>
-        <div style="background:rgba(255,255,255,0.15);border-radius:8px;height:8px;overflow:hidden">
-          <div style="background:${pct>=100?'#2ECC71':'#fff'};height:100%;width:${pct}%;border-radius:8px;transition:width 1s ease"></div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:6px;height:4px;overflow:hidden;margin-bottom:${['gerente'].includes(userRole)?'12':'0'}px">
+          <div style="background:${pct>=100?'#2ECC71':'rgba(255,255,255,0.7)'};height:100%;width:${pct}%;border-radius:6px;transition:width 1.2s ease"></div>
         </div>
-        ${userRole==='gerente'?`<button onclick="updateMetaDia()" style="margin-top:12px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;border-radius:10px;padding:8px 16px;font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;width:100%">+ Atualizar pratos</button>`:''}
+        ${userRole==='gerente'?`
+        <button onclick="updateMetaDia()" style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);border-radius:10px;padding:10px;font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Atualizar pratos servidos
+        </button>`:''}
       </div>
     </div>
 
@@ -1412,15 +1440,90 @@ async function submitMoodModal(){
   const text=document.getElementById('mood-text-modal')?.value||'';
   const{db,ref,set}=window._fb;
   await set(ref(db,`accounts/${accountId}/moods/${user.uid}/${today}`),{
-    emoji:_selectedMoodEmoji,
+    mood:_selectedMoodEmoji,
     idx:_selectedMoodIdx,
     note:text,
     name:userName,
     role:userRole,
     timestamp:Date.now()
   });
+  localStorage.setItem('spring_mood_day',today);
   closeMoodModal();
-  showToast('Obrigado por responder! ✅');
+  showToast('Obrigado! ✅');
+}
+
+
+// ── ALARM CONFIG ──
+let _alarmActive=false;
+let _alarmDays=[];
+
+function showAlarmConfig(){
+  const panel=document.getElementById('alarm-panel');
+  if(panel) panel.style.display='flex';
+  // Load saved config
+  const saved=JSON.parse(localStorage.getItem('spring_alarm')||'{}');
+  if(saved.time) document.getElementById('alarm-time').value=saved.time;
+  if(saved.active) setAlarmToggleUI(true);
+  if(saved.days){
+    _alarmDays=saved.days;
+    saved.days.forEach(d=>{
+      const btn=document.querySelector(`.alarm-day-btn[data-day="${d}"]`);
+      if(btn) activateAlarmDay(btn);
+    });
+  }
+  // Show dot if active
+  const dot=document.getElementById('alarm-dot');
+  if(dot) dot.style.display=saved.active?'block':'none';
+}
+
+function toggleAlarmDay(btn,day){
+  const idx=_alarmDays.indexOf(day);
+  if(idx>-1){
+    _alarmDays.splice(idx,1);
+    btn.style.background='rgba(255,255,255,0.08)';
+    btn.style.borderColor='rgba(255,255,255,0.15)';
+    btn.style.color='rgba(255,255,255,0.5)';
+  } else {
+    _alarmDays.push(day);
+    activateAlarmDay(btn);
+  }
+}
+
+function activateAlarmDay(btn){
+  btn.style.background='#2ECC71';
+  btn.style.borderColor='#2ECC71';
+  btn.style.color='#111';
+}
+
+function toggleAlarm(){
+  _alarmActive=!_alarmActive;
+  setAlarmToggleUI(_alarmActive);
+}
+
+function setAlarmToggleUI(active){
+  _alarmActive=active;
+  const toggle=document.getElementById('alarm-toggle');
+  const thumb=document.getElementById('alarm-thumb');
+  if(toggle) toggle.style.background=active?'#2ECC71':'rgba(255,255,255,0.1)';
+  if(thumb){
+    thumb.style.left=active?'25px':'3px';
+    thumb.style.background=active?'#111':'rgba(255,255,255,0.4)';
+  }
+}
+
+function saveAlarmConfig(){
+  const time=document.getElementById('alarm-time').value;
+  const config={time,active:_alarmActive,days:_alarmDays};
+  localStorage.setItem('spring_alarm',JSON.stringify(config));
+  document.getElementById('alarm-panel').style.display='none';
+  const dot=document.getElementById('alarm-dot');
+  if(dot) dot.style.display=_alarmActive?'block':'none';
+  showToast(_alarmActive?`Alarme ativo às ${time} ✓`:'Alarme desativado');
+}
+
+function showNotifications(){
+  const panel=document.getElementById('notif-panel');
+  if(panel) panel.style.display=panel.style.display==='none'?'block':'none';
 }
 
 // ── PONTO ──
