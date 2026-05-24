@@ -554,22 +554,24 @@
 
     /* Station dots on the ring */
     .ponto-station{
-      position:absolute;width:14px;height:14px;border-radius:50%;
-      background:rgba(26,58,26,0.2);border:2px solid rgba(26,58,26,0.3);
-      transition:all .3s;transform:translate(-50%,-50%);
+      position:absolute;width:12px;height:12px;border-radius:50%;
+      background:rgba(0,0,0,0.08);border:2px solid rgba(0,0,0,0.12);
+      transition:all .4s;transform:translate(-50%,-50%);
     }
     .ponto-station.done{
-      background:#1a3a1a;border-color:#1a3a1a;
-      box-shadow:0 0 10px rgba(26,58,26,0.3);
+      background:var(--sc,#2ECC71);
+      border-color:var(--sc,#2ECC71);
+      box-shadow:0 0 8px var(--sc,#2ECC71);
     }
     .ponto-station.next{
-      background:#fff;border-color:#1a3a1a;
-      box-shadow:0 0 0 3px rgba(26,58,26,0.15);
-      animation:stationPulse 2s ease infinite;
+      background:#fff;
+      border-color:var(--sc,#2ECC71);
+      box-shadow:0 0 0 3px rgba(0,0,0,0.08);
+      animation:stationPulse 1.8s ease infinite;
     }
     @keyframes stationPulse{
-      0%,100%{box-shadow:0 0 0 3px rgba(26,58,26,0.15);}
-      50%{box-shadow:0 0 0 6px rgba(26,58,26,0.08);}
+      0%,100%{box-shadow:0 0 0 3px rgba(0,0,0,0.06);}
+      50%{box-shadow:0 0 0 6px rgba(0,0,0,0.03);}
     }
 
     /* Main circle button */
