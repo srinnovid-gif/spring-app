@@ -36,6 +36,7 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{
       /* Dinamismo Orgánico palette */
+      /* Spring Brand Colors */
       --bg:#F1E8D9;
       --s1:#FAF6F0;
       --s2:#EDE4D5;
@@ -46,16 +47,21 @@
       --t1:#212121;
       --t2:#4a4a4a;
       --t3:#7a7a7a;
+      /* Primary */
       --acc:#E67E22;
       --acc2:#f09030;
       --acc-glow:rgba(230,126,34,0.22);
+      --brand-green:#8C9B4B;
+      --brand-green-dark:#4a5a20;
+      --brand-green-light:#a8b860;
       --grn:#2ECC71;
       --grn2:#27ae60;
       --grn-glow:rgba(46,204,113,0.22);
-      --tan:#AB9F91;
-      --tan2:#c0b4a6;
+      /* Secondary */
+      --brand-pink:#E8A0A8;
+      --brand-gold:#C49A3C;
+      --brand-black:#1a1a1a;
       --burg:#c0392b;
-      --mint:#F1E8D9;
       --font-h:'Playfair Display',serif;
       --font-b:'DM Sans',sans-serif;
       --font-accent:'Outfit',sans-serif;
@@ -208,8 +214,8 @@
     /* HOME HERO */
     .home-hero{
       background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E"),
-        linear-gradient(160deg,#1a3a1a 0%,#0f2a0f 60%,#1a3a1a 100%);
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.10'/%3E%3C/svg%3E"),
+        linear-gradient(160deg,#6a7a35 0%,#4a5a20 50%,#5a6a2a 100%);
       padding:52px 20px 22px;margin-bottom:0;
     }
     .home-hero-top{display:flex;align-items:flex-start;justify-content:space-between;}
@@ -466,10 +472,10 @@
     }
     /* Active state - dark circle */
     .bnav-item.active .bnav-icon{
-      background:var(--acc);
+      background:var(--brand-green);
     }
     .bnav-item.active .bnav-icon svg{stroke:#fff;}
-    .bnav-item.active .bnav-label{color:var(--acc);font-weight:700;}
+    .bnav-item.active .bnav-label{color:var(--brand-green);font-weight:700;}
 
     /* Escala center button - same size */
     .bnav-ponto{
@@ -509,7 +515,7 @@
 
     /* META BOARD */
     .meta-board{
-      background:linear-gradient(135deg,#212121,#3a3a3a);
+      background:linear-gradient(135deg,#3a4a18,#4a5a20);
       border-radius:22px;padding:22px;
       box-shadow:0 8px 28px rgba(0,0,0,0.18);
     }
@@ -921,7 +927,7 @@
 
       <!-- Role + date row -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
-        <div class="role-pill" id="role-badge" style="background:rgba(212,175,55,0.18);border:1px solid rgba(212,175,55,0.45);color:#D4AF37;font-size:11px;font-weight:700;letter-spacing:.5px">—</div>
+        <div class="role-pill" id="role-badge" style="background:rgba(196,154,60,0.20);border:1px solid rgba(196,154,60,0.50);color:#C49A3C;font-size:11px;font-weight:700;letter-spacing:.5px">—</div>
         <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.5)" id="home-date"></div>
       </div>
 
@@ -940,7 +946,7 @@
 
     <!-- ALARM CONFIG PANEL -->
     <div id="alarm-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)" onclick="this.style.display='none'">
-      <div style="background:#111;border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)" onclick="event.stopPropagation()">
+      <div style="background:#2a3a10;border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)" onclick="event.stopPropagation()">
         <div style="width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 24px"></div>
         <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">Alarme de Ponto</div>
         <div style="font-family:var(--font-h);font-size:28px;font-weight:700;color:#fff;margin-bottom:24px">Configurar horário</div>
