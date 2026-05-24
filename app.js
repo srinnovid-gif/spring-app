@@ -485,6 +485,7 @@ function bnavGo(tab){
   if(btn) btn.classList.add('active');
   if(tab==='home'){goHome();return;}
   if(tab==='perfil'){showPerfil();return;}
+  if(tab==='taxas'||tab==='escala'){showToast('Em breve!');return;}
   goTab(tab);
 }
 
@@ -1441,32 +1442,53 @@ async function getPontosHoje(){
 
 function renderPontoBtn(){
   const steps=getPontoSteps();
+  const n=steps.length;
   const now=new Date();
   const timeStr=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const R=91; // radius for 200px circle
+  const cx=100,cy=100;
+  const circ=2*Math.PI*R;
 
-  // Build track HTML
-  const trackItems=[];
-  for(let i=0;i<steps.length;i++){
-    if(i>0) trackItems.push(`<div class="ponto-step-line" id="ponto-line-${i}"></div>`);
-    const shortLabel=steps[i].length>8?steps[i].split(' ').join('<br>'):steps[i];trackItems.push(`<div class="ponto-step"><div class="ponto-step-dot" id="ponto-dot-${i}"></div><div class="ponto-step-lbl" id="ponto-lbl-${i}">${shortLabel}</div></div>`);
-  }
+  // Station positions around circle
+  const stations=steps.map((_,i)=>{
+    const angle=(i/n)*2*Math.PI - Math.PI/2;
+    const x=cx+R*Math.cos(angle);
+    const y=cy+R*Math.sin(angle);
+    return{x,y,label:steps[i]};
+  });
+
+  const stationHTML=stations.map((s,i)=>`
+    <div class="ponto-station" id="ponto-station-${i}"
+      style="left:${s.x}px;top:${s.y}px;">
+    </div>`).join('');
+
+  const labelsHTML=steps.map((s,i)=>`
+    <div class="ponto-lbl-item" id="ponto-lbl-${i}">${s}</div>`).join('');
 
   return `
     <button onclick="doBaterPonto()" class="ponto-circle-btn" id="ponto-main-btn">
-      <div class="ponto-ring ponto-ring-1"></div>
-      <div class="ponto-ring ponto-ring-2"></div>
-      <div class="ponto-inner" id="ponto-inner">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a3a1a" stroke-width="1.8" stroke-linecap="round">
+      <!-- SVG circular progress ring -->
+      <svg class="ponto-svg-ring" viewBox="0 0 200 200" width="200" height="200">
+        <circle class="ponto-ring-track" cx="${cx}" cy="${cy}" r="${R}"/>
+        <circle class="ponto-ring-progress" id="ponto-ring-fill"
+          cx="${cx}" cy="${cy}" r="${R}"
+          stroke-dasharray="${circ.toFixed(1)}"
+          stroke-dashoffset="${circ.toFixed(1)}"/>
+      </svg>
+      <!-- Station dots -->
+      ${stationHTML}
+      <!-- Center button -->
+      <div class="ponto-inner state-0" id="ponto-inner">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a3a1a" stroke-width="1.8" stroke-linecap="round">
           <circle cx="12" cy="12" r="10"/>
           <polyline points="12 6 12 12 16 14"/>
         </svg>
         <div class="ponto-label" id="ponto-main-label">Bater<br>Ponto</div>
-        <div class="ponto-time">${timeStr}</div>
+        <div class="ponto-sublabel">${timeStr}</div>
       </div>
     </button>
-
-    <!-- Progress track -->
-    <div class="ponto-track">${trackItems.join('')}</div>`;
+    <!-- Labels row -->
+    <div class="ponto-labels-row">${labelsHTML}</div>`;
 }
 
 async function updatePontoUI(){
