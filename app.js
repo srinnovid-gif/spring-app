@@ -1412,6 +1412,11 @@ function saveAlarmConfig(){
   document.getElementById('alarm-panel').style.display='none';
   const dot=document.getElementById('alarm-dot');
   if(dot) dot.style.display=_alarmActive?'block':'none';
+  // Update ponto alarm button
+  const lbl=document.getElementById('alarm-btn-label');
+  const sdot=document.getElementById('alarm-status-dot');
+  if(lbl) lbl.textContent=_alarmActive?`Alarme ativo · ${time}`:'Ativar alarme';
+  if(sdot) sdot.style.display=_alarmActive?'block':'none';
   showToast(_alarmActive?`Alarme ativo às ${time} ✓`:'Alarme desativado');
 }
 
@@ -1504,7 +1509,24 @@ function renderPontoBtn(){
         <div class="ponto-sublabel">${timeStr}</div>
       </div>
     </button>
-    <div class="ponto-labels-row">${labelsHTML}</div>`;
+    <div class="ponto-labels-row">${labelsHTML}</div>
+
+    <!-- Alarm mini button -->
+    <button onclick="showAlarmConfig()" id="ponto-alarm-btn" style="
+      margin-top:14px;
+      display:flex;align-items:center;gap:7px;
+      background:none;border:1.5px solid rgba(26,58,26,0.15);
+      border-radius:20px;padding:7px 16px;cursor:pointer;
+      transition:all .2s;
+    ">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a3a1a" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="13" r="7"/>
+        <polyline points="12 10 12 13 14 15"/>
+        <path d="M5 4L2 7M22 7l-3-3"/>
+      </svg>
+      <span style="font-family:var(--font-b);font-size:11px;font-weight:600;color:#1a3a1a;" id="alarm-btn-label">Ativar alarme</span>
+      <div id="alarm-status-dot" style="display:none;width:7px;height:7px;border-radius:50%;background:#2ECC71;margin-left:2px"></div>
+    </button>`;
 }
 
 async function updatePontoUI(){
@@ -1551,11 +1573,8 @@ async function updatePontoUI(){
 async function doBaterPonto(){
   const steps=getPontoSteps();
   const pontos=await getPontosHoje();
-  if(pontos.length>=steps.length){
-    showToast('Todos os pontos do dia já foram registrados ✓');
-    return;
-  }
-  const stepName=steps[pontos.length];
+  const stepIdx=pontos.length%steps.length;
+  const stepName=steps[stepIdx];
   const now=new Date();
   const time=now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   const today=dkey(now);
@@ -1563,7 +1582,7 @@ async function doBaterPonto(){
   const pontoRef=push(ref(db,`accounts/${accountId}/pontos/${user.uid}/${today}`));
   await set(pontoRef,{
     step:stepName,
-    stepIdx:pontos.length,
+    stepIdx:stepIdx,
     time,ts:Date.now(),
     name:userName,
     role:userRole
