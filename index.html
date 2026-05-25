@@ -499,7 +499,7 @@
       font-family:var(--font-b);font-size:10px;
       color:#aaa;font-weight:500;
     }
-    .big-nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 20px 100px;}
+    .big-nav{padding:0 0 8px;}
     /* HOME WIDGETS */
     .widget-card{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:18px;}
     .hcards-row::-webkit-scrollbar{display:none;}
@@ -628,6 +628,10 @@
       from{box-shadow:0 0 0 9999px rgba(0,0,0,0.45),0 0 0 0 rgba(255,255,255,0.3);}
       to{box-shadow:0 0 0 9999px rgba(0,0,0,0.45),0 0 0 8px rgba(255,255,255,0.1);}
     }
+    #ponto-switch.stats-mode{background:var(--t1);border-color:var(--t1);}
+    #ponto-switch.stats-mode #switch-icon-ponto{display:none !important;}
+    #ponto-switch.stats-mode #switch-icon-stats{display:block !important;stroke:#fff !important;}
+    #ponto-switch.stats-mode #switch-label{color:#fff;}
   </style>
 
 </head>
@@ -1051,8 +1055,27 @@
     <!-- Mood widget -->
     <div id="mood-wrap"></div>
 
-    <!-- Ponto button -->
-    <div class="ponto-wrap" id="ponto-wrap"></div>
+    <!-- Category pills (quick access) -->
+    <div id="big-nav"></div>
+
+    <!-- Ponto / Stats switch -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 20px 0">
+      <button onclick="togglePontoView()" id="ponto-switch" style="
+        display:flex;align-items:center;gap:6px;
+        background:var(--s2);border:1.5px solid var(--b2);
+        border-radius:20px;padding:6px 16px;cursor:pointer;
+        transition:all .3s ease;
+      ">
+        <!-- Ponto icon -->
+        <svg id="switch-icon-ponto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" style="transition:all .3s"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <!-- Stats icon -->
+        <svg id="switch-icon-stats" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" style="display:none;transition:all .3s"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span id="switch-label" style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t2)">Ver estatísticas</span>
+      </button>
+    </div>
+
+    <!-- Ponto button / Stats (toggle) -->
+    <div id="ponto-wrap" style="transition:opacity .25s ease,transform .25s ease;opacity:1;transform:scale(1)"></div>
 
     <!-- Horizontal cards (meta + other) -->
     <div id="hcards-wrap"></div>
@@ -1062,9 +1085,6 @@
 
     <!-- Ranking -->
     <div id="ranking-wrap"></div>
-
-    <!-- Big nav buttons (only non-bottom-bar tabs) -->
-    <div class="big-nav" id="big-nav"></div>
     <div id="today-menu-wrap"></div>
   </div>
   <!-- INNER -->
