@@ -475,17 +475,40 @@ function renderHome(){
   const hasNotifs=pendingCount>0||low.length>0||menuChangeRecent;
   if(notifDot2) notifDot2.style.display=hasNotifs?'block':'none';
 
-  // Big nav buttons
-  const tabs=ROLES[userRole]?.tabs||['menu'];
-  document.getElementById('big-nav').innerHTML=tabs.map(t=>`
-    <button class="big-btn ${NAV_COLS[t]}" onclick="goTab('${t}')">
-      <div style="opacity:0.9;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.18));margin-bottom:10px">${NAV_ICONS[t]}</div>
-      <div>
-        <div style="font-family:'Jost',sans-serif;font-size:15px;font-weight:600;color:#fff;letter-spacing:.3px;text-transform:uppercase">${NAV_LABELS[t]}</div>
-        <div style="font-family:'Jost',sans-serif;font-size:10px;color:rgba(255,255,255,0.7);font-weight:400;margin-top:3px;letter-spacing:.5px;text-transform:uppercase">${NAV_SUBS[t]}</div>
-      </div>
-      <div class="big-btn-arr">›</div>
-    </button>`).join('');
+  // Community categories - same for all roles
+  const COMMUNITY_CATS=[
+    {id:'equipe',label:'Mi Equipo',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
+    {id:'aniversarios',label:'Cumpleaños',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><path d="M12 3a3 3 0 0 0 0 6"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>'},
+    {id:'cardapio_dia',label:'Cardápio',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>'},
+    {id:'folga',label:'Solicitar Folga',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/></svg>'},
+    {id:'eventos',label:'Eventos',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'},
+  ];
+
+  // Role-specific categories
+  const roleTabs=ROLES[userRole]?.tabs||[];
+  const CAT_LABELS={inventario:'Inventário',menu:'Cardápio',pedidos:'Pedidos',proveedores:'Fornecedores',resumen:'Resumo'};
+  const CAT_ICONS={
+    inventario:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+    menu:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
+    pedidos:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+    proveedores:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    resumen:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'
+  };
+
+  // Build all cats: community first, then role-specific
+  const roleCats=roleTabs.map(t=>({id:t,label:CAT_LABELS[t]||t,icon:CAT_ICONS[t]||'',role:true}));
+  const allCats=[...COMMUNITY_CATS,...roleCats];
+
+  document.getElementById('big-nav').innerHTML=`
+    <div style="display:flex;gap:14px;padding:12px 20px 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+      ${allCats.map(c=>`
+        <button onclick="goCategory('${c.id}')" style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;min-width:58px">
+          <div style="width:58px;height:58px;border-radius:50%;background:var(--t1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.12);transition:transform .2s;color:#fff" onpointerdown="this.style.transform='scale(0.93)'" onpointerup="this.style.transform='scale(1)'" onpointerleave="this.style.transform='scale(1)'">
+            ${c.icon}
+          </div>
+          <div style="font-family:var(--font-b);font-size:10px;color:var(--t2);font-weight:500;text-align:center;line-height:1.3;max-width:62px">${c.label}</div>
+        </button>`).join('')}
+    </div>`;
 
   // Update notification dot
   const pendingCount2=userRole==='gerente'?Object.values(userAccounts||{}).filter(u=>u.status==='pendente').length:0;
@@ -1655,6 +1678,163 @@ function showNotifications(){
   if(panel) panel.style.display=panel.style.display==='none'?'block':'none';
 }
 
+
+// ── CATEGORIES ──
+function goCategory(id){
+  if(['inventario','menu','pedidos','proveedores','resumen'].includes(id)){
+    goTab(id); return;
+  }
+  // Community categories - show placeholder
+  const labels={equipe:'Mi Equipo',aniversarios:'Cumpleaños',cardapio_dia:'Cardápio do Dia',folga:'Solicitar Folga',eventos:'Próximos Eventos'};
+  showToast(`${labels[id]||id} · Em breve!`);
+}
+
+// ── PONTO STATS TOGGLE ──
+let _pontoViewStats=false;
+
+function togglePontoView(){
+  _pontoViewStats=!_pontoViewStats;
+  const wrap=document.getElementById('ponto-wrap');
+  const sw=document.getElementById('ponto-switch');
+  const lbl=document.getElementById('switch-label');
+  if(!wrap) return;
+
+  // Animate out
+  wrap.style.opacity='0';
+  wrap.style.transform='scale(0.96)';
+
+  // Update switch button style
+  if(sw){
+    if(_pontoViewStats){
+      sw.classList.add('stats-mode');
+      if(lbl) lbl.textContent='Ver ponto';
+    } else {
+      sw.classList.remove('stats-mode');
+      if(lbl) lbl.textContent='Ver estatísticas';
+    }
+  }
+
+  setTimeout(async()=>{
+    if(_pontoViewStats){
+      wrap.innerHTML=await renderPontoStats();
+    } else {
+      wrap.innerHTML=renderPontoBtn();
+      setTimeout(()=>updatePontoUI(),100);
+    }
+    // Animate in
+    wrap.style.opacity='1';
+    wrap.style.transform='scale(1)';
+  },250);
+}
+
+async function renderPontoStats(){
+  const today=dkey(new Date());
+  const{db,ref,get}=window._fb;
+  const HOURS_PER_DAY=8;
+  const DAYS_PER_WEEK=6;
+  const HOURS_PER_MONTH=192;
+
+  // Get this month's pontos
+  const now=new Date();
+  const monthKey=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  let totalMinutes=0;
+  let daysWorked=0;
+  let todayPontos=[];
+  let weekMinutes=0;
+
+  try{
+    const snap=await get(ref(db,`accounts/${accountId}/pontos/${user.uid}`));
+    if(snap.exists()){
+      const allDays=snap.val();
+      // Today
+      if(allDays[today]) todayPontos=Object.values(allDays[today]).sort((a,b)=>a.ts-b.ts);
+
+      // This week
+      const weekStart=new Date(); weekStart.setDate(weekStart.getDate()-weekStart.getDay());
+      Object.entries(allDays).forEach(([day,pontos])=>{
+        const d=new Date(day);
+        if(day.startsWith(monthKey)){
+          const pts=Object.values(pontos).sort((a,b)=>a.ts-b.ts);
+          if(pts.length>=2){
+            daysWorked++;
+            // Calc hours from first to last ponto
+            const mins=(pts[pts.length-1].ts-pts[0].ts)/60000;
+            totalMinutes+=mins;
+            if(d>=weekStart) weekMinutes+=mins;
+          }
+        }
+      });
+    }
+  }catch(e){}
+
+  const totalH=Math.floor(totalMinutes/60);
+  const totalM=Math.round(totalMinutes%60);
+  const weekH=Math.floor(weekMinutes/60);
+  const weekM=Math.round(weekMinutes%60);
+  const hoursOwed=Math.max(0,HOURS_PER_MONTH-totalH);
+  const pct=Math.min(100,Math.round((totalH/HOURS_PER_MONTH)*100));
+  const weekPct=Math.min(100,Math.round((weekH/(HOURS_PER_DAY*DAYS_PER_WEEK))*100));
+
+  // Today's ponto timeline
+  const steps=getPontoSteps();
+  const timelineHTML=steps.map((s,i)=>{
+    const p=todayPontos[i];
+    const done=!!p;
+    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;${i<steps.length-1?'border-bottom:1px solid var(--b1)':''}">
+      <div style="width:8px;height:8px;border-radius:50%;background:${done?'#2ECC71':'var(--b3)'};flex-shrink:0"></div>
+      <div style="flex:1;font-family:var(--font-b);font-size:13px;color:${done?'var(--t1)':'var(--t3)'};font-weight:${done?'600':'400'}">${s}</div>
+      <div style="font-family:var(--font-b);font-size:12px;color:${done?'var(--grn)':'var(--t3)'};font-weight:600">${done?p.time:'--:--'}</div>
+    </div>`;
+  }).join('');
+
+  return`
+    <div style="padding:0 20px 8px">
+      <!-- Toggle back button -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-family:var(--font-b);font-size:14px;font-weight:700;color:var(--t1)">Meus Pontos</div>
+        <button onclick="togglePontoView()" style="display:flex;align-items:center;gap:6px;background:var(--t1);border:none;border-radius:20px;padding:6px 14px;cursor:pointer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span style="font-family:var(--font-b);font-size:11px;font-weight:700;color:#fff">Bater Ponto</span>
+        </button>
+      </div>
+
+      <!-- Today timeline -->
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:16px;margin-bottom:12px">
+        <div style="font-size:10px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Hoje</div>
+        ${timelineHTML}
+      </div>
+
+      <!-- Stats grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:14px">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Esta semana</div>
+          <div style="font-family:var(--font-b);font-size:22px;font-weight:700;color:var(--t1)">${weekH}h${weekM>0?weekM+'m':''}</div>
+          <div style="background:var(--s3);border-radius:4px;height:4px;margin-top:8px;overflow:hidden">
+            <div style="background:var(--grn);height:100%;width:${weekPct}%;border-radius:4px;transition:width .8s ease"></div>
+          </div>
+          <div style="font-size:10px;color:var(--t3);margin-top:4px">${weekPct}% de 48h</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:14px">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Este mês</div>
+          <div style="font-family:var(--font-b);font-size:22px;font-weight:700;color:var(--t1)">${totalH}h${totalM>0?totalM+'m':''}</div>
+          <div style="background:var(--s3);border-radius:4px;height:4px;margin-top:8px;overflow:hidden">
+            <div style="background:${pct>=100?'var(--grn)':'var(--acc)'};height:100%;width:${pct}%;border-radius:4px;transition:width .8s ease"></div>
+          </div>
+          <div style="font-size:10px;color:var(--t3);margin-top:4px">${pct}% de 192h</div>
+        </div>
+      </div>
+
+      <!-- Hours owed -->
+      <div style="background:var(--t1);border-radius:16px;padding:16px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">Horas a cumprir</div>
+          <div style="font-family:var(--font-b);font-size:28px;font-weight:700;color:#fff">${hoursOwed}h</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px">${daysWorked} dias trabalhados</div>
+        </div>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+    </div>`;
+}
 
 // ── PONTO BUTTON ──
 const PONTO_4 = ['chef','cocinero','gerente'];
