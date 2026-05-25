@@ -917,39 +917,37 @@
 
     <!-- HERO HEADER -->
     <div class="home-hero">
-      <!-- Tempo real - top left corner -->
-      <div style="display:flex;align-items:center;gap:5px;margin-bottom:14px;opacity:0.6">
-        <span class="odot"></span>
-        <span style="font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:1.5px;text-transform:uppercase">Tempo real</span>
-      </div>
-      <div class="home-hero-top">
-        <!-- LEFT: Avatar + Name -->
-        <div style="display:flex;align-items:center;gap:12px">
-          <div id="user-avatar" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;cursor:pointer" onclick="bnavGo('perfil')">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div>
-            <div class="home-hero-greeting" id="hdr-greeting">Olá,</div>
-            <div class="home-hero-name" id="home-hero-name">—</div>
-          </div>
+
+      <!-- Top row: notif right -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:5px;opacity:0.55">
+          <span class="odot"></span>
+          <span style="font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.8);letter-spacing:1.5px;text-transform:uppercase">Tempo real</span>
         </div>
-        <!-- RIGHT: Notifications only -->
-        <div style="display:flex;align-items:center;gap:8px">
-          <button onclick="showNotifications()" style="width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <div id="notif-dot" style="display:none;position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#E67E22;border:1.5px solid #1a3a1a"></div>
-          </button>
+        <button onclick="showNotifications()" style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div id="notif-dot" style="display:none;position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#E67E22;border:1.5px solid #1a3a1a"></div>
+        </button>
+      </div>
+
+      <!-- Centered profile -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding-bottom:24px">
+        <!-- Avatar circle -->
+        <div id="user-avatar" onclick="bnavGo('perfil')" style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.12);border:2.5px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2)">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <!-- Name -->
+        <div style="text-align:center">
+          <div class="home-hero-name" id="home-hero-name" style="font-size:26px;margin-bottom:6px">—</div>
+          <div class="role-pill" id="role-badge" style="background:rgba(196,154,60,0.20);border:1px solid rgba(196,154,60,0.50);color:#C49A3C;font-size:11px;font-weight:700;letter-spacing:.5px;display:inline-block">—</div>
         </div>
       </div>
 
-      <!-- Role + date row -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
-        <div class="role-pill" id="role-badge" style="background:rgba(196,154,60,0.20);border:1px solid rgba(196,154,60,0.50);color:#C49A3C;font-size:11px;font-weight:700;letter-spacing:.5px">—</div>
-        <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.5)" id="home-date"></div>
-      </div>
+      <!-- Date -->
+      <div style="text-align:center;font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1.5px;margin-top:-16px;padding-bottom:8px" id="home-date"></div>
 
       <!-- Quick stats - only deposito -->
-      <div class="qs-row" id="qs-row" style="margin-top:12px"></div>
+      <div class="qs-row" id="qs-row"></div>
       <div id="bater-ponto-wrap"></div>
     </div>
 
