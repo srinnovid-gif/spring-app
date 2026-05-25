@@ -427,7 +427,7 @@ function renderHome(){
   const now=new Date();
   document.getElementById('home-date').textContent=now.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
   // Hero header
-  document.getElementById('hdr-greeting').textContent='Olá,';
+  const greetEl=document.getElementById('hdr-greeting'); if(greetEl) greetEl.textContent='Olá,';
   const heroName=document.getElementById('home-hero-name');
   if(heroName) heroName.textContent=userName.split(' ')[0];
 
