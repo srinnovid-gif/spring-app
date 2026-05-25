@@ -1407,6 +1407,98 @@ async function submitMoodModal(){
 
 // ── ALARM CONFIG ──
 let _alarmActive=false;
+let _alarmSound='beep';
+
+function selectAlarmSound(btn, sound){
+  _alarmSound=sound;
+  // Update UI
+  document.querySelectorAll('.alarm-sound-btn').forEach(b=>{
+    b.style.background='var(--s2)';
+    b.style.borderColor='var(--b2)';
+    b.querySelector('div:last-child').style.color='var(--t1)';
+  });
+  btn.style.background='var(--t1)';
+  btn.style.borderColor='var(--t1)';
+  btn.querySelector('div:last-child').style.color='#fff';
+  // Preview the sound
+  playAlarmSound(sound);
+}
+
+function playAlarmSound(sound){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const sounds={
+      beep:()=>{
+        [0,0.3,0.6].forEach(d=>{
+          const o=ctx.createOscillator(),g=ctx.createGain();
+          o.connect(g);g.connect(ctx.destination);
+          o.frequency.value=880;o.type='sine';
+          g.gain.setValueAtTime(0,ctx.currentTime+d);
+          g.gain.linearRampToValueAtTime(0.4,ctx.currentTime+d+0.05);
+          g.gain.linearRampToValueAtTime(0,ctx.currentTime+d+0.35);
+          o.start(ctx.currentTime+d);o.stop(ctx.currentTime+d+0.4);
+        });
+      },
+      pulse:()=>{
+        [0,0.5,1.0].forEach((d,i)=>{
+          const o=ctx.createOscillator(),g=ctx.createGain();
+          o.connect(g);g.connect(ctx.destination);
+          o.frequency.value=440+i*110;o.type='sine';
+          g.gain.setValueAtTime(0,ctx.currentTime+d);
+          g.gain.linearRampToValueAtTime(0.35,ctx.currentTime+d+0.1);
+          g.gain.linearRampToValueAtTime(0,ctx.currentTime+d+0.45);
+          o.start(ctx.currentTime+d);o.stop(ctx.currentTime+d+0.5);
+        });
+      },
+      chime:()=>{
+        [523,659,784,1047].forEach((freq,i)=>{
+          const o=ctx.createOscillator(),g=ctx.createGain();
+          o.connect(g);g.connect(ctx.destination);
+          o.frequency.value=freq;o.type='sine';
+          g.gain.setValueAtTime(0.3,ctx.currentTime+i*0.18);
+          g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+i*0.18+0.8);
+          o.start(ctx.currentTime+i*0.18);o.stop(ctx.currentTime+i*0.18+0.8);
+        });
+      },
+      alert:()=>{
+        [0,0.15,0.3,0.45,0.6].forEach(d=>{
+          const o=ctx.createOscillator(),g=ctx.createGain();
+          o.connect(g);g.connect(ctx.destination);
+          o.frequency.value=1200;o.type='square';
+          g.gain.setValueAtTime(0.2,ctx.currentTime+d);
+          g.gain.linearRampToValueAtTime(0,ctx.currentTime+d+0.12);
+          o.start(ctx.currentTime+d);o.stop(ctx.currentTime+d+0.12);
+        });
+      },
+      soft:()=>{
+        const freqs=[392,494,587];
+        freqs.forEach((freq,i)=>{
+          const o=ctx.createOscillator(),g=ctx.createGain();
+          o.connect(g);g.connect(ctx.destination);
+          o.frequency.value=freq;o.type='sine';
+          g.gain.setValueAtTime(0,ctx.currentTime+i*0.4);
+          g.gain.linearRampToValueAtTime(0.25,ctx.currentTime+i*0.4+0.2);
+          g.gain.linearRampToValueAtTime(0,ctx.currentTime+i*0.4+0.7);
+          o.start(ctx.currentTime+i*0.4);o.stop(ctx.currentTime+i*0.4+0.8);
+        });
+      },
+      digital:()=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);
+        o.frequency.setValueAtTime(1000,ctx.currentTime);
+        o.frequency.setValueAtTime(800,ctx.currentTime+0.1);
+        o.frequency.setValueAtTime(1000,ctx.currentTime+0.2);
+        o.frequency.setValueAtTime(800,ctx.currentTime+0.3);
+        o.frequency.setValueAtTime(1200,ctx.currentTime+0.5);
+        o.type='square';
+        g.gain.setValueAtTime(0.15,ctx.currentTime);
+        g.gain.linearRampToValueAtTime(0,ctx.currentTime+0.8);
+        o.start(ctx.currentTime);o.stop(ctx.currentTime+0.8);
+      }
+    };
+    (sounds[sound]||sounds.beep)();
+  }catch(e){ console.warn('Sound error:',e); }
+}
 let _alarmDays=[];
 
 function showAlarmConfig(){
@@ -1422,6 +1514,18 @@ function showAlarmConfig(){
       const btn=document.querySelector(`.alarm-day-btn[data-day="${d}"]`);
       if(btn) activateAlarmDay(btn);
     });
+  }
+  if(saved.sound){
+    _alarmSound=saved.sound;
+    const soundBtn=document.querySelector(`.alarm-sound-btn[data-sound="${saved.sound}"]`);
+    if(soundBtn){
+      document.querySelectorAll('.alarm-sound-btn').forEach(b=>{
+        b.style.background='var(--s2)';b.style.borderColor='var(--b2)';
+        b.querySelector('div:last-child').style.color='var(--t1)';
+      });
+      soundBtn.style.background='var(--t1)';soundBtn.style.borderColor='var(--t1)';
+      soundBtn.querySelector('div:last-child').style.color='#fff';
+    }
   }
   // Show dot if active
   const dot=document.getElementById('alarm-dot');
@@ -1465,7 +1569,7 @@ function setAlarmToggleUI(active){
 
 function saveAlarmConfig(){
   const time=document.getElementById('alarm-time').value;
-  const config={time,active:_alarmActive,days:_alarmDays};
+  const config={time,active:_alarmActive,days:_alarmDays,sound:_alarmSound};
   localStorage.setItem('spring_alarm',JSON.stringify(config));
   document.getElementById('alarm-panel').style.display='none';
 
@@ -1525,22 +1629,12 @@ function stopAlarmChecker(){
 }
 
 function fireAlarm(time){
-  // Play sound
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    [0,0.3,0.6].forEach(delay=>{
-      const osc=ctx.createOscillator();
-      const gain=ctx.createGain();
-      osc.connect(gain);gain.connect(ctx.destination);
-      osc.frequency.value=880;
-      osc.type='sine';
-      gain.gain.setValueAtTime(0,ctx.currentTime+delay);
-      gain.gain.linearRampToValueAtTime(0.4,ctx.currentTime+delay+0.05);
-      gain.gain.linearRampToValueAtTime(0,ctx.currentTime+delay+0.4);
-      osc.start(ctx.currentTime+delay);
-      osc.stop(ctx.currentTime+delay+0.4);
-    });
-  }catch(e){}
+  // Play selected sound (repeat 3 times)
+  const config=JSON.parse(localStorage.getItem('spring_alarm')||'{}');
+  const sound=config.sound||'beep';
+  playAlarmSound(sound);
+  setTimeout(()=>playAlarmSound(sound),1000);
+  setTimeout(()=>playAlarmSound(sound),2000);
 
   // Show notification
   if(Notification.permission==='granted'){
