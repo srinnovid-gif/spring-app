@@ -510,10 +510,7 @@ function renderHome(){
         </button>`).join('')}
     </div>`;
 
-  // Update notification dot
-  const pendingCount2=userRole==='gerente'?Object.values(userAccounts||{}).filter(u=>u.status==='pendente').length:0;
-  const notifDot=document.getElementById('notif-dot');
-  if(notifDot) notifDot.style.display=(pendingCount2>0||low.length>0)?'block':'none';
+
 
   // Render ponto button first (sync - no async dependencies)
   const pontoWrapEl=document.getElementById('ponto-wrap');
@@ -532,7 +529,8 @@ function renderHome(){
   const td=dkey(new Date());
   const todayItems=Object.values(menuItems).filter(m=>m.date===td);
   const wrap=document.getElementById('today-menu-wrap');
-  if(tabs.includes('menu')){
+  const roleTabs2=ROLES[userRole]?.tabs||[];
+  if(roleTabs2.includes('menu')){
     wrap.innerHTML=`
       <div style="padding:0 20px">
         <div class="today-menu-hdr">
