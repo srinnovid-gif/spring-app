@@ -509,7 +509,7 @@ function renderHome(){
   document.getElementById('big-nav').innerHTML=`
     <div style="
       display:flex;gap:8px;
-      padding:4px 20px 18px;
+      padding:4px 20px 14px;
       overflow-x:auto;
       scrollbar-width:none;
       -webkit-overflow-scrolling:touch;
@@ -518,17 +518,17 @@ function renderHome(){
       ${allCats.map(c=>`
         <button onclick="goCategory('${c.id}')" style="
           flex-shrink:0;
-          background:rgba(255,255,255,0.08);
-          border:1px solid rgba(255,255,255,0.15);
+          background:rgba(255,255,255,0.10);
+          border:1.5px solid rgba(255,255,255,0.20);
           border-radius:20px;
-          padding:7px 16px;
+          padding:8px 18px;
           font-family:var(--font-b);
           font-size:12px;
-          font-weight:500;
-          color:rgba(255,255,255,0.7);
+          font-weight:600;
+          color:rgba(255,255,255,0.85);
           cursor:pointer;
           transition:all .2s;
-          letter-spacing:.2px;
+          letter-spacing:.3px;
         "
         onpointerdown="this.style.background='rgba(255,255,255,0.18)';this.style.color='#fff'"
         onpointerup="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.7)'"
