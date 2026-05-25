@@ -956,35 +956,54 @@
     </div>
 
     <!-- ALARM CONFIG PANEL -->
-    <div id="alarm-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:150;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)" onclick="this.style.display='none'">
-      <div style="background:#2a3a10;border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)" onclick="event.stopPropagation()">
-        <div style="width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 24px"></div>
-        <div style="font-family:var(--font-b);font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">Alarme de Ponto</div>
-        <div style="font-family:var(--font-h);font-size:28px;font-weight:700;color:#fff;margin-bottom:24px">Configurar horário</div>
-        
-        <!-- Time display -->
-        <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;text-align:center;margin-bottom:20px">
-          <input type="time" id="alarm-time" style="background:none;border:none;font-size:52px;font-weight:700;color:#fff;text-align:center;width:100%;outline:none;font-family:var(--font-b);cursor:pointer" value="08:00"/>
-          <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:8px;letter-spacing:2px">HORÁRIO DO PONTO</div>
+    <div id="alarm-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)" onclick="this.style.display='none'">
+      <div style="background:var(--bg);border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)" onclick="event.stopPropagation()">
+        <div style="width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 24px"></div>
+
+        <!-- Header -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+          <div style="width:44px;height:44px;border-radius:14px;background:var(--s2);display:flex;align-items:center;justify-content:center">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--t1)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="7"/><polyline points="12 10 12 13 14 15"/><path d="M5 4L2 7M22 7l-3-3"/></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--font-b);font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase">Configurar</div>
+            <div style="font-family:var(--font-b);font-size:18px;font-weight:700;color:var(--t1)">Alarme de Ponto</div>
+          </div>
         </div>
 
-        <!-- Days selector -->
-        <div style="display:flex;gap:6px;margin-bottom:20px;justify-content:center">
-          ${['D','S','T','Q','Q','S','S'].map((d,i)=>`<button onclick="toggleAlarmDay(this,${i})" class="alarm-day-btn" data-day="${i}" style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">${d}</button>`).join('')}
+        <!-- Time input -->
+        <div style="background:var(--s1);border:1.5px solid var(--b2);border-radius:18px;padding:20px;text-align:center;margin-bottom:16px">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px">Horário</div>
+          <input type="time" id="alarm-time" value="08:00"
+            style="background:none;border:none;font-size:48px;font-weight:700;color:var(--t1);text-align:center;width:100%;outline:none;font-family:var(--font-b);cursor:pointer"/>
+        </div>
+
+        <!-- Days selector - static HTML, no template literals -->
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Dias da semana</div>
+          <div style="display:flex;gap:6px;justify-content:space-between">
+            <button onclick="toggleAlarmDay(this,0)" class="alarm-day-btn" data-day="0" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">D</button>
+            <button onclick="toggleAlarmDay(this,1)" class="alarm-day-btn" data-day="1" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">S</button>
+            <button onclick="toggleAlarmDay(this,2)" class="alarm-day-btn" data-day="2" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">T</button>
+            <button onclick="toggleAlarmDay(this,3)" class="alarm-day-btn" data-day="3" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">Q</button>
+            <button onclick="toggleAlarmDay(this,4)" class="alarm-day-btn" data-day="4" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">Q</button>
+            <button onclick="toggleAlarmDay(this,5)" class="alarm-day-btn" data-day="5" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">S</button>
+            <button onclick="toggleAlarmDay(this,6)" class="alarm-day-btn" data-day="6" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">S</button>
+          </div>
         </div>
 
         <!-- Toggle -->
-        <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.05);border-radius:14px;padding:14px 18px;margin-bottom:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--s1);border:1.5px solid var(--b1);border-radius:14px;padding:14px 18px;margin-bottom:20px">
           <div>
-            <div style="font-family:var(--font-b);font-size:14px;font-weight:600;color:#fff">Ativar alarme</div>
-            <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px">Lembrete para bater ponto</div>
+            <div style="font-family:var(--font-b);font-size:14px;font-weight:600;color:var(--t1)">Ativar alarme</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:2px">Notificação no horário do ponto</div>
           </div>
-          <div id="alarm-toggle" onclick="toggleAlarm()" style="width:50px;height:28px;border-radius:14px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);cursor:pointer;position:relative;transition:all .3s">
-            <div id="alarm-thumb" style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.4);transition:all .3s"></div>
+          <div id="alarm-toggle" onclick="toggleAlarm()" style="width:52px;height:30px;border-radius:15px;background:var(--b3);cursor:pointer;position:relative;transition:all .3s">
+            <div id="alarm-thumb" style="position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.2);transition:all .3s"></div>
           </div>
         </div>
 
-        <button onclick="saveAlarmConfig()" style="width:100%;background:#2ECC71;color:#111;border:none;border-radius:16px;padding:16px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.5px">
+        <button onclick="saveAlarmConfig()" style="width:100%;background:var(--t1);color:var(--bg);border:none;border-radius:16px;padding:16px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer">
           Salvar configuração
         </button>
       </div>
