@@ -540,7 +540,9 @@
     /* PONTO BUTTON - circular progress around */
     .ponto-wrap{
       display:flex;flex-direction:column;align-items:center;
-      padding:20px 20px 8px;
+      padding:12px 20px 8px;
+      width:100%;
+      box-sizing:border-box;
     }
     .ponto-circle-btn{
       position:relative;width:220px;height:220px;
@@ -628,10 +630,7 @@
       from{box-shadow:0 0 0 9999px rgba(0,0,0,0.45),0 0 0 0 rgba(255,255,255,0.3);}
       to{box-shadow:0 0 0 9999px rgba(0,0,0,0.45),0 0 0 8px rgba(255,255,255,0.1);}
     }
-    #ponto-switch.stats-mode{background:var(--t1);border-color:var(--t1);}
-    #ponto-switch.stats-mode #switch-icon-ponto{display:none !important;}
-    #ponto-switch.stats-mode #switch-icon-stats{display:block !important;stroke:#fff !important;}
-    #ponto-switch.stats-mode #switch-label{color:#fff;}
+    #ponto-switch.stats-mode{background:var(--s2);}
   </style>
 
 </head>
@@ -1058,24 +1057,50 @@
     <!-- Category pills (quick access) -->
     <div id="big-nav"></div>
 
-    <!-- Ponto / Stats switch -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 20px 0">
-      <button onclick="togglePontoView()" id="ponto-switch" style="
-        display:flex;align-items:center;gap:6px;
-        background:var(--s2);border:1.5px solid var(--b2);
-        border-radius:20px;padding:6px 16px;cursor:pointer;
-        transition:all .3s ease;
+    <!-- Toggle pill switch -->
+    <div style="display:flex;justify-content:center;padding:16px 20px 4px">
+      <div onclick="togglePontoView()" id="ponto-switch" style="
+        position:relative;
+        width:96px;height:44px;
+        border-radius:22px;
+        background:var(--s2);
+        border:1.5px solid var(--b2);
+        cursor:pointer;
+        display:flex;align-items:center;
+        transition:background .35s ease;
+        box-shadow:0 2px 10px rgba(0,0,0,0.08);
       ">
-        <!-- Ponto icon -->
-        <svg id="switch-icon-ponto" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" style="transition:all .3s"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <!-- Stats icon -->
-        <svg id="switch-icon-stats" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" stroke-linecap="round" style="display:none;transition:all .3s"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        <span id="switch-label" style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t2)">Ver estatísticas</span>
-      </button>
+        <!-- Sliding ball -->
+        <div id="switch-ball" style="
+          position:absolute;
+          left:4px;
+          width:36px;height:36px;
+          border-radius:50%;
+          background:var(--t1);
+          transition:left .35s cubic-bezier(0.34,1.56,0.64,1),background .35s ease;
+          display:flex;align-items:center;justify-content:center;
+          box-shadow:0 2px 8px rgba(0,0,0,0.15);
+          z-index:2;
+        ">
+          <!-- Clock icon (ponto) -->
+          <svg id="ball-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <!-- Left ghost icon - clock -->
+        <div style="position:absolute;left:10px;display:flex;align-items:center;justify-content:center;z-index:1;opacity:0.3" id="ghost-left">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t1)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <!-- Right ghost icon - stats -->
+        <div style="position:absolute;right:10px;display:flex;align-items:center;justify-content:center;z-index:1;opacity:0.3" id="ghost-right">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t1)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+      </div>
     </div>
 
     <!-- Ponto button / Stats (toggle) -->
-    <div id="ponto-wrap" style="transition:opacity .25s ease,transform .25s ease;opacity:1;transform:scale(1)"></div>
+    <div id="ponto-wrap" style="transition:opacity .3s ease,transform .3s ease;opacity:1;transform:scale(1)"></div>
 
     <!-- Horizontal cards (meta + other) -->
     <div id="hcards-wrap"></div>
