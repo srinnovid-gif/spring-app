@@ -100,6 +100,9 @@ function showApp(){
   document.getElementById('app').style.display='flex';
   document.getElementById('bottom-nav').style.display='flex';
   initScrollNav();
+  // Start alarm checker if active
+  const savedAlarm=JSON.parse(localStorage.getItem('spring_alarm')||'{}');
+  if(savedAlarm.active) startAlarmChecker();
   // Show mood modal once per day
   const today=dkey(new Date());
   const lastMood=localStorage.getItem('spring_mood_day');
@@ -1439,9 +1442,9 @@ function toggleAlarmDay(btn,day){
 }
 
 function activateAlarmDay(btn){
-  btn.style.background='#2ECC71';
-  btn.style.borderColor='#2ECC71';
-  btn.style.color='#111';
+  btn.style.background='var(--t1)';
+  btn.style.borderColor='var(--t1)';
+  btn.style.color='var(--bg)';
 }
 
 function toggleAlarm(){
@@ -1453,10 +1456,10 @@ function setAlarmToggleUI(active){
   _alarmActive=active;
   const toggle=document.getElementById('alarm-toggle');
   const thumb=document.getElementById('alarm-thumb');
-  if(toggle) toggle.style.background=active?'#2ECC71':'rgba(255,255,255,0.1)';
+  if(toggle) toggle.style.background=active?'var(--t1)':'var(--b3)';
   if(thumb){
     thumb.style.left=active?'25px':'3px';
-    thumb.style.background=active?'#111':'rgba(255,255,255,0.4)';
+    thumb.style.background='#fff';
   }
 }
 
@@ -1465,14 +1468,92 @@ function saveAlarmConfig(){
   const config={time,active:_alarmActive,days:_alarmDays};
   localStorage.setItem('spring_alarm',JSON.stringify(config));
   document.getElementById('alarm-panel').style.display='none';
+
+  // Update UI dots
   const dot=document.getElementById('alarm-dot');
   if(dot) dot.style.display=_alarmActive?'block':'none';
-  // Update ponto alarm button
   const lbl=document.getElementById('alarm-btn-label');
   const sdot=document.getElementById('alarm-status-dot');
-  if(lbl) lbl.textContent=_alarmActive?`Alarme ativo · ${time}`:'Ativar alarme';
+  if(lbl) lbl.textContent=_alarmActive?`Alarme · ${time}`:'Ativar alarme';
   if(sdot) sdot.style.display=_alarmActive?'block':'none';
-  showToast(_alarmActive?`Alarme ativo às ${time} ✓`:'Alarme desativado');
+
+  if(_alarmActive){
+    // Request notification permission
+    if('Notification' in window){
+      Notification.requestPermission().then(perm=>{
+        if(perm==='granted'){
+          showToast(`Alarme ativo às ${time} ✓`);
+          startAlarmChecker();
+        } else {
+          showToast('Permissão de notificação negada. Ative nas configurações.');
+        }
+      });
+    } else {
+      showToast(`Alarme salvo às ${time} ✓`);
+      startAlarmChecker();
+    }
+  } else {
+    showToast('Alarme desativado');
+    stopAlarmChecker();
+  }
+}
+
+let _alarmInterval=null;
+
+function startAlarmChecker(){
+  stopAlarmChecker();
+  _alarmInterval=setInterval(()=>{
+    const config=JSON.parse(localStorage.getItem('spring_alarm')||'{}');
+    if(!config.active) return;
+    const now=new Date();
+    const hm=now.toTimeString().slice(0,5); // "HH:MM"
+    const day=now.getDay(); // 0=Sun
+    const dayMatch=!config.days||config.days.length===0||config.days.includes(day);
+    if(hm===config.time&&dayMatch){
+      const fired=localStorage.getItem('alarm_fired_'+hm+'_'+now.toDateString());
+      if(!fired){
+        localStorage.setItem('alarm_fired_'+hm+'_'+now.toDateString(),'1');
+        fireAlarm(config.time);
+      }
+    }
+  },10000); // check every 10 seconds
+}
+
+function stopAlarmChecker(){
+  if(_alarmInterval) clearInterval(_alarmInterval);
+  _alarmInterval=null;
+}
+
+function fireAlarm(time){
+  // Play sound
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [0,0.3,0.6].forEach(delay=>{
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=880;
+      osc.type='sine';
+      gain.gain.setValueAtTime(0,ctx.currentTime+delay);
+      gain.gain.linearRampToValueAtTime(0.4,ctx.currentTime+delay+0.05);
+      gain.gain.linearRampToValueAtTime(0,ctx.currentTime+delay+0.4);
+      osc.start(ctx.currentTime+delay);
+      osc.stop(ctx.currentTime+delay+0.4);
+    });
+  }catch(e){}
+
+  // Show notification
+  if(Notification.permission==='granted'){
+    new Notification('⏱ Spring · Hora de bater ponto!',{
+      body:`São ${time}. Não esqueça de registrar seu ponto.`,
+      icon:'/icon-192.png',
+      badge:'/icon-72.png',
+      vibrate:[200,100,200]
+    });
+  }
+
+  // Also show in-app banner
+  showToast(`⏱ Hora de bater ponto! · ${time}`);
 }
 
 function showNotifications(){
@@ -1782,47 +1863,124 @@ function showPontoModal(stepName,stepIdx,color){
 
 async function takeSelfie(){
   try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
-    // Create camera UI
+    const stream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:'user',width:{ideal:1280},height:{ideal:1280}},
+      audio:false
+    });
+
     const camDiv=document.createElement('div');
     camDiv.id='camera-ui';
-    camDiv.style.cssText='position:fixed;inset:0;z-index:600;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center';
+    camDiv.style.cssText='position:fixed;inset:0;z-index:600;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden';
     camDiv.innerHTML=`
-      <video id="cam-video" autoplay playsinline style="width:100%;max-height:70vh;object-fit:cover"></video>
-      <div style="padding:24px;display:flex;gap:20px;align-items:center;justify-content:center;width:100%">
-        <button onclick="cancelCamera()" style="background:rgba(255,255,255,0.2);border:none;border-radius:50%;width:50px;height:50px;color:#fff;font-size:20px;cursor:pointer">✕</button>
-        <button onclick="capturePhoto()" style="background:#fff;border:none;border-radius:50%;width:70px;height:70px;cursor:pointer;box-shadow:0 0 0 4px rgba(255,255,255,0.3)">
-          <div style="width:54px;height:54px;border-radius:50%;background:#fff;border:3px solid #ddd;margin:auto"></div>
+      <!-- Video fill -->
+      <video id="cam-video" autoplay playsinline
+        style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)">
+      </video>
+
+      <!-- Dark overlay top -->
+      <div style="position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,rgba(0,0,0,0.6),transparent);z-index:2;display:flex;align-items:center;padding:0 20px">
+        <button onclick="cancelCamera()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:12px;padding:8px 16px;color:#fff;font-family:var(--font-b);font-size:13px;font-weight:600;cursor:pointer">Cancelar</button>
+        <div style="flex:1;text-align:center;font-family:var(--font-b);font-size:14px;font-weight:600;color:#fff;letter-spacing:.5px">Selfie para ponto</div>
+        <div style="width:80px"></div>
+      </div>
+
+      <!-- Face guide circle -->
+      <div style="position:relative;z-index:2;width:260px;height:260px;border-radius:50%;border:3px solid rgba(255,255,255,0.8);box-shadow:0 0 0 9999px rgba(0,0,0,0.45);animation:faceGuide 2s ease infinite alternate">
+        <!-- Corner markers -->
+        <div style="position:absolute;top:-3px;left:30px;width:40px;height:3px;background:#fff;border-radius:2px"></div>
+        <div style="position:absolute;top:-3px;right:30px;width:40px;height:3px;background:#fff;border-radius:2px"></div>
+        <div style="position:absolute;bottom:-3px;left:30px;width:40px;height:3px;background:#fff;border-radius:2px"></div>
+        <div style="position:absolute;bottom:-3px;right:30px;width:40px;height:3px;background:#fff;border-radius:2px"></div>
+      </div>
+
+      <!-- Instruction -->
+      <div style="position:relative;z-index:2;margin-top:20px;font-family:var(--font-b);font-size:13px;color:rgba(255,255,255,0.8);text-align:center;letter-spacing:.3px">
+        Centralize seu rosto no círculo
+      </div>
+
+      <!-- Dark overlay bottom -->
+      <div style="position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);z-index:2;display:flex;align-items:center;justify-content:center;padding-bottom:20px">
+        <!-- Shutter button -->
+        <button onclick="capturePhoto()" id="shutter-btn" style="
+          width:78px;height:78px;border-radius:50%;
+          background:transparent;
+          border:4px solid #fff;
+          cursor:pointer;
+          display:flex;align-items:center;justify-content:center;
+          transition:all .15s;
+          position:relative;
+        ">
+          <div style="width:62px;height:62px;border-radius:50%;background:#fff;transition:all .15s" id="shutter-inner"></div>
         </button>
-        <div style="width:50px"></div>
-      </div>`;
+      </div>
+
+      <!-- Flash effect -->
+      <div id="cam-flash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:10;transition:opacity .1s"></div>`;
+
     document.body.appendChild(camDiv);
     const video=document.getElementById('cam-video');
     video.srcObject=stream;
     window._camStream=stream;
+
+    // Add shutter press animation
+    const shutterBtn=document.getElementById('shutter-btn');
+    const shutterInner=document.getElementById('shutter-inner');
+    if(shutterBtn){
+      shutterBtn.addEventListener('touchstart',()=>{
+        shutterInner.style.transform='scale(0.85)';
+        shutterInner.style.background='rgba(255,255,255,0.8)';
+      },{passive:true});
+      shutterBtn.addEventListener('touchend',()=>{
+        shutterInner.style.transform='scale(1)';
+        shutterInner.style.background='#fff';
+      },{passive:true});
+    }
+
   }catch(e){
-    showToast('Câmera não disponível');
+    if(e.name==='NotAllowedError'){
+      showToast('Permissão de câmera negada. Ative nas configurações.');
+    } else {
+      showToast('Câmera não disponível');
+    }
   }
 }
 
 function capturePhoto(){
   const video=document.getElementById('cam-video');
   if(!video) return;
-  const canvas=document.createElement('canvas');
-  canvas.width=400;canvas.height=400;
-  const ctx=canvas.getContext('2d');
-  // Crop center square
-  const size=Math.min(video.videoWidth,video.videoHeight);
-  const sx=(video.videoWidth-size)/2;
-  const sy=(video.videoHeight-size)/2;
-  ctx.drawImage(video,sx,sy,size,size,0,0,400,400);
-  _selfieDataUrl=canvas.toDataURL('image/jpeg',0.7);
-  cancelCamera();
-  // Show preview
-  const preview=document.getElementById('selfie-preview');
-  if(preview) preview.innerHTML=`<img src="${_selfieDataUrl}" style="width:80px;height:80px;border-radius:50%;object-fit:cover"/>`;
-  const selfieBtn=document.getElementById('selfie-btn');
-  if(selfieBtn){ selfieBtn.textContent='📷 Tirar novamente'; selfieBtn.style.background='var(--grn)'; }
+
+  // Flash effect
+  const flash=document.getElementById('cam-flash');
+  if(flash){
+    flash.style.opacity='1';
+    setTimeout(()=>flash.style.opacity='0',150);
+  }
+
+  // Capture after flash
+  setTimeout(()=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=400;canvas.height=400;
+    const ctx=canvas.getContext('2d');
+    ctx.translate(400,0);
+    ctx.scale(-1,1); // mirror flip
+    const size=Math.min(video.videoWidth,video.videoHeight);
+    const sx=(video.videoWidth-size)/2;
+    const sy=(video.videoHeight-size)/2;
+    ctx.drawImage(video,sx,sy,size,size,0,0,400,400);
+    _selfieDataUrl=canvas.toDataURL('image/jpeg',0.8);
+    cancelCamera();
+
+    // Show circular preview in modal
+    const preview=document.getElementById('selfie-preview');
+    if(preview){
+      preview.innerHTML=`<img src="${_selfieDataUrl}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--grn)"/>`;
+    }
+    const selfieBtn=document.getElementById('selfie-btn');
+    if(selfieBtn){
+      selfieBtn.textContent='✓ Tirar novamente';
+      selfieBtn.style.background='var(--grn)';
+    }
+  },120);
 }
 
 function cancelCamera(){
