@@ -484,11 +484,11 @@ function renderHome(){
 
   // Community categories - same for all roles
   const COMMUNITY_CATS=[
-    {id:'equipe',     label:'Mi Equipo',      icon:'👥'},
-    {id:'aniversarios',label:'Cumpleaños',    icon:'🎂'},
-    {id:'cardapio_dia',label:'Cardápio',      icon:'🍽️'},
-    {id:'folga',      label:'Solicitar Folga', icon:'📅'},
-    {id:'eventos',    label:'Eventos',         icon:'🎉'},
+    {id:'equipe',      label:'Equipe'},
+    {id:'aniversarios',label:'Aniversários'},
+    {id:'cardapio_dia',label:'Cardápio'},
+    {id:'folga',       label:'Folga'},
+    {id:'eventos',     label:'Eventos'},
   ];
 
   // Role-specific categories
@@ -507,21 +507,18 @@ function renderHome(){
   const allCats=[...COMMUNITY_CATS,...roleCats];
 
   document.getElementById('big-nav').innerHTML=`
-    <div style="display:flex;gap:16px;padding:12px 20px 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+    <div style="display:flex;gap:14px;padding:12px 20px 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
       ${allCats.map(c=>`
-        <button onclick="goCategory('${c.id}')" style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;min-width:64px">
+        <button onclick="goCategory('${c.id}')" style="display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;">
           <div style="
-            width:62px;height:62px;border-radius:50%;
-            background:var(--s1);
-            border:1.5px solid var(--b1);
+            width:56px;height:56px;border-radius:50%;
+            background:transparent;
+            border:1.5px solid rgba(0,0,0,0.15);
             display:flex;align-items:center;justify-content:center;
-            font-size:26px;
-            box-shadow:0 4px 16px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.9);
-            transition:transform .18s;
-          " onpointerdown="this.style.transform='scale(0.92)'" onpointerup="this.style.transform='scale(1)'" onpointerleave="this.style.transform='scale(1)'">
-            ${c.icon}
+            transition:all .18s;
+          " onpointerdown="this.parentElement.querySelector('div').style.background='rgba(0,0,0,0.06)'" onpointerup="this.parentElement.querySelector('div').style.background='transparent'" onpointerleave="this.parentElement.querySelector('div').style.background='transparent'">
           </div>
-          <div style="font-family:var(--font-b);font-size:10px;color:var(--t2);font-weight:500;text-align:center;line-height:1.3;max-width:64px">${c.label}</div>
+          <div style="font-family:var(--font-b);font-size:10px;color:var(--t3);font-weight:500;text-align:center;line-height:1.3;max-width:62px">${c.label}</div>
         </button>`).join('')}
     </div>`;
 
