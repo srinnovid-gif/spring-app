@@ -426,10 +426,17 @@ function renderHome(){
   // Date
   const now=new Date();
   document.getElementById('home-date').textContent=now.toLocaleDateString('es',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).toUpperCase();
-  // Hero header
-  const greetEl=document.getElementById('hdr-greeting'); if(greetEl) greetEl.textContent='Olá,';
+  // Hero header - always centered layout
+  const greetEl=document.getElementById('hdr-greeting');
+  if(greetEl) greetEl.textContent='Olá,';
   const heroName=document.getElementById('home-hero-name');
   if(heroName) heroName.textContent=userName.split(' ')[0];
+  // Force avatar size
+  const avatarEl=document.getElementById('user-avatar');
+  if(avatarEl){
+    avatarEl.style.width='96px';
+    avatarEl.style.height='96px';
+  }
 
   // Quick stats - only for estoque and gerente
   const arr=Object.values(products);
@@ -477,11 +484,11 @@ function renderHome(){
 
   // Community categories - same for all roles
   const COMMUNITY_CATS=[
-    {id:'equipe',label:'Mi Equipo',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
-    {id:'aniversarios',label:'Cumpleaños',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><path d="M12 3a3 3 0 0 0 0 6"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>'},
-    {id:'cardapio_dia',label:'Cardápio',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>'},
-    {id:'folga',label:'Solicitar Folga',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/></svg>'},
-    {id:'eventos',label:'Eventos',icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'},
+    {id:'equipe',     label:'Mi Equipo',      icon:'👥'},
+    {id:'aniversarios',label:'Cumpleaños',    icon:'🎂'},
+    {id:'cardapio_dia',label:'Cardápio',      icon:'🍽️'},
+    {id:'folga',      label:'Solicitar Folga', icon:'📅'},
+    {id:'eventos',    label:'Eventos',         icon:'🎉'},
   ];
 
   // Role-specific categories
@@ -500,13 +507,21 @@ function renderHome(){
   const allCats=[...COMMUNITY_CATS,...roleCats];
 
   document.getElementById('big-nav').innerHTML=`
-    <div style="display:flex;gap:14px;padding:12px 20px 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+    <div style="display:flex;gap:16px;padding:12px 20px 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
       ${allCats.map(c=>`
-        <button onclick="goCategory('${c.id}')" style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;min-width:58px">
-          <div style="width:58px;height:58px;border-radius:50%;background:var(--t1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,0.12);transition:transform .2s;color:#fff" onpointerdown="this.style.transform='scale(0.93)'" onpointerup="this.style.transform='scale(1)'" onpointerleave="this.style.transform='scale(1)'">
+        <button onclick="goCategory('${c.id}')" style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;min-width:64px">
+          <div style="
+            width:62px;height:62px;border-radius:50%;
+            background:var(--s1);
+            border:1.5px solid var(--b1);
+            display:flex;align-items:center;justify-content:center;
+            font-size:26px;
+            box-shadow:0 4px 16px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.9);
+            transition:transform .18s;
+          " onpointerdown="this.style.transform='scale(0.92)'" onpointerup="this.style.transform='scale(1)'" onpointerleave="this.style.transform='scale(1)'">
             ${c.icon}
           </div>
-          <div style="font-family:var(--font-b);font-size:10px;color:var(--t2);font-weight:500;text-align:center;line-height:1.3;max-width:62px">${c.label}</div>
+          <div style="font-family:var(--font-b);font-size:10px;color:var(--t2);font-weight:500;text-align:center;line-height:1.3;max-width:64px">${c.label}</div>
         </button>`).join('')}
     </div>`;
 
@@ -1712,9 +1727,9 @@ function togglePontoView(){
     if(ghostLeft) ghostLeft.style.opacity='0.3';
     if(ghostRight) ghostRight.style.opacity='0';
   } else {
-    // Slide left → ponto (negro)
+    // Slide left → ponto (verde)
     if(ball) ball.style.left='4px';
-    if(ball) ball.style.background='var(--t1)';
+    if(ball) ball.style.background='#1a3a1a';
     if(pill) pill.style.background='var(--s2)';
     if(pill) pill.style.borderColor='var(--b2)';
     if(ballIcon) ballIcon.innerHTML='<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>';
