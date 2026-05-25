@@ -1678,7 +1678,11 @@ async function validateLocation(){
         if(err.code===3) msg='Tempo esgotado. Tente novamente.';
         resolve({ok:false,msg});
       },
-      {enableHighAccuracy:true,timeout:8000,maximumAge:0}
+      {
+        enableHighAccuracy:true,
+        timeout:10000,
+        maximumAge:0
+      }
     );
   });
 }
@@ -1695,16 +1699,10 @@ async function doBaterPonto(){
   _pendingPontoStep=stepName;
   _pendingPontoIdx=stepIdx;
 
-  // 1. Validate location first
-  showToast('Verificando localização...');
-  const loc=await validateLocation();
-  if(!loc.ok){
-    // Show location error
-    showLocationError(loc.msg);
-    return;
-  }
+  // Location validation temporarily disabled
+  // TODO: re-enable when ready for production
 
-  // 2. FLASH EFFECT
+  // 1. FLASH EFFECT
   const flash=document.getElementById('flash-overlay');
   if(flash){
     flash.style.display='block';
