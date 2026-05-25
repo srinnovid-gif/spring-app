@@ -1003,6 +1003,43 @@
           </div>
         </div>
 
+        <!-- Sound selector -->
+        <div style="margin-bottom:20px">
+          <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Som do alarme</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <button onclick="selectAlarmSound(this,'beep')" class="alarm-sound-btn active-sound" data-sound="beep"
+              style="background:var(--t1);border:1.5px solid var(--t1);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
+              <div style="font-size:20px;margin-bottom:4px">🔔</div>
+              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:#fff">Beep</div>
+            </button>
+            <button onclick="selectAlarmSound(this,'pulse')" class="alarm-sound-btn" data-sound="pulse"
+              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
+              <div style="font-size:20px;margin-bottom:4px">💓</div>
+              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Pulse</div>
+            </button>
+            <button onclick="selectAlarmSound(this,'chime')" class="alarm-sound-btn" data-sound="chime"
+              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
+              <div style="font-size:20px;margin-bottom:4px">🎵</div>
+              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Chime</div>
+            </button>
+            <button onclick="selectAlarmSound(this,'alert')" class="alarm-sound-btn" data-sound="alert"
+              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
+              <div style="font-size:20px;margin-bottom:4px">🚨</div>
+              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Alerta</div>
+            </button>
+            <button onclick="selectAlarmSound(this,'soft')" class="alarm-sound-btn" data-sound="soft"
+              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
+              <div style="font-size:20px;margin-bottom:4px">🌿</div>
+              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Suave</div>
+            </button>
+            <button onclick="selectAlarmSound(this,'digital')" class="alarm-sound-btn" data-sound="digital"
+              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
+              <div style="font-size:20px;margin-bottom:4px">⚡</div>
+              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Digital</div>
+            </button>
+          </div>
+        </div>
+
         <button onclick="saveAlarmConfig()" style="width:100%;background:var(--t1);color:var(--bg);border:none;border-radius:16px;padding:16px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer">
           Salvar configuração
         </button>
