@@ -507,19 +507,33 @@ function renderHome(){
   const allCats=[...COMMUNITY_CATS,...roleCats];
 
   document.getElementById('big-nav').innerHTML=`
-    <div style="display:flex;gap:14px;padding:12px 20px 16px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+    <div style="
+      display:flex;gap:8px;
+      padding:4px 20px 18px;
+      overflow-x:auto;
+      scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+      white-space:nowrap;
+    ">
       ${allCats.map(c=>`
-        <button onclick="goCategory('${c.id}')" style="display:flex;flex-direction:column;align-items:center;gap:7px;background:none;border:none;cursor:pointer;flex-shrink:0;padding:0;">
-          <div style="
-            width:56px;height:56px;border-radius:50%;
-            background:transparent;
-            border:1.5px solid rgba(0,0,0,0.15);
-            display:flex;align-items:center;justify-content:center;
-            transition:all .18s;
-          " onpointerdown="this.parentElement.querySelector('div').style.background='rgba(0,0,0,0.06)'" onpointerup="this.parentElement.querySelector('div').style.background='transparent'" onpointerleave="this.parentElement.querySelector('div').style.background='transparent'">
-          </div>
-          <div style="font-family:var(--font-b);font-size:10px;color:var(--t3);font-weight:500;text-align:center;line-height:1.3;max-width:62px">${c.label}</div>
-        </button>`).join('')}
+        <button onclick="goCategory('${c.id}')" style="
+          flex-shrink:0;
+          background:rgba(255,255,255,0.08);
+          border:1px solid rgba(255,255,255,0.15);
+          border-radius:20px;
+          padding:7px 16px;
+          font-family:var(--font-b);
+          font-size:12px;
+          font-weight:500;
+          color:rgba(255,255,255,0.7);
+          cursor:pointer;
+          transition:all .2s;
+          letter-spacing:.2px;
+        "
+        onpointerdown="this.style.background='rgba(255,255,255,0.18)';this.style.color='#fff'"
+        onpointerup="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.7)'"
+        onpointerleave="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.7)'"
+        >${c.label}</button>`).join('')}
     </div>`;
 
 
