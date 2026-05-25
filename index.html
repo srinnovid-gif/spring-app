@@ -214,9 +214,9 @@
     /* HOME HERO */
     .home-hero{
       background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E"),
-        linear-gradient(160deg,#1a3a1a 0%,#0f2a0f 60%,#1a3a1a 100%);
-      padding:52px 20px 22px;margin-bottom:0;
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.09'/%3E%3C/svg%3E"),
+        linear-gradient(160deg,#1C1C1E 0%,#111111 60%,#1C1C1E 100%);
+      padding:52px 20px 20px;margin-bottom:0;
     }
     .home-hero-top{display:flex;align-items:center;justify-content:space-between;}
     .home-hero-greeting{font-family:var(--font-b);font-size:13px;color:rgba(255,255,255,0.55);font-weight:400;letter-spacing:.5px;}
@@ -917,37 +917,37 @@
 
     <!-- HERO HEADER -->
     <div class="home-hero">
-
-      <!-- Top row: notif right -->
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-        <div style="display:flex;align-items:center;gap:5px;opacity:0.55">
-          <span class="odot"></span>
-          <span style="font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.8);letter-spacing:1.5px;text-transform:uppercase">Tempo real</span>
+      <div class="home-hero-top">
+        <!-- LEFT: Avatar + Name -->
+        <div style="display:flex;align-items:center;gap:12px">
+          <div id="user-avatar" onclick="bnavGo('perfil')" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;flex-shrink:0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.6" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div style="font-family:var(--font-b);font-size:12px;color:rgba(255,255,255,0.5);font-weight:400;letter-spacing:.3px">Olá,</div>
+            <div class="home-hero-name" id="home-hero-name">—</div>
+          </div>
         </div>
-        <button onclick="showNotifications()" style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative">
+        <!-- RIGHT: Notifications -->
+        <button onclick="showNotifications()" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;flex-shrink:0;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <div id="notif-dot" style="display:none;position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#E67E22;border:1.5px solid #1a3a1a"></div>
+          <div id="notif-dot" style="display:none;position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#E67E22;border:1.5px solid #1a1a1a"></div>
         </button>
       </div>
 
-      <!-- Centered profile -->
-      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding-bottom:24px">
-        <!-- Avatar circle -->
-        <div id="user-avatar" onclick="bnavGo('perfil')" style="width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,0.12);border:2.5px solid rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.2)">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-        <!-- Name -->
-        <div style="text-align:center">
-          <div class="home-hero-name" id="home-hero-name" style="font-size:26px;margin-bottom:6px">—</div>
-          <div class="role-pill" id="role-badge" style="background:rgba(196,154,60,0.20);border:1px solid rgba(196,154,60,0.50);color:#C49A3C;font-size:11px;font-weight:700;letter-spacing:.5px;display:inline-block">—</div>
-        </div>
+      <!-- Role + date -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <div class="role-pill" id="role-badge" style="background:rgba(196,154,60,0.18);border:1px solid rgba(196,154,60,0.45);color:#C49A3C;font-size:11px;font-weight:700;letter-spacing:.5px">—</div>
+        <div style="font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:.5px" id="home-date"></div>
       </div>
 
-      <!-- Date -->
-      <div style="text-align:center;font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:1.5px;margin-top:-16px;padding-bottom:8px" id="home-date"></div>
+      <!-- Tempo real -->
+      <div style="display:flex;align-items:center;gap:5px;margin-top:10px;opacity:0.5">
+        <span class="odot"></span>
+        <span style="font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:1.5px;text-transform:uppercase">Tempo real</span>
+      </div>
 
-      <!-- Quick stats - only deposito -->
-      <div class="qs-row" id="qs-row"></div>
+      <div class="qs-row" id="qs-row" style="margin-top:8px"></div>
       <div id="bater-ponto-wrap"></div>
     </div>
 
