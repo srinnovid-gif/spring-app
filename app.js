@@ -1693,24 +1693,38 @@ let _pontoViewStats=false;
 function togglePontoView(){
   _pontoViewStats=!_pontoViewStats;
   const wrap=document.getElementById('ponto-wrap');
-  const sw=document.getElementById('ponto-switch');
-  const lbl=document.getElementById('switch-label');
   if(!wrap) return;
 
-  // Animate out
+  // Animate the sliding ball
+  const ball=document.getElementById('switch-ball');
+  const ballIcon=document.getElementById('ball-icon');
+  const ghostLeft=document.getElementById('ghost-left');
+  const ghostRight=document.getElementById('ghost-right');
+  const pill=document.getElementById('ponto-switch');
+
+  if(_pontoViewStats){
+    // Slide right → stats (naranja)
+    if(ball) ball.style.left='56px';
+    if(ball) ball.style.background='var(--acc)';
+    if(pill) pill.style.background='rgba(230,126,34,0.08)';
+    if(pill) pill.style.borderColor='rgba(230,126,34,0.3)';
+    if(ballIcon) ballIcon.innerHTML='<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>';
+    if(ghostLeft) ghostLeft.style.opacity='0.3';
+    if(ghostRight) ghostRight.style.opacity='0';
+  } else {
+    // Slide left → ponto (negro)
+    if(ball) ball.style.left='4px';
+    if(ball) ball.style.background='var(--t1)';
+    if(pill) pill.style.background='var(--s2)';
+    if(pill) pill.style.borderColor='var(--b2)';
+    if(ballIcon) ballIcon.innerHTML='<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>';
+    if(ghostLeft) ghostLeft.style.opacity='0';
+    if(ghostRight) ghostRight.style.opacity='0.3';
+  }
+
+  // Animate content
   wrap.style.opacity='0';
   wrap.style.transform='scale(0.96)';
-
-  // Update switch button style
-  if(sw){
-    if(_pontoViewStats){
-      sw.classList.add('stats-mode');
-      if(lbl) lbl.textContent='Ver ponto';
-    } else {
-      sw.classList.remove('stats-mode');
-      if(lbl) lbl.textContent='Ver estatísticas';
-    }
-  }
 
   setTimeout(async()=>{
     if(_pontoViewStats){
@@ -1719,10 +1733,9 @@ function togglePontoView(){
       wrap.innerHTML=renderPontoBtn();
       setTimeout(()=>updatePontoUI(),100);
     }
-    // Animate in
     wrap.style.opacity='1';
     wrap.style.transform='scale(1)';
-  },250);
+  },280);
 }
 
 async function renderPontoStats(){
