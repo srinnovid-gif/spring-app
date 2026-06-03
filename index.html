@@ -1,1217 +1,1015 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-  <title>Spring · Gestão de Cozinha</title>
-  <meta name="theme-color" content="#f2ebe0"/>
-  <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-  <meta name="apple-mobile-web-app-title" content="Spring"/>
-  <link rel="manifest" href="/manifest.json"/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, set, push, remove, update, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyD_xPTSVu7YsNtsqGLapdzH8FCgzzUIEao",
-      authDomain: "spring-2533d.firebaseapp.com",
-      databaseURL: "https://spring-2533d-default-rtdb.firebaseio.com",
-      projectId: "spring-2533d",
-      storageBucket: "spring-2533d.firebasestorage.app",
-      messagingSenderId: "59482220773",
-      appId: "1:59482220773:web:1c3b603c0396bbd05c8c0c"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-    window._fb = { auth, db, ref, onValue, set, push, remove, update, get, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged };
-  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#FF4D20" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Eureka</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geologica:slnt,wght@-12..0,100..900&family=Glory:ital,wght@0,400;0,700;0,800;1,700;1,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    :root{
-      /* Dinamismo Orgánico palette */
-      /* Spring Brand Colors */
-      --bg:#F1E8D9;
-      --s1:#FAF6F0;
-      --s2:#EDE4D5;
-      --s3:#E2D5C2;
-      --b1:rgba(33,33,33,0.06);
-      --b2:rgba(33,33,33,0.12);
-      --b3:rgba(33,33,33,0.20);
-      --t1:#212121;
-      --t2:#4a4a4a;
-      --t3:#7a7a7a;
-      /* Primary */
-      --acc:#E67E22;
-      --acc2:#f09030;
-      --acc-glow:rgba(230,126,34,0.22);
-      --brand-green:#8C9B4B;
-      --brand-green-dark:#4a5a20;
-      --brand-green-light:#a8b860;
-      --grn:#2ECC71;
-      --grn2:#27ae60;
-      --grn-glow:rgba(46,204,113,0.22);
-      /* Secondary */
-      --brand-pink:#E8A0A8;
-      --brand-gold:#C49A3C;
-      --brand-black:#1a1a1a;
-      --burg:#c0392b;
-      --font-h:'Playfair Display',serif;
-      --font-b:'DM Sans',sans-serif;
-      --font-accent:'Outfit',sans-serif;
-      --r:18px;--r2:12px;--r3:26px;
-    }
-    html,body{height:100%;background:var(--bg);color:var(--t1);font-family:var(--font-b);overflow-x:hidden;-webkit-tap-highlight-color:transparent;}
+/* ═══════════════════════════════════════════════════════════
+   EUREKA — style.css v2
+   Corrección crítica: sistema de pantallas robusto para móvil
+═══════════════════════════════════════════════════════════ */
 
-    /* FLORAL BACKGROUND PATTERN */
-    body::before{content:'';position:fixed;inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%23c4541a' stroke-width='0.4' opacity='0.12'%3E%3Cellipse cx='30' cy='30' rx='12' ry='20' transform='rotate(-30 30 30)'/%3E%3Cellipse cx='30' cy='30' rx='12' ry='20' transform='rotate(30 30 30)'/%3E%3Ccircle cx='30' cy='12' r='4'/%3E%3Cellipse cx='170' cy='170' rx='12' ry='20' transform='rotate(-30 170 170)'/%3E%3Cellipse cx='170' cy='170' rx='12' ry='20' transform='rotate(30 170 170)'/%3E%3Ccircle cx='170' cy='152' r='4'/%3E%3Cellipse cx='170' cy='30' rx='8' ry='14' transform='rotate(20 170 30)'/%3E%3Cellipse cx='170' cy='30' rx='8' ry='14' transform='rotate(-20 170 30)'/%3E%3Cellipse cx='30' cy='170' rx='8' ry='14' transform='rotate(20 30 170)'/%3E%3Cellipse cx='30' cy='170' rx='8' ry='14' transform='rotate(-20 30 170)'/%3E%3Cpath d='M95 100 Q100 85 105 100 Q110 115 100 120 Q90 115 95 100Z'/%3E%3Cpath d='M100 95 Q115 100 100 105 Q85 110 80 100 Q85 90 100 95Z'/%3E%3C/g%3E%3C/svg%3E");
-      background-size:200px 200px;
-      pointer-events:none;z-index:0;}
+/* ─────────────────────────────────────────
+   1. TOKENS
+───────────────────────────────────────── */
+:root {
+  --orange:      #FF4D20;
+  --orange-dark: #D93A10;
+  --orange-pale: #FFF5EE;
+  --orange-soft: #FFE8D6;
+  --ink:         #111010;
+  --ink2:        #6B6560;
+  --ink3:        #B8B0A8;
+  --white:       #FFFFFF;
+  --surface:     #FFF5EE;
+  --border:      #F0EDE8;
+  --green:       #1FAD6B;
+  --font-main:   'Geologica', sans-serif;
+  --font-display:'Glory', sans-serif;
+  --font-mono:   'DM Mono', monospace;
+  --radius:      16px;
+  --shadow-cta:  0 8px 24px rgba(255,77,32,0.28);
+}
 
-    /* SPLASH */
-    #splash{
-      position:fixed;inset:0;z-index:999;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      overflow:hidden;background:var(--bg);
-      transition:opacity 2s ease;
-    }
-    .sp-bg-base{position:absolute;inset:0;background:var(--bg);z-index:0;}
+/* ─────────────────────────────────────────
+   2. RESET CRÍTICO
+───────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
 
-    /* GLOW */
-    .sp-glow{
-      position:absolute;width:500px;height:500px;border-radius:50%;
-      background:radial-gradient(circle,rgba(196,84,26,0.06) 0%,transparent 70%);
-      top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;
-      animation:glowPulse 4s ease infinite alternate;
-    }
-    @keyframes glowPulse{
-      from{opacity:0.2;transform:translate(-50%,-50%) scale(0.85);}
-      to{opacity:0.8;transform:translate(-50%,-50%) scale(1.15);}
-    }
+html {
+  height: 100%;
+  height: 100dvh;
+}
 
-    /* ── PHASE 1: ESLOGAN (0s → 4s) ── */
-    .sp-eslogan-wrap{
-      position:absolute;
-      display:flex;flex-direction:column;align-items:center;gap:4px;
-      z-index:3;width:100%;padding:0 40px;box-sizing:border-box;
-      animation:esloganOut 1.2s ease 3.8s forwards;
-    }
-    @keyframes esloganOut{
-      from{opacity:1;}
-      to{opacity:0;}
-    }
-    .sp-eslogan-line{
-      font-family:'Playfair Display',serif;
-      font-style:italic;
-      font-weight:700;
-      font-size:34px;
-      color:var(--t1);
-      text-align:center;
-      line-height:1.25;
-      opacity:0;
-      letter-spacing:.3px;
-    }
-    .sp-line-1{animation:lineUp 1s cubic-bezier(0.16,1,0.3,1) 0.4s forwards;}
-    .sp-line-2{animation:lineUp 1s cubic-bezier(0.16,1,0.3,1) 1.2s forwards;}
-    @keyframes lineUp{
-      from{opacity:0;transform:translateY(28px);}
-      to{opacity:1;transform:translateY(0);}
-    }
+body {
+  height: 100%;
+  height: 100dvh;
+  font-family: var(--font-main);
+  background: var(--orange); /* mismo color que splash para evitar flash */
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
 
-    /* ── PHASE 2: SPRING LOGO (5s → 8s) ── */
-    .sp-center{
-      position:absolute;
-      display:flex;flex-direction:column;align-items:center;gap:14px;
-      z-index:3;opacity:0;
-      animation:logoPhase 1.2s cubic-bezier(0.16,1,0.3,1) 4.8s forwards;
-    }
-    @keyframes logoPhase{
-      0%  {opacity:0;transform:scale(0.88) translateY(20px);}
-      55% {opacity:1;transform:scale(1.02) translateY(-2px);}
-      100%{opacity:1;transform:scale(1) translateY(0);}
-    }
+/* ─────────────────────────────────────────
+   3. CONTENEDOR PRINCIPAL
+   Ocupa exactamente la pantalla del celular.
+   Todo lo demás va dentro.
+───────────────────────────────────────── */
+#app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--orange);
+}
 
-    /* Spring - identical to login header */
-    .sp-logo-word{
-      font-family:'Playfair Display',serif;
-      font-size:80px;
-      font-weight:700;
-      font-style:italic;
-      color:var(--t1);
-      line-height:1;
-      letter-spacing:-2px;
-      filter:drop-shadow(0 2px 12px rgba(44,26,14,0.08));
-    }
-    .sp-dot{
-      color:var(--acc);
-      font-style:normal;
-      font-size:84px;
-    }
+/* ─────────────────────────────────────────
+   4. SISTEMA DE PANTALLAS
+   Cada pantalla ocupa 100% del #app.
+   Solo la pantalla .visible es visible.
+───────────────────────────────────────── */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Estado inicial: oculto */
+  opacity: 0;
+  pointer-events: none;
+  /* Transición suave */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateX(30px);
+  will-change: opacity, transform;
+}
 
-    .sp-tagline{
-      font-family:'Playfair Display',serif;
-      font-size:13px;
-      font-weight:400;
-      font-style:normal;
-      color:var(--t3);
-      letter-spacing:3px;
-      opacity:0;
-      animation:fadeUp .8s ease 5.8s forwards;
-    }
-    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.screen.visible {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
 
-    /* BOTTOM */
-    .sp-bottom{
-      position:absolute;bottom:55px;width:100%;
-      display:flex;flex-direction:column;align-items:center;gap:10px;z-index:2;
-    }
-    .sp-bar{width:80px;height:1.5px;background:var(--b2);border-radius:2px;overflow:hidden;}
-    .sp-bar-fill{
-      height:100%;width:0;
-      background:linear-gradient(90deg,var(--grn),var(--acc));
-      animation:barFill 8s linear 0.2s forwards;
-    }
-    @keyframes barFill{
-      0%{width:0%}50%{width:50%}80%{width:82%}100%{width:100%}
-    }
-    .sp-pct{
-      font-size:9px;color:var(--t3);letter-spacing:3px;
-      text-transform:uppercase;font-weight:500;
-      opacity:0;animation:fadeUp .5s ease 0.6s forwards;
-    }
+.screen.oculto {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(30px);
+}
 
-    /* AUTH */
-    #auth{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px;flex-direction:column;position:relative;z-index:1;background:var(--bg);}
-    .auth-wrap{width:100%;max-width:360px;}
-    .auth-logo-img{width:160px;display:block;margin:0 auto 8px;}
-    .auth-tag{text-align:center;font-family:var(--font-h);font-size:15px;color:var(--t3);letter-spacing:2px;margin-bottom:28px;}
-    .auth-card{background:var(--s1);border:1px solid var(--b2);border-radius:var(--r3);padding:28px 22px;box-shadow:0 4px 32px rgba(80,45,20,0.10);}
-    .tabs2{display:flex;background:var(--s2);border-radius:var(--r2);padding:3px;margin-bottom:22px;}
-    .tab2{flex:1;padding:10px;text-align:center;font-size:14px;font-family:var(--font-b);background:none;border:none;color:var(--t3);border-radius:10px;cursor:pointer;transition:all .2s;font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
-    .tab2.on{background:var(--acc);color:#fff;box-shadow:0 4px 14px var(--acc-glow);}
-    .fld{margin-bottom:14px;}
-    .fld label{display:block;font-size:13px;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
-    .fld input,.fld select{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:13px 14px;color:var(--t1);font-size:16px;font-family:var(--font-b);outline:none;transition:all .2s;font-weight:400;}
-    .fld input:focus,.fld select:focus{border-color:var(--acc);background:#fff;box-shadow:0 0 0 3px var(--acc-glow);}
-    .fld select option{background:#fff;}
-    .btn-main{width:100%;background:var(--acc);color:#fff;border:none;border-radius:var(--r2);padding:15px;font-size:16px;font-family:var(--font-b);font-weight:600;cursor:pointer;margin-top:8px;box-shadow:0 4px 18px var(--acc-glow);letter-spacing:.5px;text-transform:uppercase;}
-    .btn-main:active{transform:scale(.97);}
-    .auth-err{color:var(--acc);font-size:14px;text-align:center;margin-top:12px;min-height:18px;font-weight:500;}
-    .auth-info{color:var(--t3);font-size:12px;text-align:center;margin-top:10px;line-height:1.6;}
+.screen.saliendo {
+  opacity: 0;
+  transform: scale(1.03);
+  pointer-events: none;
+}
 
-    /* APP */
-    #app{display:none;flex-direction:column;min-height:100vh;max-width:480px;margin:0 auto;position:relative;z-index:1;}
+/* ─────────────────────────────────────────
+   5. SPLASH
+───────────────────────────────────────── */
+#splash {
+  background: var(--orange);
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* El splash empieza visible desde el inicio */
+  opacity: 1;
+  transform: translateX(0);
+}
 
-    /* HEADER */
-    .hdr{padding:16px 20px 14px;position:sticky;top:0;z-index:50;background:rgba(242,235,224,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);}
-    /* HOME HERO */
-    .home-hero{
-      background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.09'/%3E%3C/svg%3E"),
-        linear-gradient(160deg,#1C1C1E 0%,#111111 60%,#1C1C1E 100%);
-      padding:52px 20px 20px;margin-bottom:0;
-    }
-    .home-hero-top{display:flex;align-items:center;justify-content:space-between;}
-    .home-hero-greeting{font-family:var(--font-b);font-size:13px;color:rgba(255,255,255,0.55);font-weight:400;letter-spacing:.5px;}
-    .home-hero-name{font-family:'DM Sans',sans-serif;font-size:24px;font-weight:700;color:#fff;line-height:1.1;margin-top:2px;letter-spacing:-.3px;}
+#splash::before {
+  content: "";
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  top: -150px; right: -130px;
+  pointer-events: none;
+}
 
-    .hdr-inner{display:flex;align-items:center;justify-content:space-between;}
-    .hdr-greeting{font-size:13px;color:var(--t3);letter-spacing:.5px;margin-bottom:2px;font-weight:400;}
-    .hdr-logo{font-family:var(--font-h);font-size:28px;font-weight:700;letter-spacing:-1px;color:var(--t1);}
-    .hdr-logo span{color:var(--acc);}
-    .hdr-logo-img{height:36px;}
-    .hdr-right{display:flex;align-items:center;gap:8px;}
-    .role-pill{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--b2);color:var(--t2);background:var(--s2);font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
-    .btn-out{background:none;border:1px solid var(--b2);border-radius:10px;color:var(--t2);padding:6px 10px;font-size:13px;cursor:pointer;font-family:var(--font-b);font-weight:500;}
-    .online{display:flex;align-items:center;gap:5px;margin-top:4px;}
-    .odot{width:6px;height:6px;border-radius:50%;background:var(--grn);}
-    .olbl{font-size:12px;color:var(--grn);letter-spacing:.5px;font-weight:600;}
+#splash::after {
+  content: "";
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  bottom: -100px; left: -80px;
+  pointer-events: none;
+}
 
-    /* INNER HEADER */
-    .inner-hdr{padding:14px 20px 12px;position:sticky;top:0;z-index:50;background:rgba(242,235,224,0.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);}
-    .inner-hdr-top{display:flex;align-items:center;gap:12px;}
-    .btn-back2{background:var(--s2);border:1px solid var(--b2);border-radius:10px;color:var(--t1);width:38px;height:38px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:600;}
-    .inner-title{font-family:var(--font-b);font-size:20px;font-weight:700;color:var(--t1);}
-
-    /* CONTENT */
-    .content{flex:1;padding:12px 16px 80px;}
-
-    /* HOME DATE */
-    .home-date{font-size:12px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;padding:14px 20px 0;font-weight:500;}
-
-    /* QUICK STATS */
-    .qs-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:8px 16px;}
-    .qs{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:14px 8px;text-align:center;box-shadow:0 2px 10px rgba(80,45,20,0.06);}
-    .qs.alert{border-color:var(--acc);background:rgba(196,84,26,0.05);}
-    .qs-val{font-family:var(--font-b);font-size:24px;font-weight:700;line-height:1;color:var(--t1);}
-    .qs-val.r{color:var(--acc);}
-    .qs-val.g{color:var(--grn);}
-    .qs-lbl{font-size:12px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-top:5px;font-weight:600;}
-
-    /* ALERT STRIP */
-    .alert-strip{margin:0 20px 4px;background:#B04010;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 4px 16px var(--acc-glow);}
-    .alert-strip:active{transform:scale(.98);}
-    .alert-strip-ico{font-size:20px;}
-    .alert-strip-text{flex:1;}
-    .alert-strip-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;letter-spacing:.3px;}
-    .alert-strip-sub{font-size:13px;color:rgba(255,255,255,0.75);}
-    .alert-strip-arr{color:#fff;font-size:20px;font-weight:600;}
-
-    /* BIG NAV */
-    .big-nav{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 20px 0;}
-    .big-btn{border:none;border-radius:20px;padding:22px 14px 20px;cursor:pointer;transition:all .18s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--font-b);text-align:center;position:relative;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,0.14);}
-    .big-btn:active{transform:scale(.94);}
-.big-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.12) 0%,transparent 60%);pointer-events:none;border-radius:22px;}
-    .inv{background:var(--acc);}
-    .men{background:var(--grn);}
-    .ped{background:var(--brn);}
-    .pro{background:var(--burg);}
-    .res{background:var(--grn2);}
-    .btn-ico-wrap{display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
-    .big-btn-title{font-family:var(--font-b);font-size:16px;font-weight:700;color:#fff;letter-spacing:-.2px;}
-    .big-btn-sub{font-size:13px;color:rgba(255,255,255,0.75);font-weight:400;margin-top:-4px;letter-spacing:.3px;}
-    .big-btn-arr{display:none;}
-
-    /* TODAY MENU */
-    .today-menu-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-    .today-menu-title{font-size:13px;font-weight:600;color:var(--t2);letter-spacing:2px;text-transform:uppercase;}
-    .today-menu-link{font-family:var(--font-h);font-size:16px;color:var(--grn);font-weight:600;cursor:pointer;background:none;border:none;}
-    .today-dish{background:var(--s1);border:1px solid var(--b1);border-left:3px solid var(--grn);border-radius:14px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 6px rgba(80,45,20,0.05);}
-    .today-dish-cat{width:36px;height:36px;border-radius:10px;background:rgba(90,112,40,0.10);border:1px solid rgba(90,112,40,0.20);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-    .today-dish-name{font-family:var(--font-b);font-size:16px;font-weight:600;color:var(--t1);}
-    .today-dish-type{font-size:13px;color:var(--t3);margin-top:2px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
-    .today-empty{font-family:var(--font-h);font-size:15px;color:var(--t3);text-align:center;padding:20px;background:var(--s1);border:1px solid var(--b1);border-radius:14px;}
-
-    /* HERO */
-    .hero{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(80,45,20,0.06);}
-    .hero-stats{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;}
-    .hero-divider{background:var(--b2);margin:auto 0;height:36px;}
-    .hero-stat{text-align:center;padding:4px 8px;}
-    .hero-val{font-family:var(--font-b);font-size:26px;font-weight:700;line-height:1;color:var(--t1);}
-    .hero-val.r{color:var(--acc);}
-    .hero-val.g{color:var(--grn);}
-    .hero-lbl{font-size:12px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-top:6px;font-weight:600;}
-    .stat-btn{cursor:pointer;transition:transform .15s;}
-    .stat-btn:active{transform:scale(.92);}
-
-    /* ALERT BANNER */
-    .alert-banner{background:var(--acc);border-radius:14px;padding:13px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 4px 14px var(--acc-glow);}
-    .alert-banner:active{transform:scale(.98);}
-    .alert-banner-ico{font-size:20px;}
-    .alert-banner-text{flex:1;}
-    .alert-banner-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:2px;}
-    .alert-banner-sub{font-size:13px;color:rgba(255,255,255,0.75);}
-    .alert-banner-arr{color:#fff;font-size:18px;font-weight:600;}
-
-    /* SEARCH */
-    .srow{display:flex;gap:8px;margin-bottom:14px;}
-    .sinput{flex:1;background:var(--s1);border:1px solid var(--b2);border-radius:var(--r2);padding:12px 14px;color:var(--t1);font-size:16px;font-family:var(--font-b);outline:none;transition:all .2s;font-weight:400;box-shadow:0 1px 4px rgba(80,45,20,0.05);}
-    .sinput:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-glow);}
-    .sfilt{background:var(--s1);border:1px solid var(--b2);border-radius:var(--r2);padding:12px 10px;color:var(--t1);font-size:15px;font-family:var(--font-b);outline:none;cursor:pointer;font-weight:500;}
-
-    /* SEC HEADER */
-    .sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
-    .sec-ttl{font-size:13px;font-weight:600;color:var(--t2);letter-spacing:2px;text-transform:uppercase;}
-    .btn-sm{background:var(--acc);color:#fff;border:none;border-radius:var(--r2);padding:10px 18px;font-size:14px;font-family:var(--font-b);font-weight:600;cursor:pointer;box-shadow:0 4px 14px var(--acc-glow);letter-spacing:.5px;text-transform:uppercase;}
-    .btn-sm:active{transform:scale(.95);}
-    .btn-sm-ghost{background:var(--s2);color:var(--t1);border:1px solid var(--b2);border-radius:var(--r2);padding:8px 14px;font-size:14px;font-family:var(--font-b);font-weight:500;cursor:pointer;}
-
-    /* CARDS */
-    .card{background:var(--s1);border:1px solid var(--b1);border-left:3px solid transparent;border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:0 2px 10px rgba(80,45,20,0.05);animation:fadeUp .25s ease both;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .card.low{border-left-color:var(--acc);background:rgba(196,84,26,0.03);}
-    .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
-    .card-name{font-family:var(--font-b);font-size:17px;font-weight:700;margin-bottom:4px;color:var(--t1);}
-    .card-sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:600;}
-    .card-acts{display:flex;gap:6px;flex-shrink:0;}
-    .ic-btn{background:var(--s2);border:1px solid var(--b1);border-radius:10px;color:var(--t2);width:34px;height:34px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
-    .ic-btn:active{transform:scale(.86);}
-    .ic-btn.red{background:rgba(122,30,30,0.08);color:var(--burg);border-color:rgba(122,30,30,0.20);}
-    .ic-btn.grn{background:rgba(90,112,40,0.08);color:var(--grn);border-color:rgba(90,112,40,0.20);}
-    .sbar{background:var(--s3);border-radius:3px;height:4px;margin-bottom:12px;overflow:hidden;}
-    .sbar-fill{height:100%;border-radius:3px;transition:width .5s ease;}
-    .card-bot{display:flex;justify-content:space-between;align-items:center;}
-    .qty-c{display:flex;align-items:center;gap:10px;}
-    .qty-btn{background:var(--s2);border:1px solid var(--b2);border-radius:10px;color:var(--t1);width:36px;height:36px;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-weight:600;}
-    .qty-btn:active{transform:scale(.86);}
-    .qty-v{font-family:var(--font-b);font-size:17px;font-weight:700;min-width:60px;text-align:center;color:var(--t1);}
-    .qty-u{font-size:13px;color:var(--t3);font-weight:400;}
-    .card-val{text-align:right;}
-    .val-t{font-family:var(--font-b);font-size:15px;font-weight:700;color:var(--grn);}
-    .val-m{font-size:12px;color:var(--t3);margin-top:3px;}
-    .low-tag{display:inline-block;background:var(--acc);color:#fff;font-size:9px;padding:2px 7px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;margin-left:6px;vertical-align:middle;font-weight:600;}
-
-    /* MENU */
-    .cal-tabs{display:flex;background:var(--s2);border-radius:var(--r2);padding:3px;margin-bottom:14px;border:1px solid var(--b1);}
-    .cal-tab{flex:1;padding:9px;text-align:center;font-size:11px;font-family:var(--font-b);background:none;border:none;color:var(--t3);border-radius:10px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;font-weight:600;transition:all .2s;}
-    .cal-tab.on{background:var(--grn);color:#fff;box-shadow:0 4px 12px var(--grn-glow);}
-    .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-    .cal-title{font-family:var(--font-b);font-size:18px;font-weight:700;text-align:center;flex:1;color:var(--t1);}
-    .cal-btn{background:var(--s1);border:1px solid var(--b2);border-radius:10px;color:var(--t1);padding:8px 14px;cursor:pointer;font-size:16px;font-weight:700;}
-    .menu-day{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(80,45,20,0.05);animation:fadeUp .25s ease both;}
-    .menu-date{font-size:13px;color:var(--grn);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;font-weight:700;}
-    .menu-dish{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--b1);}
-    .menu-dish:last-child{border-bottom:none;padding-bottom:0;}
-    .dish-name{font-family:var(--font-b);font-size:16px;font-weight:600;color:var(--t1);}
-    .dish-cat{font-size:12px;color:var(--t3);margin-top:3px;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
-    .dish-acts{display:flex;gap:6px;}
-
-    /* ORDERS */
-    .order-card{background:var(--s1);border:1px solid var(--b1);border-top:3px solid var(--brn);border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(80,45,20,0.05);animation:fadeUp .25s ease both;}
-    .order-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-    .order-name{font-family:var(--font-b);font-size:17px;font-weight:700;color:var(--t1);}
-    .order-prov{font-size:13px;color:var(--brn2);margin-top:3px;font-weight:600;letter-spacing:.3px;}
-    .order-status{display:inline-block;font-size:12px;padding:4px 10px;border-radius:20px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;}
-    .status-pend{background:rgba(196,84,26,.10);color:var(--acc);border:1px solid rgba(196,84,26,.20);}
-    .status-done{background:rgba(90,112,40,.10);color:var(--grn);border:1px solid rgba(90,112,40,.20);}
-
-    /* SUPPLIERS */
-    .sup-card{background:var(--s1);border:1px solid var(--b1);border-top:3px solid var(--burg);border-radius:var(--r);padding:16px;margin-bottom:10px;box-shadow:0 2px 8px rgba(80,45,20,0.05);animation:fadeUp .25s ease both;}
-    .sup-name{font-family:var(--font-b);font-size:17px;font-weight:700;margin-bottom:5px;color:var(--t1);}
-    .sup-info{font-size:15px;color:var(--t2);margin-bottom:10px;line-height:1.6;}
-    .sup-prods{display:flex;flex-wrap:wrap;gap:6px;}
-    .sup-tag{background:var(--s2);border:1px solid var(--b2);border-radius:20px;font-size:13px;padding:4px 12px;color:var(--t2);font-weight:500;}
-
-    /* SUMMARY */
-    .sum-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(80,45,20,0.05);}
-    .sum-title{font-family:var(--font-b);font-size:16px;font-weight:700;color:var(--t1);margin-bottom:14px;}
-    .sum-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--b1);}
-    .sum-row:last-child{border-bottom:none;}
-    .sum-label{font-size:16px;color:var(--t2);font-weight:400;}
-    .sum-val{font-family:var(--font-h);font-size:18px;font-weight:700;color:var(--t1);}
-
-    /* FAB */
-    .fab{position:fixed;bottom:28px;right:18px;background:var(--acc);color:#fff;border:none;border-radius:18px;width:56px;height:56px;font-size:28px;cursor:pointer;box-shadow:0 6px 24px var(--acc-glow);display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:40;}
-    .fab:active{transform:scale(.90);}
-
-    /* SHEET */
-    .overlay{display:none;position:fixed;inset:0;background:rgba(44,26,14,0.55);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);}
-    .overlay.on{display:flex;}
-    .sheet{background:var(--bg);border:1px solid var(--b2);border-radius:28px 28px 0 0;padding:24px 20px 52px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;animation:up .28s cubic-bezier(.32,.72,0,1);box-shadow:0 -8px 40px rgba(44,26,14,0.14);}
-    @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-    .sh-handle{width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 22px;}
-    .sh-title{font-family:var(--font-b);font-size:22px;font-weight:700;margin-bottom:20px;color:var(--t1);}
-    .sh-fld{margin-bottom:14px;}
-    .sh-fld label{display:block;font-size:13px;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
-    .sh-fld input,.sh-fld select,.sh-fld textarea{width:100%;background:var(--s1);border:1px solid var(--b2);border-radius:var(--r2);padding:13px 14px;color:var(--t1);font-size:16px;font-family:var(--font-b);outline:none;transition:all .2s;font-weight:400;}
-    .sh-fld input:focus,.sh-fld select:focus,.sh-fld textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-glow);background:#fff;}
-    .sh-fld textarea{resize:vertical;min-height:80px;}
-    .sh-fld select option{background:#fff;}
-    .sh-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-    .sh-acts{display:flex;gap:10px;margin-top:22px;}
-    .btn-cancel{flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:14px;color:var(--t2);font-size:15px;font-family:var(--font-b);cursor:pointer;font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
-    .btn-save{flex:2;background:var(--acc);border:none;border-radius:var(--r2);padding:14px;color:#fff;font-size:15px;font-weight:600;font-family:var(--font-b);cursor:pointer;box-shadow:0 4px 16px var(--acc-glow);letter-spacing:.5px;text-transform:uppercase;}
-    .btn-save:active{transform:scale(.97);}
-
-    /* CONFIRM */
-    .conf-ov{display:none;position:fixed;inset:0;background:rgba(44,26,14,0.65);z-index:200;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px);}
-    .conf-ov.on{display:flex;}
-    .conf-box{background:var(--s1);border:1px solid var(--b2);border-radius:28px;padding:32px 24px;width:100%;max-width:340px;text-align:center;box-shadow:0 8px 40px rgba(44,26,14,0.18);}
-    .conf-ico{font-size:44px;margin-bottom:14px;}
-    .conf-title{font-family:var(--font-b);font-size:22px;font-weight:700;margin-bottom:10px;color:var(--t1);}
-    .conf-item{color:var(--acc);font-weight:700;font-size:15px;background:rgba(196,84,26,0.07);border:1px solid rgba(196,84,26,0.18);border-radius:var(--r2);padding:12px;margin:14px 0;display:block;font-family:var(--font-h);}
-    .conf-note{font-size:14px;color:var(--t3);margin-bottom:24px;line-height:1.6;}
-    .conf-btns{display:flex;gap:10px;}
-    .btn-ccancel{flex:1;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:14px;color:var(--t2);font-size:14px;font-family:var(--font-b);cursor:pointer;font-weight:500;letter-spacing:.5px;text-transform:uppercase;}
-    .btn-cdel{flex:1;background:var(--acc);border:none;border-radius:var(--r2);padding:14px;color:#fff;font-size:14px;font-weight:600;font-family:var(--font-b);cursor:pointer;box-shadow:0 4px 16px var(--acc-glow);letter-spacing:.5px;text-transform:uppercase;}
-
-    /* TOAST */
-    .toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);background:var(--t1);border-radius:24px;padding:14px 24px;font-size:15px;color:var(--bg);z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;font-weight:600;box-shadow:0 8px 28px rgba(44,26,14,0.25);}
-    .toast.on{opacity:1;}
-
-    /* EMPTY */
-    .empty{text-align:center;padding:60px 20px;color:var(--t3);}
-    .empty-ico{font-size:40px;margin-bottom:12px;opacity:.4;}
-    .empty p{font-family:var(--font-h);font-size:18px;line-height:1.6;color:var(--t3);}
-
-    /* SEC LABEL */
-    .sec-label{font-size:13px;color:var(--t2);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;margin-top:18px;font-weight:600;}
-    .sec-label:first-child{margin-top:0;}
-    #today-menu-wrap{padding:16px 20px 24px;}
-/* REQUIRED FIELD ASTERISK */
-.sh-fld label, .fld label {
+.splash-logo-wrap {
   position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: splashPop 0.8s cubic-bezier(0.34,1.56,0.64,1) both;
 }
-.sh-fld label, .fld label {
-  color: var(--t2);
+
+.splash-logo-img {
+  width: 75vw;
+  max-width: 300px;
+  height: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+  object-fit: contain;
 }
 
-    /* BOTTOM NAV BAR */
-    /* BOTTOM NAV */
-    .bottom-nav{
-      position:fixed;bottom:0;left:0;right:0;
-      background:#fff;
-      display:flex;align-items:center;justify-content:space-around;
-      padding:8px 4px calc(10px + env(safe-area-inset-bottom));
-      z-index:100;
-      border-radius:24px 24px 0 0;
-      box-shadow:0 -4px 24px rgba(0,0,0,0.08);
-      transition:transform .6s cubic-bezier(0.16,1,0.3,1);
-    }
-    .bottom-nav.hidden{
-      transform:translateY(110%);
-    }
-    /* All nav items same size */
-    .bnav-item{
-      display:flex;flex-direction:column;align-items:center;gap:4px;
-      background:none;border:none;cursor:pointer;
-      padding:4px 0;flex:1;
-    }
-    .bnav-icon{
-      width:46px;height:46px;border-radius:50%;
-      display:flex;align-items:center;justify-content:center;
-      transition:all .25s;
-    }
-    .bnav-icon svg{stroke:#aaa;transition:stroke .25s;}
-    .bnav-label{
-      font-family:var(--font-b);font-size:10px;
-      color:#aaa;font-weight:500;transition:all .25s;
-    }
-    /* Active state - dark circle */
-    .bnav-item.active .bnav-icon{
-      background:var(--acc);
-    }
-    .bnav-item.active .bnav-icon svg{stroke:#fff;}
-    .bnav-item.active .bnav-label{color:var(--acc);font-weight:700;}
+.splash-logo-fallback {
+  font-family: var(--font-main);
+  font-weight: 900;
+  font-size: 72px;
+  color: white;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  display: none;
+}
 
-    /* Escala center button - same size */
-    .bnav-ponto{
-      display:flex;flex-direction:column;align-items:center;gap:4px;
-      background:none;border:none;cursor:pointer;
-      padding:4px 0;flex:1;
-    }
-    .bnav-ponto-circle{
-      width:46px;height:46px;border-radius:50%;
-      background:transparent;
-      display:flex;align-items:center;justify-content:center;
-      transition:all .2s;
-    }
-    .bnav-ponto-circle:active{transform:scale(0.92);}
-    .bnav-ponto-circle svg{stroke:#aaa;}
-    .bnav-ponto-label{
-      font-family:var(--font-b);font-size:10px;
-      color:#aaa;font-weight:500;
-    }
-    .big-nav{padding:0 0 8px;}
-    /* HOME WIDGETS */
-    .widget-card{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:18px;}
-    .hcards-row::-webkit-scrollbar{display:none;}
-    .hcard{
-      flex-shrink:0;width:130px;background:var(--s1);
-      border:1px solid var(--b1);border-radius:18px;
-      padding:16px 14px;cursor:pointer;transition:all .2s;
-    }
-    .hcard-ico{font-size:24px;margin-bottom:8px;}
-    .hcard-title{font-size:10px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;font-weight:600;margin-bottom:4px;}
-    .hcard-val{font-family:var(--font-h);font-size:28px;font-weight:700;color:var(--t1);line-height:1;}
-    .hcard-sub{font-size:11px;color:var(--t3);margin-top:3px;}
-    .hcard-meta{border-color:rgba(46,204,113,0.3);background:rgba(46,204,113,0.05);}
-    .hcard-clima{border-color:var(--b1);}
-    .hcard-birthday{border-color:rgba(230,126,34,0.3);}
-    .hcard-evento{border-color:var(--b2);}
+/* ─────────────────────────────────────────
+   6. COMECAR
+───────────────────────────────────────── */
+#comecar {
+  background: var(--orange);
+}
 
-    /* META BOARD */
-    .meta-board{
-      background:linear-gradient(135deg,#3a4a18,#4a5a20);
-      border-radius:22px;padding:22px;
-      box-shadow:0 8px 28px rgba(0,0,0,0.18);
-    }
+.comecar-img-wrap {
+  position: relative;
+  /* Ocupa el espacio restante después del panel inferior */
+  flex: 1;
+  overflow: hidden;
+  background: #F7F4F0;
+}
 
-    /* MOOD BUTTON */
-    .mood-btn{
-      flex:1;background:var(--s2);border:1.5px solid var(--b2);
-      border-radius:14px;padding:14px 4px;font-size:28px;
-      cursor:pointer;transition:all .2s;
-    }
+.comecar-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
 
-    /* SLIDE UP ANIMATION */
-    @keyframes slideUp{
-      from{transform:translateY(100%);opacity:0;}
-      to{transform:translateY(0);opacity:1;}
-    }
+/* Badges flotantes */
+.badge-vagas {
+  position: absolute;
+  top: 24px; right: 18px;
+  background: white;
+  border-radius: 50px;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  animation: floatA 3.5s ease-in-out infinite;
+  z-index: 2;
+}
 
-    /* PONTO BUTTON - circular progress around */
-    .ponto-wrap{
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:12px 0 8px;
-      width:100%;
-      box-sizing:border-box;
-      text-align:center;
-    }
-    .ponto-circle-btn{
-      position:relative;width:220px;height:220px;
-      border-radius:50%;border:none;background:none;
-      cursor:pointer;display:flex;align-items:center;justify-content:center;
-      margin:0 auto;
-    }
+.badge-dot-green {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(31,173,107,0.2);
+}
 
+.badge-vagas-txt {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
 
+.badge-salario {
+  position: absolute;
+  bottom: 20px; left: 18px;
+  background: white;
+  border-radius: 16px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  animation: floatB 4s ease-in-out infinite;
+  z-index: 2;
+}
 
-    /* Station dots on the ring */
-    .ponto-station{
-      position:absolute;width:12px;height:12px;border-radius:50%;
-      background:rgba(0,0,0,0.08);border:2px solid rgba(0,0,0,0.12);
-      transition:all .4s;transform:translate(-50%,-50%);
-    }
-    .ponto-station.done{
-      background:var(--sc,#2ECC71);
-      border-color:var(--sc,#2ECC71);
-      box-shadow:0 0 8px var(--sc,#2ECC71);
-    }
-    .ponto-station.next{
-      background:#fff;
-      border-color:var(--sc,#2ECC71);
-      box-shadow:0 0 0 3px rgba(0,0,0,0.08);
-      animation:stationPulse 1.8s ease infinite;
-    }
-    @keyframes stationPulse{
-      0%,100%{box-shadow:0 0 0 3px rgba(0,0,0,0.06);}
-      50%{box-shadow:0 0 0 6px rgba(0,0,0,0.03);}
-    }
+.badge-salario-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ink3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-    /* Main circle button */
-    .ponto-inner{
-      width:148px;height:148px;border-radius:50%;
-      background:#fff;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
-      box-shadow:0 6px 28px rgba(0,0,0,0.14),inset 0 1px 0 rgba(255,255,255,1);
-      transition:all .18s cubic-bezier(0.16,1,0.3,1);
-      z-index:2;position:relative;
-    }
-    .ponto-circle-btn:active .ponto-inner{transform:scale(0.93);}
+.badge-salario-val {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--orange);
+  line-height: 1.2;
+  margin-top: 1px;
+}
 
-    /* Color states */
-    .ponto-inner.state-0{background:#fff;}
-    .ponto-inner.state-1{background:#e8f5e9;}
-    .ponto-inner.state-2{background:#fff8e1;}
-    .ponto-inner.state-3{background:#e8f5e9;}
-    .ponto-inner.done-all{background:#f5f5f5;}
+/* Panel inferior — altura fija para que la imagen tome el resto */
+.comecar-panel {
+  flex-shrink: 0;
+  background: var(--white);
+  padding: 20px 22px 44px;
+  border-top: 1px solid var(--border);
+}
 
-    .ponto-label{
-      font-family:var(--font-b);font-size:12px;font-weight:700;
-      color:#1a3a1a;letter-spacing:.3px;
-      text-align:center;line-height:1.4;
-    }
-    .ponto-sublabel{
-      font-family:var(--font-b);font-size:10px;
-      color:rgba(26,58,26,0.45);font-weight:500;
-    }
+.btn-continuar {
+  width: 100%;
+  padding: 17px;
+  border-radius: var(--radius);
+  background: var(--orange);
+  color: white;
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 16px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: var(--shadow-cta);
+  animation: pulseCTA 3s ease-in-out infinite;
+  transition: transform 0.12s;
+}
 
-    /* Station labels below button */
-    .ponto-labels-row{
-      display:flex;justify-content:space-between;
-      width:220px;margin-top:12px;
-      margin-left:auto;margin-right:auto;
-    }
-    .ponto-lbl-item{
-      font-family:var(--font-b);font-size:9px;
-      color:rgba(26,58,26,0.4);font-weight:500;
-      text-align:center;flex:1;line-height:1.3;
-      transition:all .3s;
-    }
-    .ponto-lbl-item.done{color:rgba(26,58,26,0.7);font-weight:600;}
-    .ponto-lbl-item.next{color:#1a3a1a;font-weight:700;}
+.btn-continuar:active { transform: scale(0.98); }
 
-    /* FLASH OVERLAY */
-    #flash-overlay{opacity:0;transition:opacity .15s ease;}
-    @keyframes flashIn{
-      0%{opacity:0;}20%{opacity:0.85;}60%{opacity:0.6;}100%{opacity:0;}
-    }
-    @keyframes flashPulse{
-      0%{opacity:0;transform:scale(0.8);}
-      40%{opacity:1;transform:scale(1.08);}
-      100%{opacity:1;transform:scale(1);}
-    }
-    @keyframes faceGuide{
-      from{box-shadow:0 0 0 9999px rgba(0,0,0,0.45),0 0 0 0 rgba(255,255,255,0.3);}
-      to{box-shadow:0 0 0 9999px rgba(0,0,0,0.45),0 0 0 8px rgba(255,255,255,0.1);}
-    }
-    #ponto-switch.stats-mode{background:var(--s2);}
+/* ─────────────────────────────────────────
+   7. LOGIN
+───────────────────────────────────────── */
+#login {
+  background: var(--white);
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Espacio para el botón flotante de cadastro */
+  padding-bottom: 150px;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob-1 {
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, rgba(255,77,32,0.08) 0%, transparent 70%);
+  top: -80px; right: -60px;
+}
+
+.blob-2 {
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(255,77,32,0.05) 0%, transparent 70%);
+  top: 300px; left: -60px;
+}
+
+.login-hero {
+  padding: 60px 28px 22px;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.login-logo {
+  height: 40px;
+  width: auto;
+  display: block;
+  margin-bottom: 22px;
+  object-fit: contain;
+  object-position: left;
+}
+
+.login-logo-fallback {
+  font-family: var(--font-main);
+  font-weight: 900;
+  font-size: 40px;
+  color: var(--orange);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 22px;
+  display: none;
+}
+
+.login-titulo {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 32px;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 7px;
+}
+
+.login-titulo span { color: var(--orange); }
+.login-sub { font-size: 14px; color: var(--ink2); line-height: 1.5; }
+
+.login-form {
+  flex: 1;
+  padding: 4px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Botones sociales */
+.social-row { display: flex; gap: 10px; }
+
+.social-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 8px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--ink);
+  transition: background 0.15s, transform 0.1s;
+}
+
+.social-btn:active { background: var(--surface); transform: scale(0.96); }
+
+/* Divisor */
+.divider { display: flex; align-items: center; gap: 10px; }
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+.divider-txt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  white-space: nowrap;
+}
+
+/* Campos */
+.campo { display: flex; flex-direction: column; gap: 5px; }
+.campo-label { font-weight: 600; font-size: 12px; color: var(--ink2); padding-left: 2px; }
+.campo-wrap { position: relative; }
+
+.campo-input {
+  width: 100%;
+  padding: 13px 44px 13px 44px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-family: var(--font-main);
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  -webkit-appearance: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.campo-input::placeholder { color: var(--ink3); font-size: 14px; }
+
+.campo-input:focus {
+  border-color: var(--orange);
+  background: #FFFAF7;
+  box-shadow: 0 0 0 3px rgba(255,77,32,0.08);
+}
+
+.campo-icone {
+  position: absolute; left: 13px; top: 50%;
+  transform: translateY(-50%);
+  width: 17px; height: 17px;
+  color: var(--ink3); pointer-events: none;
+  transition: color 0.2s;
+}
+
+.campo-wrap:has(.campo-input:focus) .campo-icone { color: var(--orange); }
+
+.btn-olho {
+  position: absolute; right: 13px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  padding: 4px; cursor: pointer;
+  color: var(--ink3);
+  display: flex; align-items: center;
+}
+
+.esqueci-row { display: flex; justify-content: flex-end; margin-top: -4px; }
+.btn-esqueci {
+  background: none; border: none;
+  font-family: var(--font-main);
+  font-size: 13px; font-weight: 600;
+  color: var(--orange); cursor: pointer; padding: 0;
+}
+
+#msg-erro {
+  display: none;
+  background: #FFF0EE;
+  border: 1px solid #FFD0C8;
+  border-radius: 12px;
+  padding: 11px 15px;
+  font-size: 13px;
+  color: var(--orange-dark);
+  font-weight: 500;
+  text-align: center;
+}
+
+.btn-entrar {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--radius);
+  background: var(--orange);
+  color: white;
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 16px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: var(--shadow-cta);
+  animation: pulseCTA 3s ease-in-out infinite;
+  transition: transform 0.12s;
+}
+
+.btn-entrar:active { transform: scale(0.98); }
+.btn-entrar:disabled { opacity: 0.65; animation: none; cursor: not-allowed; }
+
+#spinner {
+  display: none;
+  width: 17px; height: 17px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+/* ─────────────────────────────────────────
+   8. BOTÃO FLUTUANTE CADASTRO
+───────────────────────────────────────── */
+.cadastro-float {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 100%;
+  padding: 10px 22px 40px;
+  background: linear-gradient(to top, #fff 60%, transparent 100%);
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.cadastro-float.visivel {
+  display: flex;
+  pointer-events: all;
+  animation: slideUpFloat 0.45s cubic-bezier(0.34,1.1,0.64,1) both;
+}
+
+.float-divider { display: flex; align-items: center; gap: 10px; }
+.float-divider-line { flex: 1; height: 1px; background: var(--border); }
+.float-divider-txt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.btn-cadastro {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--orange);
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 15px;
+  border: 2px solid var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.15s, transform 0.12s;
+  animation: pulseBorder 3s ease-in-out infinite;
+}
+
+.btn-cadastro:active { background: var(--orange-pale); transform: scale(0.98); }
+
+/* ─────────────────────────────────────────
+   9. MODAL CELULAR
+───────────────────────────────────────── */
+#modal-celular {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(17,16,16,0.55);
+  z-index: 50;
+  align-items: flex-end;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+#modal-celular.ativo { display: flex; animation: fadeIn 0.2s ease both; }
+
+.modal-sheet {
+  background: var(--white);
+  border-radius: 26px 26px 0 0;
+  padding: 18px 26px 50px;
+  width: 100%; max-width: 480px;
+  display: flex; flex-direction: column; gap: 14px;
+  animation: slideUp 0.35s cubic-bezier(0.34,1.1,0.64,1) both;
+}
+
+.modal-handle {
+  width: 38px; height: 4px;
+  background: var(--border);
+  border-radius: 2px; margin: 0 auto 4px;
+}
+
+.modal-titulo {
+  font-family: var(--font-display);
+  font-style: italic; font-weight: 800;
+  font-size: 26px; color: var(--ink);
+  letter-spacing: -0.02em; line-height: 1.1;
+}
+
+.modal-titulo span { color: var(--orange); }
+.modal-sub { font-size: 13px; color: var(--ink2); margin-top: -6px; line-height: 1.5; }
+#etapa-codigo { display: none; }
+
+.btn-cancelar {
+  width: 100%; background: none; border: none;
+  font-family: var(--font-main);
+  font-size: 14px; color: var(--ink2); padding: 8px; cursor: pointer;
+}
+
+#recaptcha-container { display: none; }
+
+/* ─────────────────────────────────────────
+   10. ANIMACIONES
+───────────────────────────────────────── */
+@keyframes splashPop {
+  from { opacity: 0; transform: scale(0.78); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes slideUpFloat {
+  from { opacity: 0; transform: translateX(-50%) translateY(28px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+@keyframes pulseCTA {
+  0%,100% { box-shadow: 0 8px 24px rgba(255,77,32,0.28); }
+  50%      { box-shadow: 0 8px 36px rgba(255,77,32,0.50); }
+}
+@keyframes pulseBorder {
+  0%,100% { box-shadow: 0 4px 16px rgba(255,77,32,0.10); }
+  50%      { box-shadow: 0 4px 24px rgba(255,77,32,0.28); }
+}
+@keyframes floatA {
+  0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); }
+}
+@keyframes floatB {
+  0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); }
+}
+
   </style>
-
 </head>
 <body>
-
-<div id="splash">
-  <div class="sp-bg-base"></div>
-  <div class="sp-glow"></div>
-
-  <!-- PHASE 1: Eslogan (only for first login) -->
-  <div class="sp-eslogan-wrap" id="sp-eslogan">
-    <div class="sp-eslogan-line sp-line-1">Juntos Desde</div>
-    <div class="sp-eslogan-line sp-line-2">O Primeiro Prato.</div>
-  </div>
-
-  <!-- PHASE 2: Spring logo -->
-  <div class="sp-center" id="sp-logo-center">
-    <div class="sp-logo-word"><em>Spring</em><span class="sp-dot">.</span></div>
-    <div class="sp-tagline" id="sp-tagline">Restaurante · Buffet · Curitiba</div>
-  </div>
-
-  <!-- Bottom -->
-  <div class="sp-bottom">
-    <div class="sp-bar"><div class="sp-bar-fill" id="sp-bar-fill"></div></div>
-    <div class="sp-pct" id="splash-pct">Carregando...</div>
-  </div>
-</div>
-
-<!-- FLASH OVERLAY -->
-<div id="flash-overlay" style="display:none;position:fixed;inset:0;z-index:500;pointer-events:none;"></div>
-
-<!-- PONTO CONFIRM MODAL -->
-<div id="ponto-modal" style="display:none;position:fixed;inset:0;z-index:501;align-items:flex-end;justify-content:center;backdrop-filter:blur(12px);background:rgba(0,0,0,0.4)">
-  <div id="ponto-modal-inner" style="background:#fff;border-radius:28px 28px 0 0;padding:32px 24px 48px;width:100%;max-width:480px;transform:translateY(100%);transition:transform .4s cubic-bezier(0.16,1,0.3,1)">
-    <div style="width:40px;height:4px;background:rgba(0,0,0,0.1);border-radius:2px;margin:0 auto 24px"></div>
-
-    <!-- Step indicator -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
-      <div id="ponto-modal-icon" style="width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </div>
-      <div>
-        <div style="font-family:var(--font-b);font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px">Registrando</div>
-        <div style="font-family:var(--font-b);font-size:20px;font-weight:700;color:var(--t1)" id="ponto-modal-step">Entrada</div>
-      </div>
-    </div>
-
-    <div style="font-size:13px;color:var(--t3);margin-bottom:20px">
-      Digite seu código de 4 dígitos para confirmar
-    </div>
-
-    <!-- Code input -->
-    <!-- Selfie section -->
-    <div id="ponto-selfie-section"></div>
-
-    <div style="background:var(--s2);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center">
-      <input type="password" inputmode="numeric" id="ponto-code-input" maxlength="4"
-        placeholder="• • • •"
-        style="background:none;border:none;font-size:36px;font-weight:700;color:var(--t1);text-align:center;width:100%;outline:none;letter-spacing:12px;font-family:var(--font-b)"
-        oninput="this.value=this.value.replace(/[^0-9]/g,'');if(this.value.length===4)confirmPonto()"/>
-    </div>
-
-    <div id="ponto-modal-err" style="display:none;color:#E74C3C;font-size:13px;text-align:center;margin-bottom:12px;font-family:var(--font-b)"></div>
-
-    <button onclick="confirmPonto()" id="ponto-confirm-btn" style="width:100%;border:none;border-radius:16px;padding:16px;font-family:var(--font-b);font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s" id="ponto-confirm-btn">
-      Confirmar Ponto
-    </button>
-    <button onclick="closePontoModal()" style="width:100%;background:none;border:none;padding:12px;font-family:var(--font-b);font-size:14px;color:var(--t3);cursor:pointer;margin-top:4px">Cancelar</button>
-  </div>
-</div>
-
-<!-- PONTO SUCCESS ANIMATION -->
-<div id="ponto-success" style="display:none;position:fixed;inset:0;z-index:502;align-items:center;justify-content:center;flex-direction:column;gap:16px">
-  <div id="ponto-success-circle" style="width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;transform:scale(0);transition:transform .4s cubic-bezier(0.34,1.56,0.64,1)">
-    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-  </div>
-  <div id="ponto-success-text" style="font-family:var(--font-b);font-size:18px;font-weight:700;color:#fff;opacity:0;transition:opacity .3s ease .3s;text-align:center"></div>
-</div>
-
-<!-- MOOD MODAL -->
-<div id="mood-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)">
-  <div style="background:var(--bg);border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;max-width:480px;animation:slideUp .4s cubic-bezier(.32,.72,0,1)">
-    <div style="width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 28px"></div>
-
-    <!-- Header -->
-    <div style="margin-bottom:8px;display:flex;align-items:center;gap:10px">
-      <div style="width:40px;height:40px;border-radius:12px;background:var(--s2);display:flex;align-items:center;justify-content:center">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--t1)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-      </div>
-      <div>
-        <div style="font-family:var(--font-h);font-size:20px;font-weight:700;color:var(--t1)">Como você está hoje?</div>
-        <div style="font-size:12px;color:var(--t3);margin-top:2px">Sua resposta importa para o time</div>
-      </div>
-    </div>
-
-    <!-- SVG Monochromatic faces -->
-    <div style="display:flex;justify-content:space-between;gap:6px;margin:24px 0 20px">
-
-      <!-- Muito bem -->
-      <button onclick="selectMoodModal('muito_bem',0)" class="mood-btn" id="moodm-0" title="Muito bem">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 3 4 3 4-3 4-3"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor"/><circle cx="15" cy="9.5" r="1.2" fill="currentColor"/><path d="M9 8.5c.5-.8 1.5-1 2.5-.5M15 8.5c-.5-.8-1.5-1-2.5-.5"/></svg>
-      </button>
-
-      <!-- Bem -->
-      <button onclick="selectMoodModal('bem',1)" class="mood-btn" id="moodm-1" title="Bem">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor"/><circle cx="15" cy="9.5" r="1.2" fill="currentColor"/></svg>
-      </button>
-
-      <!-- Neutro -->
-      <button onclick="selectMoodModal('neutro',2)" class="mood-btn" id="moodm-2" title="Neutro">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor"/><circle cx="15" cy="9.5" r="1.2" fill="currentColor"/></svg>
-      </button>
-
-      <!-- Triste -->
-      <button onclick="selectMoodModal('triste',3)" class="mood-btn" id="moodm-3" title="Triste">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><circle cx="9" cy="9.5" r="1.2" fill="currentColor"/><circle cx="15" cy="9.5" r="1.2" fill="currentColor"/></svg>
-      </button>
-
-      <!-- Muito mal -->
-      <button onclick="selectMoodModal('muito_mal',4)" class="mood-btn" id="moodm-4" title="Muito mal">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M16 17s-1.5-3-4-3-4 3-4 3"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><path d="M9 8c.3-.8 1-.5 1.5 0M15 8c-.3-.8-1-.5-1.5 0"/></svg>
-      </button>
-
-    </div>
-
-    <!-- Labels -->
-    <div style="display:flex;justify-content:space-between;padding:0 4px;margin-bottom:20px">
-      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Ótimo</span>
-      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Bem</span>
-      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Ok</span>
-      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Triste</span>
-      <span style="font-size:10px;color:var(--t3);font-family:var(--font-b)">Mal</span>
-    </div>
-
-    <div id="mood-justify-modal" style="display:none">
-      <div style="background:var(--s2);border-radius:16px;padding:14px;margin-bottom:12px;border:1.5px solid var(--b2)">
-        <div style="font-size:12px;color:var(--t3);margin-bottom:8px;font-weight:600">Quer compartilhar o que está sentindo? (opcional)</div>
-        <textarea id="mood-text-modal" placeholder="Pode falar, estamos aqui..." style="width:100%;box-sizing:border-box;background:none;border:none;font-family:var(--font-b);font-size:14px;color:var(--t1);resize:none;outline:none;height:70px"></textarea>
-      </div>
-      <button onclick="submitMoodModal()" style="width:100%;background:var(--t1);color:var(--bg);border:none;border-radius:14px;padding:15px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer">Enviar resposta</button>
-    </div>
-  </div>
-</div>
-
-<div id="auth" style="display:none;flex-direction:column;">
-  <div class="auth-wrap">
-    <div style="font-family:'Playfair Display',serif;font-size:48px;font-weight:700;font-style:italic;letter-spacing:-2px;text-align:center;margin-bottom:4px;color:#2c1a0e;">Spring<span style="color:#c4541a">.</span></div>
-    <div class="auth-tag">Restaurante · Buffet · Curitiba</div>
-    <div class="auth-card">
-      <div class="tabs2">
-        <button class="tab2 on" onclick="authTab('login')">Entrar</button>
-        <button class="tab2" onclick="authTab('register')">Cadastrar</button>
-      </div>
-
-      <!-- LOGIN -->
-      <div id="login-f">
-        
-        <div class="fld"><label>Código de Acesso <span style="color:#c4541a;font-weight:700">*</span> <span style="color:var(--t3);font-size:10px;font-weight:400">(4 dígitos)</span></label><input type="password" inputmode="numeric" pattern="[0-9]*" id="l-code" placeholder="• • • •" maxlength="4" autocomplete="off" style="letter-spacing:10px;font-weight:700;font-size:24px;text-align:center;font-family:'DM Sans',sans-serif;-webkit-text-security:disc" oninput="this.value=this.value.replace(/[^0-9]/g,'');if(this.value.length>4)this.value=this.value.slice(0,4)"/></div>
-        <button class="btn-main" onclick="doLogin()">Entrar</button>
-      </div>
-
-      <!-- REGISTER -->
-      <div id="reg-f" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div class="fld"><label>Nome <span style="color:#c4541a;font-weight:700">*</span></label><input type="text" id="r-name" placeholder="Seu nome"/></div>
-          <div class="fld"><label>Sobrenome <span style="color:#c4541a;font-weight:700">*</span></label><input type="text" id="r-lastname" placeholder="Sobrenome"/></div>
-        </div>
-        <div class="fld"><label>E-mail <span style="color:#c4541a;font-weight:700">*</span></label><input type="email" id="r-email" placeholder="seu@email.com"/></div>
-        <div class="fld"><label>Celular / WhatsApp <span style="color:#c4541a;font-weight:700">*</span></label><input type="tel" id="r-phone" placeholder="+55 41 99999-9999"/></div>
-        <div class="fld">
-          <label>Quando é seu aniversário? <span style="color:#c4541a;font-weight:700">*</span></label>
-          <div style="display:grid;grid-template-columns:2fr 2fr 3fr;gap:8px;margin-top:2px">
-            <select id="r-day" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:13px 8px;color:var(--t1);font-size:15px;font-family:var(--font-b);outline:none">
-              <option value="" disabled selected style="color:var(--t3)">Dia</option>
-              <option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
-            </select>
-            <select id="r-month" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:13px 8px;color:var(--t1);font-size:15px;font-family:var(--font-b);outline:none">
-              <option value="" disabled selected style="color:var(--t3)">Mês</option>
-              <option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option>
-              <option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option>
-              <option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option>
-              <option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
-            </select>
-            <select id="r-year" style="background:var(--s2);border:1px solid var(--b2);border-radius:var(--r2);padding:13px 8px;color:var(--t1);font-size:15px;font-family:var(--font-b);outline:none">
-              <option value="" disabled selected style="color:var(--t3)">Ano</option>
-              <option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option><option value="1969">1969</option><option value="1968">1968</option><option value="1967">1967</option><option value="1966">1966</option><option value="1965">1965</option><option value="1964">1964</option><option value="1963">1963</option><option value="1962">1962</option><option value="1961">1961</option><option value="1960">1960</option><option value="1959">1959</option><option value="1958">1958</option><option value="1957">1957</option><option value="1956">1956</option><option value="1955">1955</option><option value="1954">1954</option><option value="1953">1953</option><option value="1952">1952</option><option value="1951">1951</option><option value="1950">1950</option><option value="1949">1949</option><option value="1948">1948</option><option value="1947">1947</option><option value="1946">1946</option><option value="1945">1945</option><option value="1944">1944</option><option value="1943">1943</option><option value="1942">1942</option><option value="1941">1941</option><option value="1940">1940</option>
-            </select>
-          </div>
-        </div>
-        <div class="fld"><label>Unidade <span style="color:#c4541a;font-weight:700">*</span></label>
-          <select id="r-sede">
-            <option value="juveve">Juvevê</option>
-            <option value="batel">Batel</option>
-            <option value="comendador">Comendador</option>
-          </select>
-        </div>
-        <div class="fld">
-          <label>Função <span style="color:#c4541a;font-weight:700">*</span></label>
-          <input type="hidden" id="r-role" value=""/>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px">
-
-            <button type="button" onclick="selectRole(this,'gerente')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Gerente</div>
-            </button>
-
-            <button type="button" onclick="selectRole(this,'chef')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
-              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Chef</div>
-            </button>
-
-            <button type="button" onclick="selectRole(this,'cocinero')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2l1.5 1.5M12 2c0 4.4-3.6 8-8 8"/><path d="M3 10c4.4 0 8-3.6 8-8M19 22l-8.5-8.5M22 19l-8.5-8.5M14.5 14.5L22 22"/></svg>
-              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Cozinheiro</div>
-            </button>
-
-            <button type="button" onclick="selectRole(this,'deposito')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7l10-5 10 5v10l-10 5L2 17z"/><path d="M12 22V12M2 7l10 5 10-5"/></svg>
-              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Estoque</div>
-            </button>
-
-            <button type="button" onclick="selectRole(this,'salon')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 10h18M3 14h18M3 18h18"/><path d="M5 6v12M19 6v12"/></svg>
-              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Salão</div>
-            </button>
-
-            <button type="button" onclick="selectRole(this,'bar')" class="role-btn" style="background:var(--s2);border:1.5px solid var(--b2);border-radius:12px;padding:16px 6px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22V12L2 2h20l-6 10v10"/><path d="M8 22h8"/></svg>
-              <div style="font-size:11px;font-weight:600;color:var(--t1);font-family:var(--font-b)">Bar</div>
-            </button>
-
-          </div>
-        </div>
-        <button class="btn-main" onclick="doRegister()">Solicitar acesso</button>
-        <div class="auth-info">Após o cadastro, você receberá um código de acesso por e-mail para fazer login.</div>
-      </div>
-    </div>
-
-    <!-- DOWNLOAD APK BANNER -->
-    <div style="margin-top:20px;width:100%;max-width:400px;padding:0 20px;box-sizing:border-box">
-
-      <!-- Android download -->
-      <a href="https://drive.google.com/uc?export=download&id=1ilLNKTKeqIy4GrVwKNozYVWHTXw7m1U8"
-         style="display:flex;align-items:center;gap:12px;background:var(--s1);border:1.5px solid var(--b2);border-radius:16px;padding:14px 16px;text-decoration:none;transition:all .2s">
-        <!-- Icon -->
-        <div style="width:38px;height:38px;border-radius:11px;background:rgba(90,112,40,0.10);border:1px solid rgba(90,112,40,0.18);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5a7028" stroke-width="1.8" stroke-linecap="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-        </div>
-        <!-- Text -->
-        <div style="flex:1">
-          <div style="font-family:var(--font-b);font-size:13px;font-weight:600;color:var(--t1)">Baixar app · Android</div>
-          <div style="font-family:var(--font-b);font-size:10px;color:var(--t3);margin-top:2px;letter-spacing:.3px">Spring Restaurante · versão mais recente</div>
-        </div>
-        <!-- Arrow -->
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </a>
-
-      <!-- iOS note -->
-      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;padding:9px 12px;border-radius:10px">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <div style="font-family:var(--font-b);font-size:10px;color:var(--t3)">
-          iPhone: Safari → compartilhar → "Adicionar à Tela de Início"
-        </div>
-      </div>
-    </div>
-
-    <div style="display:none">
-      </div>
-      <div class="auth-err" id="auth-err"></div>
-    </div>
-  </div>
-</div>
-
 <div id="app">
-  <!-- HOME -->
-  <div id="home-screen">
 
-    <!-- HERO HEADER -->
-    <div class="home-hero">
-      <div class="home-hero-top">
-        <!-- LEFT: Avatar + Name -->
-        <div style="display:flex;align-items:center;gap:12px">
-          <div id="user-avatar" onclick="bnavGo('perfil')" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;flex-shrink:0;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.6" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </div>
-          <div>
-            <div style="font-family:var(--font-b);font-size:12px;color:rgba(255,255,255,0.5);font-weight:400;letter-spacing:.3px">Olá,</div>
-            <div class="home-hero-name" id="home-hero-name">—</div>
-          </div>
-        </div>
-        <!-- RIGHT: Notifications -->
-        <button onclick="showNotifications()" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;flex-shrink:0;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <div id="notif-dot" style="display:none;position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:#E67E22;border:1.5px solid #1a1a1a"></div>
+  <!-- ═══ SPLASH ═══ -->
+  <div id="splash" class="screen visible">
+    <div class="splash-logo-wrap">
+      <img class="splash-logo-img" src="38551-removebg-preview.png" alt="Eureka"
+        onerror="this.style.display='none';document.querySelector('.splash-logo-fallback').style.display='block';" />
+      <div class="splash-logo-fallback">eureka</div>
+    </div>
+  </div>
+
+  <!-- ═══ COMECAR ═══ -->
+  <div id="comecar" class="screen oculto">
+    <div class="comecar-img-wrap">
+      <img class="comecar-img" src="582818991.jpg" alt="Trabalhadora usando Eureka"
+        onerror="this.parentElement.style.background='linear-gradient(160deg,#FFF5EE,#FFE8D6)';" />
+      <div class="badge-vagas">
+        <div class="badge-dot-green"></div>
+        <span class="badge-vagas-txt">+1.200 vagas hoje</span>
+      </div>
+      <div class="badge-salario">
+        <div class="badge-salario-label">ganho médio</div>
+        <div class="badge-salario-val">R$270/dia</div>
+      </div>
+    </div>
+    <div class="comecar-panel">
+      <button class="btn-continuar" onclick="irParaLogin()">
+        Continuar
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ LOGIN ═══ -->
+  <div id="login" class="screen oculto">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="login-hero">
+      <img class="login-logo" src="38551-removebg-preview.png" alt="Eureka"
+        onerror="this.style.display='none';document.querySelector('.login-logo-fallback').style.display='block';" />
+      <div class="login-logo-fallback">eureka</div>
+      <h1 class="login-titulo">Bem-vindo<br>de <span>volta!</span></h1>
+      <p class="login-sub">Seu próximo trabalho está esperando você.</p>
+    </div>
+    <div class="login-form">
+      <div class="social-row">
+        <button class="social-btn" onclick="loginGoogle()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.83z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+          </svg>
+          Google
+        </button>
+        <button class="social-btn" onclick="abrirModalCelular()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.9 3.18 2 2 0 012.88 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+          Celular
+        </button>
+        <button class="social-btn" onclick="loginApple()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+          </svg>
+          Apple
         </button>
       </div>
-
-      <!-- Role + date -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
-        <div class="role-pill" id="role-badge" style="background:rgba(196,154,60,0.18);border:1px solid rgba(196,154,60,0.45);color:#C49A3C;font-size:11px;font-weight:700;letter-spacing:.5px">—</div>
-        <div style="font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:.5px" id="home-date"></div>
+      <div class="divider">
+        <div class="divider-line"></div>
+        <span class="divider-txt">ou entre com email</span>
+        <div class="divider-line"></div>
       </div>
-
-      <!-- Tempo real -->
-      <div style="display:flex;align-items:center;gap:5px;margin-top:10px;opacity:0.5">
-        <span class="odot"></span>
-        <span style="font-family:var(--font-b);font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:1.5px;text-transform:uppercase">Tempo real</span>
-      </div>
-
-      <div class="qs-row" id="qs-row" style="margin-top:8px"></div>
-      <div id="bater-ponto-wrap"></div>
-
-      <!-- Category pills inside header - full width -->
-      <div id="big-nav" style="margin-top:14px;margin-left:-20px;margin-right:-20px;overflow:hidden;"></div>
-    </div>
-
-    <!-- NOTIFICATIONS PANEL -->
-    <div id="notif-panel" style="display:none;position:fixed;top:0;right:0;bottom:0;left:0;z-index:150" onclick="this.style.display='none'">
-      <div style="position:absolute;top:100px;right:16px;width:300px;background:#fff;border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,0.18);padding:16px;max-height:400px;overflow-y:auto" onclick="event.stopPropagation()">
-        <div style="font-family:var(--font-b);font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--b1)">Notificações</div>
-        <div id="notif-list"><div style="font-size:13px;color:var(--t3);text-align:center;padding:20px">Nenhuma notificação</div></div>
-      </div>
-    </div>
-
-    <!-- ALARM CONFIG PANEL -->
-    <div id="alarm-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:150;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px)" onclick="this.style.display='none'">
-      <div style="background:var(--bg);border-radius:28px 28px 0 0;padding:28px 24px 48px;width:100%;max-width:480px;animation:slideUp .35s cubic-bezier(.32,.72,0,1)" onclick="event.stopPropagation()">
-        <div style="width:40px;height:4px;background:var(--b3);border-radius:2px;margin:0 auto 24px"></div>
-
-        <!-- Header -->
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
-          <div style="width:44px;height:44px;border-radius:14px;background:var(--s2);display:flex;align-items:center;justify-content:center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--t1)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="13" r="7"/><polyline points="12 10 12 13 14 15"/><path d="M5 4L2 7M22 7l-3-3"/></svg>
-          </div>
-          <div>
-            <div style="font-family:var(--font-b);font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase">Configurar</div>
-            <div style="font-family:var(--font-b);font-size:18px;font-weight:700;color:var(--t1)">Alarme de Ponto</div>
-          </div>
-        </div>
-
-        <!-- Time input -->
-        <div style="background:var(--s1);border:1.5px solid var(--b2);border-radius:18px;padding:20px;text-align:center;margin-bottom:16px">
-          <div style="font-size:10px;color:var(--t3);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px">Horário</div>
-          <input type="time" id="alarm-time" value="08:00"
-            style="background:none;border:none;font-size:48px;font-weight:700;color:var(--t1);text-align:center;width:100%;outline:none;font-family:var(--font-b);cursor:pointer"/>
-        </div>
-
-        <!-- Days selector - static HTML, no template literals -->
-        <div style="margin-bottom:16px">
-          <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Dias da semana</div>
-          <div style="display:flex;gap:6px;justify-content:space-between">
-            <button onclick="toggleAlarmDay(this,0)" class="alarm-day-btn" data-day="0" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">D</button>
-            <button onclick="toggleAlarmDay(this,1)" class="alarm-day-btn" data-day="1" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">S</button>
-            <button onclick="toggleAlarmDay(this,2)" class="alarm-day-btn" data-day="2" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">T</button>
-            <button onclick="toggleAlarmDay(this,3)" class="alarm-day-btn" data-day="3" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">Q</button>
-            <button onclick="toggleAlarmDay(this,4)" class="alarm-day-btn" data-day="4" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">Q</button>
-            <button onclick="toggleAlarmDay(this,5)" class="alarm-day-btn" data-day="5" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">S</button>
-            <button onclick="toggleAlarmDay(this,6)" class="alarm-day-btn" data-day="6" style="flex:1;height:40px;border-radius:12px;background:var(--s2);border:1.5px solid var(--b2);color:var(--t2);font-family:var(--font-b);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s">S</button>
-          </div>
-        </div>
-
-        <!-- Toggle -->
-        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--s1);border:1.5px solid var(--b1);border-radius:14px;padding:14px 18px;margin-bottom:20px">
-          <div>
-            <div style="font-family:var(--font-b);font-size:14px;font-weight:600;color:var(--t1)">Ativar alarme</div>
-            <div style="font-size:12px;color:var(--t3);margin-top:2px">Notificação no horário do ponto</div>
-          </div>
-          <div id="alarm-toggle" onclick="toggleAlarm()" style="width:52px;height:30px;border-radius:15px;background:var(--b3);cursor:pointer;position:relative;transition:all .3s">
-            <div id="alarm-thumb" style="position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.2);transition:all .3s"></div>
-          </div>
-        </div>
-
-        <!-- Sound selector -->
-        <div style="margin-bottom:20px">
-          <div style="font-size:11px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Som do alarme</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
-            <button onclick="selectAlarmSound(this,'beep')" class="alarm-sound-btn active-sound" data-sound="beep"
-              style="background:var(--t1);border:1.5px solid var(--t1);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
-              <div style="font-size:20px;margin-bottom:4px">🔔</div>
-              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:#fff">Beep</div>
-            </button>
-            <button onclick="selectAlarmSound(this,'pulse')" class="alarm-sound-btn" data-sound="pulse"
-              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
-              <div style="font-size:20px;margin-bottom:4px">💓</div>
-              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Pulse</div>
-            </button>
-            <button onclick="selectAlarmSound(this,'chime')" class="alarm-sound-btn" data-sound="chime"
-              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
-              <div style="font-size:20px;margin-bottom:4px">🎵</div>
-              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Chime</div>
-            </button>
-            <button onclick="selectAlarmSound(this,'alert')" class="alarm-sound-btn" data-sound="alert"
-              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
-              <div style="font-size:20px;margin-bottom:4px">🚨</div>
-              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Alerta</div>
-            </button>
-            <button onclick="selectAlarmSound(this,'soft')" class="alarm-sound-btn" data-sound="soft"
-              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
-              <div style="font-size:20px;margin-bottom:4px">🌿</div>
-              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Suave</div>
-            </button>
-            <button onclick="selectAlarmSound(this,'digital')" class="alarm-sound-btn" data-sound="digital"
-              style="background:var(--s2);border:1.5px solid var(--b2);border-radius:14px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s">
-              <div style="font-size:20px;margin-bottom:4px">⚡</div>
-              <div style="font-family:var(--font-b);font-size:11px;font-weight:600;color:var(--t1)">Digital</div>
-            </button>
-          </div>
-        </div>
-
-        <button onclick="saveAlarmConfig()" style="width:100%;background:var(--t1);color:var(--bg);border:none;border-radius:16px;padding:16px;font-family:var(--font-b);font-size:15px;font-weight:700;cursor:pointer">
-          Salvar configuração
-        </button>
-      </div>
-    </div>
-
-
-
-    <!-- Mood widget -->
-    <div id="mood-wrap"></div>
-
-    <!-- Toggle pill switch -->
-    <div style="display:flex;justify-content:center;padding:16px 20px 4px">
-      <div onclick="togglePontoView()" id="ponto-switch" style="
-        position:relative;
-        width:96px;height:44px;
-        border-radius:22px;
-        background:var(--s2);
-        border:1.5px solid var(--b2);
-        cursor:pointer;
-        display:flex;align-items:center;
-        transition:background .35s ease;
-        box-shadow:0 2px 10px rgba(0,0,0,0.08);
-      ">
-        <!-- Sliding ball -->
-        <div id="switch-ball" style="
-          position:absolute;
-          left:4px;
-          width:36px;height:36px;
-          border-radius:50%;
-          background:#1a3a1a;
-          transition:left .35s cubic-bezier(0.34,1.56,0.64,1),background .35s ease;
-          display:flex;align-items:center;justify-content:center;
-          box-shadow:0 2px 8px rgba(0,0,0,0.15);
-          z-index:2;
-        ">
-          <!-- Clock icon (ponto) -->
-          <svg id="ball-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
+      <div class="campo">
+        <label class="campo-label" for="email">Email</label>
+        <div class="campo-wrap">
+          <input class="campo-input" type="email" id="email" placeholder="seu@email.com" autocomplete="email" inputmode="email" />
+          <svg class="campo-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
           </svg>
         </div>
-        <!-- Left ghost icon - clock -->
-        <div style="position:absolute;left:10px;display:flex;align-items:center;justify-content:center;z-index:1;opacity:0.3" id="ghost-left">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t1)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <!-- Right ghost icon - stats -->
-        <div style="position:absolute;right:10px;display:flex;align-items:center;justify-content:center;z-index:1;opacity:0.3" id="ghost-right">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t1)" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="campo">
+        <label class="campo-label" for="senha">Senha</label>
+        <div class="campo-wrap">
+          <input class="campo-input" type="password" id="senha" placeholder="••••••••" autocomplete="current-password" />
+          <svg class="campo-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0110 0v4"/>
+          </svg>
+          <button class="btn-olho" type="button" onclick="toggleSenha('senha','icone-olho')">
+            <svg id="icone-olho" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
         </div>
       </div>
+      <div class="esqueci-row">
+        <button class="btn-esqueci" onclick="esqueceuSenha()">Esqueci a senha</button>
+      </div>
+      <div id="msg-erro" role="alert"></div>
+      <button class="btn-entrar" id="btn-entrar" onclick="loginEmail(event)">
+        <span id="spinner" role="status"></span>
+        Entrar
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
     </div>
-
-    <!-- Ponto button / Stats (toggle) -->
-    <div id="ponto-wrap" style="transition:opacity .3s ease,transform .3s ease;opacity:1;transform:scale(1)"></div>
-
-    <!-- Horizontal cards (meta + other) -->
-    <div id="hcards-wrap"></div>
-
-    <!-- Mural do Time -->
-    <div id="mural-wrap"></div>
-
-    <!-- Ranking -->
-    <div id="ranking-wrap"></div>
-    <div id="today-menu-wrap"></div>
   </div>
-  <!-- INNER -->
-  <div id="inner-screen" style="display:none">
-    <div class="inner-hdr">
-      <div class="inner-hdr-top">
-        <button class="btn-back2" onclick="goHome()">←</button>
-        <div class="inner-title" id="inner-title"></div>
+
+  <!-- ═══ BOTÃO FLUTUANTE CADASTRO ═══ -->
+  <div class="cadastro-float" id="cadastro-float">
+    <div class="float-divider">
+      <div class="float-divider-line"></div>
+      <span class="float-divider-txt">Primeira vez aqui?</span>
+      <div class="float-divider-line"></div>
+    </div>
+    <button class="btn-cadastro" onclick="window.location.href='cadastro.html'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <line x1="19" y1="8" x2="19" y2="14"/>
+        <line x1="22" y1="11" x2="16" y2="11"/>
+      </svg>
+      Criar conta grátis
+    </button>
+  </div>
+
+  <!-- ═══ MODAL CELULAR ═══ -->
+  <div id="modal-celular" role="dialog" aria-modal="true" onclick="fecharSeClicarFora(event)">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div id="etapa-numero">
+        <h2 class="modal-titulo">Entre com seu<br><span>celular</span></h2>
+        <p class="modal-sub">Vamos enviar um código SMS para confirmar.</p>
+        <div class="campo" style="margin-top:4px;">
+          <label class="campo-label" for="campo-numero">Número com DDD</label>
+          <div class="campo-wrap">
+            <input class="campo-input" type="tel" id="campo-numero" placeholder="(11) 99999-9999" inputmode="tel" style="padding-left:16px;" />
+          </div>
+        </div>
+        <button class="btn-entrar" style="margin-top:8px;" onclick="enviarSMS()">Enviar código SMS</button>
+        <button class="btn-cancelar" onclick="fecharModalCelular()">Cancelar</button>
+      </div>
+      <div id="etapa-codigo">
+        <h2 class="modal-titulo">Digite o<br><span>código</span></h2>
+        <p class="modal-sub">Enviamos 6 dígitos por SMS.</p>
+        <div class="campo" style="margin-top:4px;">
+          <label class="campo-label" for="campo-codigo">Código SMS</label>
+          <div class="campo-wrap">
+            <input class="campo-input" type="number" id="campo-codigo" placeholder="000000" inputmode="numeric" style="padding-left:16px;letter-spacing:0.25em;font-size:22px;text-align:center;" />
+          </div>
+        </div>
+        <button class="btn-entrar" style="margin-top:8px;" onclick="verificarCodigo()">Confirmar e entrar</button>
+        <button class="btn-cancelar" onclick="fecharModalCelular()">Cancelar</button>
       </div>
     </div>
-    <div id="main-content" class="content"></div>
   </div>
-</div>
 
-<button class="fab" id="fab" style="display:none">+</button>
+  <div id="recaptcha-container"></div>
 
-<!-- BOTTOM NAV BAR -->
-<nav class="bottom-nav" id="bottom-nav" style="display:none">
-  <!-- Home -->
-  <button class="bnav-item active" onclick="bnavGo('home')" id="bnav-home">
-    <div class="bnav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    </div>
-    <span class="bnav-label">Home</span>
-  </button>
+</div><!-- /app -->
 
-  <!-- Taxas -->
-  <button class="bnav-item" onclick="bnavGo('taxas')" id="bnav-taxas">
-    <div class="bnav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-    </div>
-    <span class="bnav-label">Taxas</span>
-  </button>
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT — todo inline para máxima confiabilidad
+     Igual que Spring: sin dependencias de archivos externos
+═══════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }              from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged,
+         signInWithEmailAndPassword, signInWithPopup,
+         GoogleAuthProvider, OAuthProvider,
+         RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore }                from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  <!-- Escala - center -->
-  <button class="bnav-ponto" onclick="bnavGo('escala')">
-    <div class="bnav-ponto-circle">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg>
-    </div>
-    <span class="bnav-ponto-label">Escala</span>
-  </button>
+/* ── FIREBASE CONFIG ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyCw4QhQ5fGYSv_QgfY-waAZuOhkfv1ej1s",
+  authDomain:        "vanti-app-br.firebaseapp.com",
+  projectId:         "vanti-app-br",
+  storageBucket:     "vanti-app-br.firebasestorage.app",
+  messagingSenderId: "1028700458017",
+  appId:             "1:1028700458017:web:6011fd81d09010e4f1e760"
+};
 
-  <!-- Estoque -->
-  <button class="bnav-item" onclick="bnavGo('inventario')" id="bnav-inventario">
-    <div class="bnav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-    </div>
-    <span class="bnav-label">Estoque</span>
-  </button>
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const providerGoogle = new GoogleAuthProvider();
 
-  <!-- Perfil -->
-  <button class="bnav-item" onclick="bnavGo('perfil')" id="bnav-perfil">
-    <div class="bnav-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    </div>
-    <span class="bnav-label">Perfil</span>
-  </button>
-</nav>
+/* ── ROUTER ── */
+function mostrarPantalla(de, para) {
+  const anterior  = document.getElementById(de);
+  const siguiente = document.getElementById(para);
+  if (!anterior || !siguiente) return;
+  anterior.classList.remove("visible");
+  anterior.classList.add("oculto");
+  siguiente.classList.remove("oculto");
+  requestAnimationFrame(() => requestAnimationFrame(() => siguiente.classList.add("visible")));
+}
 
-<div class="overlay" id="sheet-ov" onclick="closeSheetIfOut(event)">
-  <div class="sheet" id="sheet-inner"></div>
-</div>
+/* ── FLUJO PRINCIPAL ── */
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.href = "home.html";
+  } else {
+    setTimeout(() => mostrarPantalla("splash", "comecar"), 1500);
+  }
+});
 
-<div class="conf-ov" id="conf-ov">
-  <div class="conf-box">
-    <div class="conf-ico">⚠️</div>
-    <div class="conf-title">Excluir?</div>
-    <div class="conf-item" id="conf-item">—</div>
-    <div class="conf-note">Esta ação não pode ser desfeita.</div>
-    <div class="conf-btns">
-      <button class="btn-ccancel" onclick="closeConf()">Cancelar</button>
-      <button class="btn-cdel" onclick="runConf()">Excluir</button>
-    </div>
-  </div>
-</div>
+/* ── NAVEGACION ── */
+window.irParaLogin = function() {
+  mostrarPantalla("comecar", "login");
+  setTimeout(() => {
+    const f = document.getElementById("cadastro-float");
+    if (f) f.classList.add("visivel");
+  }, 400);
+};
 
-<div class="toast" id="toast"></div>
+/* ── LOGIN GOOGLE ── */
+window.loginGoogle = async function() {
+  setCarregando(true);
+  try {
+    await signInWithPopup(auth, providerGoogle);
+    window.location.href = "home.html";
+  } catch(err) { mostrarErro(traduzir(err.code)); }
+  finally { setCarregando(false); }
+};
 
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script>
-    function selectRole(btn, role){
-      document.querySelectorAll('.role-btn').forEach(b=>{
-        b.style.background='var(--s2)';
-        b.style.borderColor='var(--b2)';
-        b.querySelectorAll('svg')[0].style.stroke='currentColor';
-        b.querySelectorAll('div')[0].style.color='var(--t1)';
-      });
-      btn.style.background='var(--acc)';
-      btn.style.borderColor='var(--acc)';
-      btn.querySelectorAll('svg')[0].style.stroke='white';
-      btn.querySelectorAll('div')[0].style.color='white';
-      document.getElementById('r-role').value=role;
-    }
-  </script>
-  <script>
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('/sw.js').catch(()=>{});
-    }
-  </script>
-  <script>emailjs.init('OVEsOgP7lLroHL8Bo');</script>
-  <script src="app.js"></script>
+/* ── LOGIN APPLE ── */
+window.loginApple = async function() {
+  const p = new OAuthProvider("apple.com");
+  setCarregando(true);
+  try {
+    await signInWithPopup(auth, p);
+    window.location.href = "home.html";
+  } catch(err) { mostrarErro(traduzir(err.code)); }
+  finally { setCarregando(false); }
+};
+
+/* ── LOGIN EMAIL ── */
+window.loginEmail = async function(e) {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const senha = document.getElementById("senha").value;
+  if (!email || !senha) { mostrarErro("Preencha seu email e senha."); return; }
+  setCarregando(true);
+  try {
+    await signInWithEmailAndPassword(auth, email, senha);
+    window.location.href = "home.html";
+  } catch(err) { mostrarErro(traduzir(err.code)); }
+  finally { setCarregando(false); }
+};
+
+/* ── CELULAR ── */
+window.abrirModalCelular = function() {
+  document.getElementById("modal-celular").classList.add("ativo");
+  if (!window._recaptcha) {
+    window._recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", { size: "invisible" });
+  }
+};
+
+window.fecharModalCelular = function() {
+  document.getElementById("modal-celular").classList.remove("ativo");
+  document.getElementById("etapa-numero").style.display = "block";
+  document.getElementById("etapa-codigo").style.display = "none";
+  document.getElementById("campo-numero").value = "";
+  document.getElementById("campo-codigo").value = "";
+};
+
+window.enviarSMS = async function() {
+  const n = document.getElementById("campo-numero").value.trim();
+  if (!n) { mostrarErro("Digite seu número."); return; }
+  const fmt = n.startsWith("+") ? n : "+55" + n.replace(/\D/g, "");
+  try {
+    window._confirmSMS = await signInWithPhoneNumber(auth, fmt, window._recaptcha);
+    document.getElementById("etapa-numero").style.display = "none";
+    document.getElementById("etapa-codigo").style.display = "block";
+  } catch(err) { mostrarErro(traduzir(err.code)); }
+};
+
+window.verificarCodigo = async function() {
+  const c = document.getElementById("campo-codigo").value.trim();
+  if (!c || c.length < 6) { mostrarErro("Digite o código de 6 dígitos."); return; }
+  try {
+    await window._confirmSMS.confirm(c);
+    window.location.href = "home.html";
+  } catch { mostrarErro("Código incorreto. Tente novamente."); }
+};
+
+/* ── ESQUECI SENHA ── */
+window.esqueceuSenha = function() {
+  const email = document.getElementById("email").value.trim();
+  if (!email) { mostrarErro("Digite seu email primeiro."); return; }
+  window.location.href = "recuperar-senha.html?email=" + encodeURIComponent(email);
+};
+
+/* ── HELPERS ── */
+window.toggleSenha = function(inputId, iconoId) {
+  const input = document.getElementById(inputId);
+  const icono = document.getElementById(iconoId);
+  if (!input) return;
+  input.type = input.type === "password" ? "text" : "password";
+  if (icono) icono.style.opacity = input.type === "text" ? "0.35" : "1";
+};
+
+window.fecharSeClicarFora = function(e) {
+  if (e.target === document.getElementById("modal-celular")) fecharModalCelular();
+};
+
+function setCarregando(v) {
+  const btn  = document.getElementById("btn-entrar");
+  const spin = document.getElementById("spinner");
+  if (btn)  btn.disabled       = v;
+  if (spin) spin.style.display = v ? "block" : "none";
+}
+
+function mostrarErro(msg) {
+  const el = document.getElementById("msg-erro");
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = "block";
+  setTimeout(() => el.style.display = "none", 4500);
+}
+
+function traduzir(code) {
+  return ({
+    "auth/user-not-found":         "Não encontramos uma conta com este email.",
+    "auth/wrong-password":         "Senha incorreta. Tente novamente.",
+    "auth/invalid-email":          "Email inválido.",
+    "auth/too-many-requests":      "Muitas tentativas. Aguarde um momento.",
+    "auth/network-request-failed": "Sem conexão. Verifique sua internet.",
+    "auth/popup-closed-by-user":   "Login cancelado.",
+    "auth/invalid-credential":     "Credenciais inválidas. Tente novamente.",
+  })[code] || "Algo deu errado. Tente novamente.";
+}
+
+/* ── MASKS ── */
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("email")?.addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("senha")?.focus();
+  });
+  document.getElementById("senha")?.addEventListener("keydown", e => {
+    if (e.key === "Enter") loginEmail(e);
+  });
+  document.getElementById("campo-numero")?.addEventListener("input", function() {
+    let v = this.value.replace(/\D/g, "");
+    v = v.replace(/^(\d{2})(\d)/, "($1) $2");
+    v = v.replace(/(\d{5})(\d)/, "$1-$2");
+    this.value = v.slice(0, 15);
+  });
+});
+
+/* ── SERVICE WORKER ── */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js")
+      .then(() => console.log("[SW] ✅"))
+      .catch(err => console.warn("[SW]:", err));
+  });
+}
+</script>
 
 </body>
 </html>
